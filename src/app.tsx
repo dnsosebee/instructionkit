@@ -7,7 +7,7 @@ import { M } from "./mutators";
 import { proxy, useSnapshot } from "valtio";
 import { DocSelector } from "./components/docSelector";
 import { FlowEditor } from "./components/flowEditor";
-import { Doc, DocUpdate, listDocs } from "./doc";
+import { Flow, FlowUpdate, listFlows } from "./flow";
 
 type State = { selectedId: string | null };
 
@@ -18,7 +18,7 @@ const state = proxy<State>({
 // This is the top-level component for our app.
 const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
   // Subscribe to all todos and sort them.
-  const docs = useSubscribe(rep, listDocs, [], [rep]);
+  const docs = useSubscribe(rep, listFlows, [], [rep]);
   const snap: State = useSnapshot(state);
 
   // Define event handlers and connect them to Replicache mutators. Each
@@ -35,7 +35,7 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
     state.selectedId = id;
   };
 
-  const handleUpdateDoc = (update: DocUpdate) => rep.mutate.updateDoc(update);
+  const handleUpdateDoc = (update: FlowUpdate) => rep.mutate.updateDoc(update);
 
   const handleDeleteDoc = (ids: string[]) => {
     for (const id of ids) {
@@ -76,7 +76,7 @@ const Sidebar = ({
   handleNewItem,
   handleDeleteDoc,
 }: {
-  docs: Doc[];
+  docs: Flow[];
   handleNewItem: any;
   handleDeleteDoc: any;
 }) => {

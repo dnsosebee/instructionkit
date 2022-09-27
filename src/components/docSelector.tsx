@@ -3,7 +3,7 @@ import { Paragraph } from "@tiptap/extension-paragraph";
 import { Text } from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { useEffect } from "react";
-import { Doc } from "../doc";
+import { Flow } from "../flow";
 
 export const DocSelector = ({
   doc,
@@ -11,7 +11,7 @@ export const DocSelector = ({
   onDelete,
   selected,
 }: {
-  doc: Doc;
+  doc: Flow;
   onSelect: () => void;
   onDelete: () => void;
   selected: boolean;

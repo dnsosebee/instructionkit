@@ -4,16 +4,16 @@ import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useRef } from "react";
-import { Doc, DocUpdate } from "../doc";
-import Flow from "../editor/flow";
-import { FlowPage } from "../editor/flowPage";
+import { Flow, FlowUpdate } from "../flow";
+import { CodeStanza } from "../tiptap/codeStanza/codeStanza";
+import flowExtension from "../tiptap/flowExtension";
 
 export const PREVENT_TIPTAP_DEFAULT = true;
 export const ALLOW_TIPTAP_DEFAULT = false;
 
 export interface DocEditorProps {
-  doc: Doc;
-  handleUpdateDoc: (update: DocUpdate) => void;
+  doc: Flow;
+  handleUpdateDoc: (update: FlowUpdate) => void;
 }
 
 export const FlowEditor = ({ doc, handleUpdateDoc }: DocEditorProps) => {
@@ -61,7 +61,7 @@ export const FlowEditor = ({ doc, handleUpdateDoc }: DocEditorProps) => {
 
   // Content stuff
   const contentEditor = useEditor({
-    extensions: [StarterKit, Flow, FlowPage],
+    extensions: [StarterKit, flowExtension, CodeStanza],
     content: `${docRef.current.text}`,
     onUpdate: ({ editor }) => {
       console.log(editor.getHTML()); // <p>Hello World! 🌎</p>

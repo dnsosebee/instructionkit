@@ -30,8 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function Home({ listID }: { listID: string }) {
   // Load the space "listID"
-  const name = listID;
-  const rep = useReplicache({ name, mutators: docMutators });
+  const rep = useReplicache({ name: listID, mutators: docMutators });
   if (!rep) {
     return null;
   }

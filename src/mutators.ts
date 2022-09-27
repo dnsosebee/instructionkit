@@ -65,23 +65,23 @@
 // mutators for Doc
 
 import { WriteTransaction } from "replicache";
-import { Doc, DocUpdate } from "./doc";
+import { Flow, FlowUpdate } from "./flow";
 
 export type M = typeof docMutators;
 
 export const docMutators = {
-  updateDoc: async (tx: WriteTransaction, update: DocUpdate) => {
+  updateDoc: async (tx: WriteTransaction, update: FlowUpdate) => {
     // In a real app you may want to validate the incoming data is in fact a
     // DocUpdate. Check out https://www.npmjs.com/package/@rocicorp/rails for
     // some heper functions to do this.
-    const prev = (await tx.get(update.id)) as Doc;
+    const prev = (await tx.get(update.id)) as Flow;
     const next = { ...prev, ...update };
     await tx.put(next.id, next);
   },
   deleteDoc: async (tx: WriteTransaction, id: string) => {
     await tx.del(id);
   },
-  createDoc: async (tx: WriteTransaction, doc: Doc) => {
+  createDoc: async (tx: WriteTransaction, doc: Flow) => {
     await tx.put(doc.id, doc);
   },
 };

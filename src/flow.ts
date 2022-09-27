@@ -4,15 +4,15 @@
 
 import { ReadTransaction } from "replicache";
 
-export type Doc = {
+export type Flow = {
   id: string;
   title: string;
   text: string;
   createdAt: number;
 };
 
-export type DocUpdate = Partial<Doc> & Pick<Doc, "id">;
+export type FlowUpdate = Partial<Flow> & Pick<Flow, "id">;
 
-export async function listDocs(tx: ReadTransaction) {
-  return (await tx.scan().values().toArray()) as Doc[];
+export async function listFlows(tx: ReadTransaction) {
+  return (await tx.scan().values().toArray()) as Flow[];
 }
