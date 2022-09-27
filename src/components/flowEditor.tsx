@@ -5,6 +5,8 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useRef } from "react";
 import { Doc, DocUpdate } from "../doc";
+import Flow from "../editor/flow";
+import { FlowPage } from "../editor/flowPage";
 
 export const PREVENT_TIPTAP_DEFAULT = true;
 export const ALLOW_TIPTAP_DEFAULT = false;
@@ -14,7 +16,7 @@ export interface DocEditorProps {
   handleUpdateDoc: (update: DocUpdate) => void;
 }
 
-export const DocEditor = ({ doc, handleUpdateDoc }: DocEditorProps) => {
+export const FlowEditor = ({ doc, handleUpdateDoc }: DocEditorProps) => {
   const docRef = useRef(doc);
   // keep ref up to date with new props
   useEffect(() => {
@@ -59,7 +61,7 @@ export const DocEditor = ({ doc, handleUpdateDoc }: DocEditorProps) => {
 
   // Content stuff
   const contentEditor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, Flow, FlowPage],
     content: `${docRef.current.text}`,
     onUpdate: ({ editor }) => {
       console.log(editor.getHTML()); // <p>Hello World! 🌎</p>

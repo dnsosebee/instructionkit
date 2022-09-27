@@ -5,8 +5,8 @@ import { useSubscribe } from "replicache-react";
 import { M } from "./mutators";
 
 import { proxy, useSnapshot } from "valtio";
-import { DocEditor } from "./components/docEditor";
 import { DocSelector } from "./components/docSelector";
+import { FlowEditor } from "./components/flowEditor";
 import { Doc, DocUpdate, listDocs } from "./doc";
 
 type State = { selectedId: string | null };
@@ -53,7 +53,7 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
             handleDeleteDoc={handleDeleteDoc}
             handleNewItem={handleNewItem}
           />
-          <DocEditor doc={doc} handleUpdateDoc={handleUpdateDoc} />
+          <FlowEditor doc={doc} handleUpdateDoc={handleUpdateDoc} />
         </div>
       );
     }
@@ -103,7 +103,10 @@ const Sidebar = ({
       <button
         className="rounded shadow-lg bg-green-100 hover:bg-green-200 text-gray-800 py-2 px-4 m-2"
         onClick={() =>
-          handleNewItem({ title: "<p>untitled</p>", text: "new TipTap doc" })
+          handleNewItem({
+            title: "<p>untitled</p>",
+            text: "<ContentNode>CN 1</ContentNode><ContentNode>CN 2</ContentNode>",
+          })
         }
       >
         ➕ New Doc ➕
