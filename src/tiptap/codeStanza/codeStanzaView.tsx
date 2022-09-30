@@ -1,17 +1,5 @@
-import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
+import StanzaWrapper from "../../components/StanzaWrapper";
 
 export default () => {
-  return (
-    <NodeViewWrapper>
-      <span
-        className="text-lg select-none"
-        data-drag-handle
-        contentEditable={false}
-      >
-        === Code ===
-      </span>
-
-      <NodeViewContent className="bg-yellow-400" />
-    </NodeViewWrapper>
-  );
+  return <StanzaWrapper name={"code"} />;
 };

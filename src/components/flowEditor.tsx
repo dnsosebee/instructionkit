@@ -7,6 +7,7 @@ import { useEffect, useRef } from "react";
 import { Flow, FlowUpdate } from "../flow";
 import { CodeStanza } from "../tiptap/codeStanza/codeStanza";
 import flowExtension from "../tiptap/flowExtension";
+import { PageStanza } from "../tiptap/flowPage/pageStanza";
 
 export const PREVENT_TIPTAP_DEFAULT = true;
 export const ALLOW_TIPTAP_DEFAULT = false;
@@ -38,13 +39,11 @@ export const FlowEditor = ({ doc, handleUpdateDoc }: DocEditorProps) => {
     extensions: [CustomDocument, Paragraph, Text],
     content: `${docRef.current.title}`,
     onUpdate: ({ editor }) => {
-      console.log(editor.getHTML()); // <p>Hello World! 🌎</p>
       handleUpdateDoc({ ...docRef.current, title: editor.getHTML() });
     },
     editorProps: {
       attributes: {
-        class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl m-5 focus:outline-none",
+        class: "prose",
       },
     },
   });
@@ -61,16 +60,14 @@ export const FlowEditor = ({ doc, handleUpdateDoc }: DocEditorProps) => {
 
   // Content stuff
   const contentEditor = useEditor({
-    extensions: [StarterKit, flowExtension, CodeStanza],
+    extensions: [StarterKit, flowExtension, PageStanza, CodeStanza],
     content: `${docRef.current.text}`,
     onUpdate: ({ editor }) => {
-      console.log(editor.getHTML()); // <p>Hello World! 🌎</p>
       handleUpdateDoc({ ...docRef.current, text: editor.getHTML() });
     },
     editorProps: {
       attributes: {
-        class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl m-5 focus:outline-none",
+        class: "p-5",
       },
     },
   });

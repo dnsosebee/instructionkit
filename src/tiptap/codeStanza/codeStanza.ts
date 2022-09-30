@@ -1,17 +1,29 @@
 // This is a tiptap block that can be dragged around the page.
 
-import CodeBlock from "@tiptap/extension-code-block";
-import { mergeAttributes, ReactNodeViewRenderer } from "@tiptap/react";
-import FlowCodeView from "./codeStanzaView";
+import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
+import CodeStanzaView from "./codeStanzaView";
 
 export interface CodeStanzaOptions {
   HTMLAttributes: Record<string, any>;
 }
 
-export const CodeStanza = CodeBlock.extend<CodeStanzaOptions>({
+declare module "@tiptap/core" {
+  interface Commands<ReturnType> {
+    codeStanza: {
+      /**
+       * Toggle a code stanza
+       */
+      toggleCodeStanza: () => ReturnType;
+    };
+  }
+}
+
+export const CodeStanza = Node.create<CodeStanzaOptions>({
   name: "codeStanza",
 
-  group: "flow",
+  group: "stanza",
+
+  content: "codeBlock",
 
   draggable: true,
 
@@ -20,33 +32,41 @@ export const CodeStanza = CodeBlock.extend<CodeStanzaOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return [
-      "code-stanza",
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes),
-      0,
-    ];
+    return ["code-stanza", mergeAttributes(HTMLAttributes), 0];
   },
 
   addNodeView() {
-    return ReactNodeViewRenderer(FlowCodeView);
+    return ReactNodeViewRenderer(CodeStanzaView);
   },
 
-  // addKeyboardShortcuts() {
-  //   return {
-  //     Backspace: () => {
-  //       const { empty, $anchor } = this.editor.state.selection;
-  //       const isAtStart = $anchor.pos === 1;
+  addKeyboardShortcuts() {
+    return {
+      Enter: ({ editor }) => {
+        const { state } = editor;
+        const { selection } = state;
+        const { $from, empty } = selection;
 
-  //       if (!empty || $anchor.parent.type.name !== this.name) {
-  //         return false;
-  //       }
+        if (!empty || $from.parent.type !== this.type) {
+          return false;
+        }
 
-  //       if (isAtStart || !$anchor.parent.textContent.length) {
-  //         return this.editor.commands.clearNodes();
-  //       }
+        const isAtEnd = $from.parentOffset === $from.parent.nodeSize - 2;
+        const endsWithDoubleNewline = $from.parent.textContent.endsWith("\n\n");
 
-  //       return false;
-  //     },
-  //   };
-  // },
+        if (!isAtEnd || !endsWithDoubleNewline) {
+          return false;
+        }
+
+        return editor
+          .chain()
+          .command(({ tr }) => {
+            tr.delete($from.pos - 2, $from.pos);
+
+            return true;
+          })
+          .exitCode()
+          .run();
+      },
+    };
+  },
 });

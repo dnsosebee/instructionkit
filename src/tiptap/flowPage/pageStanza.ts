@@ -1,41 +1,38 @@
 // This is a tiptap block that can be dragged around the page.
 
-import CodeBlock from "@tiptap/extension-code-block";
+import { Node, ReactNodeViewRenderer } from "@tiptap/react";
+import pageStanzaView from "./pageStanzaView";
 
 export interface PageStanzaOptions {
   HTMLAttributes: Record<string, any>;
 }
 
-export const PageStanza = CodeBlock.extend<PageStanzaOptions>({
+export const PageStanza = Node.create<PageStanzaOptions>({
   name: "pageStanza",
 
-  // addOptions() {
-  //   return {
-  //     HTMLAttributes: {},
-  //   };
-  // },
+  addOptions() {
+    return {
+      HTMLAttributes: {},
+    };
+  },
 
-  group: "flow",
+  group: "stanza",
 
-  // draggable: true,
+  content: "block+",
 
-  // content: "block+",
+  defining: true,
 
-  // parseHTML() {
-  //   return [{ tag: "flow-page" }];
-  // },
+  draggable: true,
 
-  // renderHTML({ HTMLAttributes }) {
-  //   return [
-  //     "flow-page",
-  //     mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-  //       "data-type": "draggable-item",
-  //     }),
-  //     0,
-  //   ];
-  // },
+  parseHTML() {
+    return [{ tag: "page-stanza" }];
+  },
 
-  // addNodeView() {
-  //   return ReactNodeViewRenderer(FlowPageView);
-  // },
+  renderHTML({ HTMLAttributes }) {
+    return ["page-stanza", 0];
+  },
+
+  addNodeView() {
+    return ReactNodeViewRenderer(pageStanzaView);
+  },
 });
