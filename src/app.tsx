@@ -40,7 +40,7 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
       case: "hello",
     }],
   };
-  return <Flowpad floem={floem}></Flowpad>;
+  return <Flowpad style={{ height: '100%' }} floem={floem}></Flowpad>;
 };
 
 export default App;
