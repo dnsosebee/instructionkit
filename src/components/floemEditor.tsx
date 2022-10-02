@@ -17,7 +17,7 @@ interface DartEditorProps {
 export const FlowEditor = ({flow}: FlowEditorProps) => {
   return (
     <foreignObject x={flow.x} y={flow.y} width={100} height={100}>
-      <div className='border'>
+      <div className='border shadow rounded'>
         {flow.text}
       </div>
     </foreignObject>
