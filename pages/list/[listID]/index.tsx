@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 import { spaceExists } from "replicache-nextjs/lib/backend";
 import { useReplicache } from "replicache-nextjs/lib/frontend";
 import App from "../../../src/app";
-import { docMutators } from "../../../src/mutators";
+import { floemMutators } from "../../../src/mutators";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { params } = context;
@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function Home({ listID }: { listID: string }) {
   // Load the space "listID"
-  const rep = useReplicache({ name: listID, mutators: docMutators });
+  const rep = useReplicache({ name: listID, mutators: floemMutators });
   if (!rep) {
     return null;
   }
