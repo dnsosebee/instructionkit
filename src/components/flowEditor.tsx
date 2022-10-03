@@ -1,69 +1,33 @@
-import Document from "@tiptap/extension-document";
-import Paragraph from "@tiptap/extension-paragraph";
-import Text from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useRef } from "react";
-import { Flow, FlowUpdate } from "../flow";
+import { Mutate } from "../app";
+import { Flow } from "../flow";
 import { CodeStanza } from "../tiptap/codeStanza/codeStanza";
 import flowExtension from "../tiptap/flowExtension";
-import { PageStanza } from "../tiptap/flowPage/pageStanza";
+import { PageStanza } from "../tiptap/pageStanza/pageStanza";
 
 export const PREVENT_TIPTAP_DEFAULT = true;
 export const ALLOW_TIPTAP_DEFAULT = false;
 
-export interface DocEditorProps {
-  doc: Flow;
-  handleUpdateDoc: (update: FlowUpdate) => void;
+export interface FlowEditorProps {
+  flow: Flow;
+  mutate: Mutate;
 }
 
-export const FlowEditor = ({ doc, handleUpdateDoc }: DocEditorProps) => {
-  const docRef = useRef(doc);
+export const FlowEditor = ({ flow, mutate }: FlowEditorProps) => {
+  const flowRef = useRef(flow);
   // keep ref up to date with new props
   useEffect(() => {
-    docRef.current = doc;
-  }, [doc]);
-
-  // Title stuff
-  const CustomDocument = Document.extend({
-    addKeyboardShortcuts() {
-      return {
-        Enter: () => {
-          return PREVENT_TIPTAP_DEFAULT;
-        },
-      };
-    },
-  });
-
-  const titleEditor = useEditor({
-    extensions: [CustomDocument, Paragraph, Text],
-    content: `${docRef.current.title}`,
-    onUpdate: ({ editor }) => {
-      handleUpdateDoc({ ...docRef.current, title: editor.getHTML() });
-    },
-    editorProps: {
-      attributes: {
-        class: "prose",
-      },
-    },
-  });
-
-  useEffect(() => {
-    if (
-      titleEditor &&
-      doc.title !== titleEditor.getHTML() &&
-      !titleEditor.isFocused
-    ) {
-      titleEditor.commands.setContent(`${doc.title}`);
-    }
-  }, [doc.title]);
+    flowRef.current = flow;
+  }, [flow]);
 
   // Content stuff
   const contentEditor = useEditor({
     extensions: [StarterKit, flowExtension, PageStanza, CodeStanza],
-    content: `${docRef.current.text}`,
+    content: `${flowRef.current.flowtext}`,
     onUpdate: ({ editor }) => {
-      handleUpdateDoc({ ...docRef.current, text: editor.getHTML() });
+      mutate.updateFlow({ ...flowRef.current, flowtext: editor.getHTML() });
     },
     editorProps: {
       attributes: {
@@ -75,18 +39,16 @@ export const FlowEditor = ({ doc, handleUpdateDoc }: DocEditorProps) => {
   useEffect(() => {
     if (
       contentEditor &&
-      doc.text !== contentEditor.getHTML() &&
+      flow.flowtext !== contentEditor.getHTML() &&
       !contentEditor.isFocused
     ) {
-      contentEditor.commands.setContent(`${doc.text}`);
+      contentEditor.commands.setContent(`${flow.flowtext}`);
     }
-  }, [doc.text]);
+  }, [flow.flowtext]);
 
   return (
     <div className="border list-disc flex-grow m-4">
-      <EditorContent editor={titleEditor} key={`TE/${doc.id}`} />
-      <div className="h-0 border"></div>
-      <EditorContent editor={contentEditor} key={`CE/${doc.id}`} />
+      <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
     </div>
   );
 };

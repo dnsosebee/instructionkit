@@ -1,7 +1,15 @@
 import { useCallback } from "react";
 import { Handle, Position } from "reactflow";
+import { Mutate } from "../../../app";
+import { Flow } from "../../../flow";
+import { FlowEditor } from "../../flowEditor";
 
-function TextUpdaterNode() {
+export interface FlowNodeProps {
+  mutate: Mutate;
+  flow: Flow;
+}
+
+function FlowNode({ data: { mutate, flow } }: { data: FlowNodeProps }) {
   const onChange = useCallback((evt) => {
     console.log(evt.target.value);
   }, []);
@@ -9,10 +17,7 @@ function TextUpdaterNode() {
   return (
     <div className="text-updater-node">
       <Handle type="target" position={Position.Top} />
-      <div>
-        <label htmlFor="text">Text:</label>
-        <input id="text" name="text" onChange={onChange} className="border" />
-      </div>
+      <FlowEditor flow={flow} mutate={mutate} />
       <Handle type="source" position={Position.Bottom} id="a" />
       <Handle
         type="source"
@@ -30,4 +35,4 @@ function TextUpdaterNode() {
   );
 }
 
-export default TextUpdaterNode;
+export default FlowNode;

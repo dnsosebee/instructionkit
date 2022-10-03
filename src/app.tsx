@@ -1,11 +1,10 @@
-import { nanoid } from "nanoid";
 import { Replicache } from "replicache";
 import { useSubscribe } from "replicache-react";
 
 import { proxy, useSnapshot } from "valtio";
 import { Flowcard } from "./components/Flowcard";
-import { Flowpad } from "./components/flowpad";
-import { dummyFloem } from "./data/floem";
+import { Flowpad } from "./components/flowpad/flowpad";
+import { genDummyFloem } from "./data/dummyFloem";
 import { Floem, listFloems } from "./floem";
 import { FlowUpdate } from "./flow";
 import { M } from "./mutators";
@@ -16,8 +15,11 @@ const state = proxy<State>({
   selectedId: null,
 });
 
+export type Rep = Replicache<M>;
+export type Mutate = Rep["mutate"];
+
 // This is the top-level component for our app.
-const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
+const App = ({ rep, listID }: { rep: Rep; listID: string }) => {
   // Subscribe to all floems.
   const floems = useSubscribe(rep, listFloems, [], [rep]);
   const snap: State = useSnapshot(state);
@@ -25,10 +27,9 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
   // Define event handlers and connect them to Replicache mutators. Each
   // of these mutators runs immediately (optimistically) locally, then runs
   // again on the server-side automatically.
-  const handleNewItem = (floem: Omit<Floem, "id">) => {
-    const id = nanoid();
-    rep.mutate.createFloem({ id, ...floem });
-    state.selectedId = id;
+  const handleNewItem = (floem: Floem) => {
+    rep.mutate.createFloem(floem);
+    state.selectedId = floem.id;
   };
 
   const handleUpdateFloem = (update: FlowUpdate) =>
@@ -43,21 +44,10 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
     }
   };
 
+  let floem = null;
+
   if (snap.selectedId) {
-    const floem = floems.find((floem) => floem.id === snap.selectedId);
-    if (floem) {
-      return (
-        <div className="flex grow">
-          <Sidebar
-            floems={floems}
-            handleDeleteFloem={handleDeleteFloem}
-            handleNewItem={handleNewItem}
-            handleUpdateTitle={handleUpdateTitle}
-          />
-          <Flowpad floem={floem} key={`RF/${floem.id}`} />
-        </div>
-      );
-    }
+    floem = floems.find((floem) => floem.id === snap.selectedId);
   }
 
   return (
@@ -68,7 +58,11 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
         handleNewItem={handleNewItem}
         handleUpdateTitle={handleUpdateTitle}
       />
-      <h1 className="text-4xl m-10">⬅️ Select a floem to begin</h1>
+      {floem ? (
+        <Flowpad mutate={rep.mutate} floem={floem} key={`RF/${floem.id}`} />
+      ) : (
+        <h1 className="text-4xl m-10">⬅️ Select a floem to begin</h1>
+      )}
     </div>
   );
 };
@@ -105,7 +99,7 @@ const Sidebar = ({
       </div>
       <button
         className="rounded shadow-lg bg-green-100 hover:bg-green-200 text-gray-800 py-2 px-4 m-2"
-        onClick={() => handleNewItem(dummyFloem)}
+        onClick={() => handleNewItem(genDummyFloem())}
       >
         ➕ New Floem ➕
       </button>

@@ -36,7 +36,7 @@ export default function Home({ listID }: { listID: string }) {
   }
 
   return (
-    <div className="todoapp">
+    <div className="w-full">
       <App rep={rep} listID={listID} />
     </div>
   );
