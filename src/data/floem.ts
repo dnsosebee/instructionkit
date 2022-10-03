@@ -1,7 +1,6 @@
 import { Floem } from "../floem";
 
-export const dummyFloem: Floem = {
-  id: "dummy-floem",
+export const dummyFloem: Omit<Floem, "id"> = {
   title: "Floem",
   createdAt: Date.now(),
   flows: [

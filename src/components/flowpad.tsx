@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Floem, Flow } from "../floem";
 import TextUpdaterNode from "./nodeTypes/textUpdaterNode";
 
@@ -50,6 +50,7 @@ interface FlowpadProps {
 export const Flowpad = ({ floem }: FlowpadProps) => {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
+  const floemRef = useRef(floem);
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),

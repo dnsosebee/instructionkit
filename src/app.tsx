@@ -3,8 +3,8 @@ import { Replicache } from "replicache";
 import { useSubscribe } from "replicache-react";
 
 import { proxy, useSnapshot } from "valtio";
-import { Flowpad } from "./components/floemEditor";
 import { Flowcard } from "./components/Flowcard";
+import { Flowpad } from "./components/flowpad";
 import { dummyFloem } from "./data/floem";
 import { Floem, listFloems } from "./floem";
 import { FlowUpdate } from "./flow";
@@ -34,6 +34,9 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
   const handleUpdateFloem = (update: FlowUpdate) =>
     rep.mutate.updateFloem(update);
 
+  const handleUpdateTitle = (id: string, title: string) =>
+    rep.mutate.updateFloem({ id, title });
+
   const handleDeleteFloem = (ids: string[]) => {
     for (const id of ids) {
       rep.mutate.deleteFloem(id);
@@ -49,8 +52,9 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
             floems={floems}
             handleDeleteFloem={handleDeleteFloem}
             handleNewItem={handleNewItem}
+            handleUpdateTitle={handleUpdateTitle}
           />
-          <Flowpad floem={floem} />
+          <Flowpad floem={floem} key={`RF/${floem.id}`} />
         </div>
       );
     }
@@ -62,6 +66,7 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
         floems={floems}
         handleDeleteFloem={handleDeleteFloem}
         handleNewItem={handleNewItem}
+        handleUpdateTitle={handleUpdateTitle}
       />
       <h1 className="text-4xl m-10">⬅️ Select a floem to begin</h1>
     </div>
@@ -72,10 +77,12 @@ const Sidebar = ({
   floems,
   handleNewItem,
   handleDeleteFloem,
+  handleUpdateTitle,
 }: {
   floems: Floem[];
   handleNewItem: any;
   handleDeleteFloem: any;
+  handleUpdateTitle: (id: string, title: string) => void;
 }) => {
   return (
     <div className="bg-blue-100 h-screen w-64">
@@ -83,6 +90,7 @@ const Sidebar = ({
         <p className="text-2xl text-center my-2">My Documents</p>
         {floems.map((floem) => (
           <Flowcard
+            handleUpdateTitle={handleUpdateTitle}
             selected={state.selectedId === floem.id}
             key={`FloemSelector/${floem.id}`}
             floem={floem}
@@ -99,7 +107,7 @@ const Sidebar = ({
         className="rounded shadow-lg bg-green-100 hover:bg-green-200 text-gray-800 py-2 px-4 m-2"
         onClick={() => handleNewItem(dummyFloem)}
       >
-        ➕ New Doc ➕
+        ➕ New Floem ➕
       </button>
     </div>
   );
