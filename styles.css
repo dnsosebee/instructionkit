@@ -1,3 +1,42 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+body {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    display: flex;
+}
+
+#__next {
+    display: flex;
+    flex-grow: 1;
+}
+
+.todoapp {
+    display: flex;
+    flex-grow: 1;
+}
+
+.flex-fill {
+    display: flex;
+    flex-grow: 1;
+}
+
+.text-updater-node {
+    height: 50px;
+    border: 1px solid #eee;
+    padding: 5px;
+    border-radius: 5px;
+    background: white;
+}
+
+.text-updater-node label {
+    display: block;
+    color: #777;
+    font-size: 12px;
+}

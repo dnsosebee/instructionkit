@@ -3,22 +3,22 @@ import { Paragraph } from "@tiptap/extension-paragraph";
 import { Text } from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { useEffect } from "react";
-import { Flow } from "../flow";
+import { Floem } from "../floem";
 
-export const DocSelector = ({
-  doc,
+export const Flowcard = ({
+  floem,
   onSelect,
   onDelete,
   selected,
 }: {
-  doc: Flow;
+  floem: Floem;
   onSelect: () => void;
   onDelete: () => void;
   selected: boolean;
 }) => {
   const titleText = useEditor({
     extensions: [Document, Paragraph, Text],
-    content: `${doc.title}`,
+    content: `${floem.title}`,
     editable: false,
     editorProps: {
       attributes: {
@@ -29,10 +29,10 @@ export const DocSelector = ({
   });
 
   useEffect(() => {
-    if (titleText && doc.title !== titleText.getHTML()) {
-      titleText.commands.setContent(`${doc.title}`);
+    if (titleText && floem.title !== titleText.getHTML()) {
+      titleText.commands.setContent(`${floem.title}`);
     }
-  }, [doc.title]);
+  }, [floem.title]);
 
   const handleDelete = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -46,7 +46,7 @@ export const DocSelector = ({
         selected ? "bg-gray-200" : "bg-white"
       } rounded shadow-lg text-gray-800 m-2`}
     >
-      <EditorContent editor={titleText} key={`DSE/${doc.id}`} />
+      <EditorContent editor={titleText} key={`FC/${floem.id}`} />
       {selected && (
         <button
           onClick={handleDelete}

@@ -1,35 +1,46 @@
-import { Floem, Flow, Dart, FloemUpdate } from '../floem'
-import { keyBy } from 'lodash'
-import React from 'react'
+import { useCallback, useState } from "react";
+import { Floem, Flow } from "../floem";
+import TextUpdaterNode from "./nodeTypes/textUpdaterNode";
+
+import ReactFlow, {
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
+  Background,
+  Controls,
+  Edge,
+  Node,
+} from "reactflow";
+
+import "reactflow/dist/style.css";
+
+const initialNodes: Node[] = [
+  {
+    id: "1",
+    data: { label: "Flowstart" },
+    position: { x: 5, y: 5 },
+    type: "input",
+  },
+  {
+    id: "2",
+    data: { label: "Node 2" },
+    position: { x: 50, y: 100 },
+    type: "textUpdater",
+  },
+];
+
+const initialEdges: Edge[] = [
+  {
+    id: "1-2",
+    source: "1",
+    target: "2",
+  },
+];
+
+const nodeTypes = { textUpdater: TextUpdaterNode };
 
 interface FlowEditorProps {
-  flow: Flow
-}
-
-interface DartEditorProps {
-  dart: Dart
-  fromX: number
-  fromY: number
-  toX: number
-  toY: number
-}
-
-export const FlowEditor = ({flow}: FlowEditorProps) => {
-  return (
-    <foreignObject x={flow.x} y={flow.y} width={100} height={100}>
-      <div className='border'>
-        {flow.text}
-      </div>
-    </foreignObject>
-  )
-}
-
-export const DartEditor = ({dart, fromX, fromY, toX, toY}: DartEditorProps) => {
-  return (
-    <g>
-      <line x1={fromX} y1={fromY} x2={toX} y2={toY} strokeWidth={1} stroke='#000'/>
-    </g>
-  )
+  flow: Flow;
 }
 
 interface FlowpadProps {
@@ -37,38 +48,37 @@ interface FlowpadProps {
 }
 
 export const Flowpad = ({ floem }: FlowpadProps) => {
+  const [nodes, setNodes] = useState(initialNodes);
+  const [edges, setEdges] = useState(initialEdges);
 
-  const handleClick = () => {
-    alert('hello')
-  }
+  const onNodesChange = useCallback(
+    (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
+    []
+  );
+  const onEdgesChange = useCallback(
+    (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
+    []
+  );
 
-  const flowMap = keyBy(floem.flows, v => v.id)
-
-  const dartEditorProps: DartEditorProps[] = floem.darts.map(dart => {
-    const { x: fromX, y: fromY} = flowMap[dart.from]
-    const { x: toX, y: toY} = flowMap[dart.to]
-    return {dart, fromX, fromY, toX, toY}
-  })
+  const onConnect = useCallback(
+    (params) => setEdges((eds) => addEdge(params, eds)),
+    []
+  );
 
   return (
-    <div>
-      <div id='toolbar'>
-      </div>
-      <svg>
-        <g id='scenegraph' onClick={handleClick}>
-          <g id='darts'>
-            {dartEditorProps.map(props => (
-              <DartEditor {...props} />
-            ))}
-          </g>
-          <g id='flows'>
-            {floem.flows.map(flow => (
-              <FlowEditor flow={flow}/>
-            ))}
-          </g>
-        </g>
-      </svg>
+    <div className="grow">
+      <div id="toolbar"></div>
+      <ReactFlow
+        nodes={nodes}
+        onNodesChange={onNodesChange}
+        edges={edges}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        nodeTypes={nodeTypes}
+      >
+        <Background />
+        <Controls />
+      </ReactFlow>
     </div>
-  ) 
-}
-
+  );
+};
