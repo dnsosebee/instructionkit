@@ -40,7 +40,7 @@ export const toReactFlowNodes = (
   return floem.flows.map((flow) => ({
     id: flow.id,
     type: "flow",
-    dragHandle: ".drag-handle",
+    // dragHandle: ".drag-handle",
     position: flow.position,
     data: { mutate, flow },
   }));

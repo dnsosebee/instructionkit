@@ -44,7 +44,7 @@ export const FlowEditor = ({ flow, mutate }: FlowEditorProps) => {
   }, [flow.flowtext]);
 
   return (
-    <div className="border rounded-2xl list-disc flex-grow cursor-default nodrag w-96 bg-white">
+    <div className="border rounded list-disc flex-grow cursor-default nodrag w-96 bg-white">
       <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
     </div>
   );

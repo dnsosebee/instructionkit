@@ -1,5 +1,5 @@
-import StanzaWrapper from "./stanzaWrapper";
+import Stanza from "./stanza";
 
 export default () => {
-  return <StanzaWrapper name={"page"} />;
+  return <Stanza name={"page"} />;
 };
