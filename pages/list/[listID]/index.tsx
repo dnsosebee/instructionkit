@@ -1,8 +1,8 @@
 import { GetServerSideProps } from "next";
 import { spaceExists } from "replicache-nextjs/lib/backend";
 import { useReplicache } from "replicache-nextjs/lib/frontend";
-import App from "../../../src/app";
-import { floemMutators } from "../../../src/mutators";
+import App from "../../../src/components/app";
+import { floemMutators } from "../../../src/model/core/mutators";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { params } = context;
@@ -36,7 +36,7 @@ export default function Home({ listID }: { listID: string }) {
   }
 
   return (
-    <div className="todoapp">
+    <div className="w-full">
       <App rep={rep} listID={listID} />
     </div>
   );

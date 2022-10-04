@@ -1,14 +1,13 @@
-import { nanoid } from "nanoid";
 import { Replicache } from "replicache";
 import { useSubscribe } from "replicache-react";
 
 import { proxy, useSnapshot } from "valtio";
-import { Flowpad } from "./components/floemEditor";
-import { Flowcard } from "./components/Flowcard";
-import { dummyFloem } from "./data/floem";
-import { Floem, listFloems } from "./floem";
-import { FlowUpdate } from "./flow";
-import { M } from "./mutators";
+import { genDummyFloem } from "../model/core/data/dummyFloem";
+import { Floem, listFloems } from "../model/core/floem";
+import { FlowUpdate } from "../model/core/flow";
+import { M } from "../model/core/mutators";
+import { Flowcard } from "./flowcard";
+import { Flowpad } from "./flowpad/flowpad";
 
 type State = { selectedId: string | null };
 
@@ -16,8 +15,11 @@ const state = proxy<State>({
   selectedId: null,
 });
 
+export type Rep = Replicache<M>;
+export type Mutate = Rep["mutate"];
+
 // This is the top-level component for our app.
-const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
+const App = ({ rep, listID }: { rep: Rep; listID: string }) => {
   // Subscribe to all floems.
   const floems = useSubscribe(rep, listFloems, [], [rep]);
   const snap: State = useSnapshot(state);
@@ -25,14 +27,16 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
   // Define event handlers and connect them to Replicache mutators. Each
   // of these mutators runs immediately (optimistically) locally, then runs
   // again on the server-side automatically.
-  const handleNewItem = (floem: Omit<Floem, "id">) => {
-    const id = nanoid();
-    rep.mutate.createFloem({ id, ...floem });
-    state.selectedId = id;
+  const handleNewItem = (floem: Floem) => {
+    rep.mutate.createFloem(floem);
+    state.selectedId = floem.id;
   };
 
   const handleUpdateFloem = (update: FlowUpdate) =>
     rep.mutate.updateFloem(update);
+
+  const handleUpdateTitle = (id: string, title: string) =>
+    rep.mutate.updateFloem({ id, title });
 
   const handleDeleteFloem = (ids: string[]) => {
     for (const id of ids) {
@@ -40,20 +44,10 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
     }
   };
 
+  let floem = null;
+
   if (snap.selectedId) {
-    const floem = floems.find((floem) => floem.id === snap.selectedId);
-    if (floem) {
-      return (
-        <div className="flex grow">
-          <Sidebar
-            floems={floems}
-            handleDeleteFloem={handleDeleteFloem}
-            handleNewItem={handleNewItem}
-          />
-          <Flowpad floem={floem} />
-        </div>
-      );
-    }
+    floem = floems.find((floem) => floem.id === snap.selectedId);
   }
 
   return (
@@ -62,8 +56,13 @@ const App = ({ rep, listID }: { rep: Replicache<M>; listID: string }) => {
         floems={floems}
         handleDeleteFloem={handleDeleteFloem}
         handleNewItem={handleNewItem}
+        handleUpdateTitle={handleUpdateTitle}
       />
-      <h1 className="text-4xl m-10">⬅️ Select a floem to begin</h1>
+      {floem ? (
+        <Flowpad mutate={rep.mutate} floem={floem} key={`RF/${floem.id}`} />
+      ) : (
+        <h1 className="text-4xl m-10">⬅️ Select a floem to begin</h1>
+      )}
     </div>
   );
 };
@@ -72,10 +71,12 @@ const Sidebar = ({
   floems,
   handleNewItem,
   handleDeleteFloem,
+  handleUpdateTitle,
 }: {
   floems: Floem[];
   handleNewItem: any;
   handleDeleteFloem: any;
+  handleUpdateTitle: (id: string, title: string) => void;
 }) => {
   return (
     <div className="bg-blue-100 h-screen w-64">
@@ -83,6 +84,7 @@ const Sidebar = ({
         <p className="text-2xl text-center my-2">My Documents</p>
         {floems.map((floem) => (
           <Flowcard
+            handleUpdateTitle={handleUpdateTitle}
             selected={state.selectedId === floem.id}
             key={`FloemSelector/${floem.id}`}
             floem={floem}
@@ -97,9 +99,9 @@ const Sidebar = ({
       </div>
       <button
         className="rounded shadow-lg bg-green-100 hover:bg-green-200 text-gray-800 py-2 px-4 m-2"
-        onClick={() => handleNewItem(dummyFloem)}
+        onClick={() => handleNewItem(genDummyFloem())}
       >
-        ➕ New Doc ➕
+        ➕ New Floem ➕
       </button>
     </div>
   );

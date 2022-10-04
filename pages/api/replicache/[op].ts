@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { handleRequest } from "replicache-nextjs/lib/backend";
-import { floemMutators } from "../../../src/mutators";
+import { floemMutators } from "../../../src/model/core/mutators";
 
 // Next.js runs this function server-side when /api/replicache/[anything].ts is
 // requested.

@@ -4,14 +4,20 @@
 
 import { ReadTransaction } from "replicache";
 
-export type Flow = {
-  id: string;
-  title: string;
-  text: string;
-  createdAt: number;
+type Position = {
+  x: number;
+  y: number;
 };
 
-export type FlowUpdate = Partial<Flow> & Pick<Flow, "id">;
+export type Flow = {
+  id: string;
+  floem: string;
+  flowtext: string;
+  createdAt: number;
+  position: Position;
+};
+
+export type FlowUpdate = Partial<Flow> & Pick<Flow, "id"> & Pick<Flow, "floem">;
 
 export async function listFlows(tx: ReadTransaction) {
   return (await tx.scan().values().toArray()) as Flow[];
