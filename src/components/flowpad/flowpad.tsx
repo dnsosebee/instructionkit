@@ -1,4 +1,12 @@
 import { useCallback } from "react";
+import ReactFlow, {
+  addEdge,
+  applyEdgeChanges,
+  applyNodeChanges,
+  Background,
+  Controls,
+  Node,
+} from "reactflow";
 import {
   DartEdge,
   Floem,
@@ -8,18 +16,9 @@ import {
   toReactFlowNodes,
 } from "../../floem";
 
-import ReactFlow, {
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
-  Background,
-  Controls,
-  Node,
-} from "reactflow";
-
 import "reactflow/dist/style.css";
 import { Mutate } from "../../app";
-import FlowNode from "./nodeTypes/flowNode";
+import FlowNode, { FlowNodeProps } from "./nodeTypes/flowNode";
 
 const nodeTypes = { flow: FlowNode };
 
@@ -29,7 +28,7 @@ interface FlowpadProps {
 }
 
 export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
-  const nodes: Node[] = toReactFlowNodes(mutate, floem);
+  const nodes: Node<FlowNodeProps>[] = toReactFlowNodes(mutate, floem);
   const edges: DartEdge[] = toReactFlowEdges(floem);
   // const [nodes, setNodes] = useState(initialNodes);
   // const [edges, setEdges] = useState(initialEdges);
@@ -63,10 +62,10 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
       <div id="toolbar"></div>
       <ReactFlow
         nodes={nodes}
-        onNodesChange={() => {}}
+        onNodesChange={onNodesChange}
         edges={edges}
-        onEdgesChange={() => {}}
-        onConnect={() => {}}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
         nodeTypes={nodeTypes}
       >
         <Background />

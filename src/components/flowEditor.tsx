@@ -24,7 +24,12 @@ export const FlowEditor = ({ flow, mutate }: FlowEditorProps) => {
 
   // Content stuff
   const contentEditor = useEditor({
-    extensions: [StarterKit, flowExtension, PageStanza, CodeStanza],
+    extensions: [
+      StarterKit.configure({ document: false }),
+      flowExtension,
+      PageStanza,
+      CodeStanza,
+    ],
     content: `${flowRef.current.flowtext}`,
     onUpdate: ({ editor }) => {
       mutate.updateFlow({ ...flowRef.current, flowtext: editor.getHTML() });
@@ -47,7 +52,7 @@ export const FlowEditor = ({ flow, mutate }: FlowEditorProps) => {
   }, [flow.flowtext]);
 
   return (
-    <div className="border list-disc flex-grow m-4">
+    <div className="border list-disc flex-grow cursor-default non-draggable w-96">
       <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
     </div>
   );

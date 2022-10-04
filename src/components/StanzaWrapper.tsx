@@ -13,12 +13,12 @@ export default function StanzaWrapper({ name }: StanzaWrapperProps) {
         <div
           contentEditable={false}
           data-drag-handle
-          className="block text-sm font-medium text-gray-700 select-none"
+          className="block text-sm font-medium text-gray-700 select-none cursor-move"
         >
           {name}
         </div>
         {/* Be sure to use this with a layout container that is full-width on mobile */}
-        <div className="overflow-hidden bg-white shadow border sm:rounded-lg">
+        <div className="overflow-hidden bg-white shadow border sm:rounded-lg cursor-text">
           <div className="px-4 py-5 sm:p-6 prose">
             <NodeViewContent />
           </div>

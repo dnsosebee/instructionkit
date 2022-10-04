@@ -5,6 +5,7 @@
 import { Edge, Node } from "reactflow";
 import { ReadTransaction } from "replicache";
 import { Mutate } from "./app";
+import { FlowNodeProps } from "./components/flowpad/nodeTypes/flowNode";
 import { Flow } from "./flow";
 
 export type Floem = {
@@ -32,10 +33,14 @@ export async function listFloems(tx: ReadTransaction) {
 
 export type DartEdge = Edge & { label: string };
 
-export const toReactFlowNodes = (mutate: Mutate, floem: Floem): Node[] => {
+export const toReactFlowNodes = (
+  mutate: Mutate,
+  floem: Floem
+): Node<FlowNodeProps>[] => {
   return floem.flows.map((flow) => ({
     id: flow.id,
     type: "flow",
+    dragHandle: ".drag-handle",
     position: flow.position,
     data: { mutate, flow },
   }));
@@ -52,11 +57,11 @@ export const toReactFlowEdges = (floem: Floem): DartEdge[] => {
 
 // adapters from React Flow nodes and edges to Floem
 
-export const toFloemFlows = (nodes: Node[]): Floem["flows"] => {
+export const toFloemFlows = (nodes: Node<FlowNodeProps>[]): Floem["flows"] => {
   return nodes.map((node) => ({
     id: node.id,
-    floem: node.data.floem,
-    flowtext: node.data.flowtext,
+    floem: node.data.flow.floem,
+    flowtext: node.data.flow.flowtext,
     createdAt: Date.now(),
     position: node.position,
   }));

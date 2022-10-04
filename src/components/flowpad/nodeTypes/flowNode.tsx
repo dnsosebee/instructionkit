@@ -1,4 +1,3 @@
-import { useCallback } from "react";
 import { Handle, Position } from "reactflow";
 import { Mutate } from "../../../app";
 import { Flow } from "../../../flow";
@@ -10,14 +9,16 @@ export interface FlowNodeProps {
 }
 
 function FlowNode({ data: { mutate, flow } }: { data: FlowNodeProps }) {
-  const onChange = useCallback((evt) => {
-    console.log(evt.target.value);
-  }, []);
-
   return (
-    <div className="text-updater-node">
+    <div className="border rounded">
       <Handle type="target" position={Position.Top} />
-      <FlowEditor flow={flow} mutate={mutate} />
+      <div className="drag-handle h-10 bg-slate-300"></div>
+      <div className="flex">
+        <div className="drag-handle w-10 bg-slate-300"></div>
+        <FlowEditor flow={flow} mutate={mutate} />
+        <div className="drag-handle w-10 bg-slate-300"></div>
+      </div>
+      <div className="drag-handle h-10 bg-slate-300"></div>
       <Handle type="source" position={Position.Bottom} id="a" />
       <Handle
         type="source"
