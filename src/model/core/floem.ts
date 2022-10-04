@@ -4,8 +4,8 @@
 
 import { Edge, Node } from "reactflow";
 import { ReadTransaction } from "replicache";
-import { Mutate } from "./app";
-import { FlowNodeProps } from "./components/flowpad/nodeTypes/flowNode";
+import { Mutate } from "../../components/app";
+import { FlowNodeProps } from "../../components/flowpad/flowNode";
 import { Flow } from "./flow";
 
 export type Floem = {

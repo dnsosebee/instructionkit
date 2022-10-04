@@ -9,11 +9,11 @@ export interface StanzaWrapperProps {
 export default function StanzaWrapper({ name }: StanzaWrapperProps) {
   return (
     <NodeViewWrapper>
-      <div className="">
+      <div className="flex flex-col mb-2">
         <div
           contentEditable={false}
           data-drag-handle
-          className="block text-sm font-medium text-gray-700 select-none cursor-move"
+          className=" text-sm text-blue-300 select-none cursor-move text-center w-full bg-blue-200 border rounded-lg"
         >
           {name}
         </div>

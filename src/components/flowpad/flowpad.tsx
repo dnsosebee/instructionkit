@@ -14,11 +14,11 @@ import {
   toFloemFlows,
   toReactFlowEdges,
   toReactFlowNodes,
-} from "../../floem";
+} from "../../model/core/floem";
 
 import "reactflow/dist/style.css";
-import { Mutate } from "../../app";
-import FlowNode, { FlowNodeProps } from "./nodeTypes/flowNode";
+import { Mutate } from "../app";
+import FlowNode, { FlowNodeProps } from "./flowNode";
 
 const nodeTypes = { flow: FlowNode };
 

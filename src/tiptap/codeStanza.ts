@@ -1,7 +1,7 @@
 // This is a tiptap block that can be dragged around the page.
 
 import { mergeAttributes, Node, ReactNodeViewRenderer } from "@tiptap/react";
-import CodeStanzaView from "./codeStanzaView";
+import CodeStanzaView from "../components/flowpad/tiptap/codeStanzaView";
 
 export interface CodeStanzaOptions {
   HTMLAttributes: Record<string, any>;

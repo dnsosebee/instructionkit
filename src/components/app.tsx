@@ -2,12 +2,12 @@ import { Replicache } from "replicache";
 import { useSubscribe } from "replicache-react";
 
 import { proxy, useSnapshot } from "valtio";
-import { Flowcard } from "./components/Flowcard";
-import { Flowpad } from "./components/flowpad/flowpad";
-import { genDummyFloem } from "./data/dummyFloem";
-import { Floem, listFloems } from "./floem";
-import { FlowUpdate } from "./flow";
-import { M } from "./mutators";
+import { genDummyFloem } from "../model/core/data/dummyFloem";
+import { Floem, listFloems } from "../model/core/floem";
+import { FlowUpdate } from "../model/core/flow";
+import { M } from "../model/core/mutators";
+import { Flowcard } from "./flowcard";
+import { Flowpad } from "./flowpad/flowpad";
 
 type State = { selectedId: string | null };
 

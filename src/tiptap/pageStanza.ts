@@ -1,7 +1,7 @@
 // This is a tiptap block that can be dragged around the page.
 
 import { Node, ReactNodeViewRenderer } from "@tiptap/react";
-import pageStanzaView from "./pageStanzaView";
+import pageStanzaView from "../components/flowpad/tiptap/pageStanzaView";
 
 export interface PageStanzaOptions {
   HTMLAttributes: Record<string, any>;

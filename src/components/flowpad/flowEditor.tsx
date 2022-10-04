@@ -1,11 +1,11 @@
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useEffect, useRef } from "react";
+import { Flow } from "../../model/core/flow";
+import { CodeStanza } from "../../tiptap/codeStanza";
+import flowExtension from "../../tiptap/flowDocument";
+import { PageStanza } from "../../tiptap/pageStanza";
 import { Mutate } from "../app";
-import { Flow } from "../flow";
-import { CodeStanza } from "../tiptap/codeStanza/codeStanza";
-import flowExtension from "../tiptap/flowExtension";
-import { PageStanza } from "../tiptap/pageStanza/pageStanza";
 
 export const PREVENT_TIPTAP_DEFAULT = true;
 export const ALLOW_TIPTAP_DEFAULT = false;
@@ -52,7 +52,7 @@ export const FlowEditor = ({ flow, mutate }: FlowEditorProps) => {
   }, [flow.flowtext]);
 
   return (
-    <div className="border list-disc flex-grow cursor-default non-draggable w-96">
+    <div className="border rounded-2xl list-disc flex-grow cursor-default non-draggable w-96 bg-white">
       <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
     </div>
   );

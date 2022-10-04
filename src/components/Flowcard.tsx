@@ -3,7 +3,7 @@ import { Paragraph } from "@tiptap/extension-paragraph";
 import { Text } from "@tiptap/extension-text";
 import { EditorContent, useEditor } from "@tiptap/react";
 import { useEffect } from "react";
-import { Floem } from "../floem";
+import { Floem } from "../model/core/floem";
 
 export const Flowcard = ({
   floem,
