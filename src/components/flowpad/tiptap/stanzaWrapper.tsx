@@ -12,7 +12,8 @@ export default function StanzaWrapper({ name }: StanzaWrapperProps) {
       <div className="flex flex-col mb-2">
         <div
           contentEditable={false}
-          data-drag-handle
+          data-drag-handle // necessary for drag and drop
+          draggable={true} // necessary for drag and drop
           className=" text-sm text-blue-300 select-none cursor-move text-center w-full bg-blue-200 border rounded-lg"
         >
           {name}
