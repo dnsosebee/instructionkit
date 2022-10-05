@@ -2,7 +2,7 @@ import { WriteTransaction } from "replicache";
 import { Floem, FloemUpdate } from "./floem";
 import { Flow, FlowUpdate } from "./flow";
 import { nanoid } from 'nanoid'
-import { sample, times, random, uniq } from 'lodash'
+import { sample, times, random, uniq, without } from 'lodash'
 
 export type M = typeof floemMutators;
 
@@ -61,5 +61,18 @@ export const floemMutators = {
     }
     const flows = [...old.flows, newFlow]
     await tx.put(floemId, { ...old, flows });
-  }
-};
+  },
+
+  async removeFlow(tx: WriteTransaction, floemId: string, flowId: string) {
+    const old: Floem = (await tx.get(floemId)) as Floem;
+    if (!old) {
+      throw new Error(`No floem with id ${floemId}`);
+    }
+    const flow: Flow | undefined = old.flows.find(v => v.id == flowId);
+    if (!flow) {
+      throw new Error(`No flow with id ${flowId}`);
+    }
+    const flows = without(old.flows, flow)
+    await tx.put(floemId, { ...old, flows });
+  },
+}

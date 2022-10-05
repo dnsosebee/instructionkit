@@ -57,15 +57,20 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
     [floem, mutate]
   );
 
-  const onClickNewFlowButton = () => {
+  const onClickAddFlowButton = () => {
     console.log('Adding new flow')
     mutate.addFlow(floem.id)
+  }
+
+  const onClickRemoveFlowButton = () => {
+    console.log('Removing flow')
+    // mutate.removeFlow(floem.id, state.selectedId)
   }
 
   return (
     <div className="grow">
       <div id="toolbar" className='m-1'>
-        <button className='tool-button' onClick={onClickNewFlowButton}>
+        <button className='tool-button' onClick={onClickAddFlowButton}>
           <div>New Flow</div>
         </button>
       </div>
