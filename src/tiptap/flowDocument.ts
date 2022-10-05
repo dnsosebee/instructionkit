@@ -12,7 +12,7 @@ export default Extension.create({
       Document.extend({
         content: "stanza+",
       }),
-      StarterKit.configure({ document: false, dropcursor: false }),
+      StarterKit.configure({ document: false }),
       PageStanza,
       CodeStanza,
     ];

@@ -30,15 +30,13 @@ interface FlowpadProps {
 export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
   const nodes: Node<FlowNodeProps>[] = toReactFlowNodes(mutate, floem);
   const edges: DartEdge[] = toReactFlowEdges(floem);
-  // const [nodes, setNodes] = useState(initialNodes);
-  // const [edges, setEdges] = useState(initialEdges);
 
   const onNodesChange = useCallback(
     (changes) => {
       const newNodes = applyNodeChanges(changes, nodes);
       mutate.updateFloem({ id: floem.id, flows: toFloemFlows(newNodes) });
     },
-    [floem, mutate]
+    [floem]
   );
 
   const onEdgesChange = useCallback(
@@ -46,7 +44,7 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
       const newEdges = applyEdgeChanges(changes, edges) as DartEdge[];
       mutate.updateFloem({ id: floem.id, darts: toFloemDarts(newEdges) });
     },
-    [floem, mutate]
+    [floem]
   );
 
   const onConnect = useCallback(
@@ -54,18 +52,25 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
       const newEdges = addEdge(params, edges) as DartEdge[];
       mutate.updateFloem({ id: floem.id, darts: toFloemDarts(newEdges) });
     },
-    [floem, mutate]
+    [floem]
   );
 
   const onClickAddFlowButton = () => {
-    console.log('Adding new flow')
-    mutate.addFlow(floem.id)
-  }
+    console.log("Adding new flow");
+    mutate.addFlow(floem.id);
+  };
 
   const onClickRemoveFlowButton = () => {
-    console.log('Removing flow')
+    console.log("Removing flow");
     // mutate.removeFlow(floem.id, state.selectedId)
-  }
+  };
+
+  // const onSelectionChange = useCallback(
+  //   (e: OnSelectionChangeParams) => {
+  //     console.log("Selected elements:", selectedElements);
+  //   },
+  //   [floem, mutate]
+  // )
 
   return (
     <div className="grow">
@@ -84,6 +89,7 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        onSelectionChange={(e) => console.log(e)}
       >
         <Background />
         <Controls />
