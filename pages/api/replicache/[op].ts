@@ -1,6 +1,6 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { handleRequest } from "replicache-nextjs/lib/backend";
-import { floemMutators } from "../../../src/model/core/mutators";
+import { NextApiRequest, NextApiResponse } from 'next'
+import { handleRequest } from 'replicache-nextjs/lib/backend'
+import { floemMutators } from '../../../src/model/core/mutators'
 
 // Next.js runs this function server-side when /api/replicache/[anything].ts is
 // requested.
@@ -13,5 +13,5 @@ import { floemMutators } from "../../../src/model/core/mutators";
 // client-side (see [id].tsx). The mutators are run on both the client and the
 // server as part of the sync protocol. See mutators.ts for more information.
 export default async (req: NextApiRequest, res: NextApiResponse) => {
-  await handleRequest(req, res, floemMutators);
-};
+  await handleRequest(req, res, floemMutators)
+}

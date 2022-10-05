@@ -1,5 +1,5 @@
-import Stanza from "./stanza";
+import Stanza from './stanza'
 
 export default () => {
-  return <Stanza name={"code"} />;
-};
+  return <Stanza name={'code'} />
+}

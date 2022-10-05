@@ -1,13 +1,13 @@
 export type codeStanza = {
-  code: string;
-};
+  code: string
+}
 
 export type pageStanza = {
-  jsx: string;
-};
+  jsx: string
+}
 
-export type stanza = codeStanza | pageStanza;
+export type stanza = codeStanza | pageStanza
 
 export type flow = {
-  stanzas: stanza[];
-};
+  stanzas: stanza[]
+}

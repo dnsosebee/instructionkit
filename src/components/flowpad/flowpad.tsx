@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback } from 'react'
 import ReactFlow, {
   addEdge,
   applyEdgeChanges,
@@ -6,7 +6,7 @@ import ReactFlow, {
   Background,
   Controls,
   Node,
-} from "reactflow";
+} from 'reactflow'
 import {
   DartEdge,
   Floem,
@@ -14,56 +14,56 @@ import {
   toFloemFlows,
   toReactFlowEdges,
   toReactFlowNodes,
-} from "../../model/core/floem";
+} from '../../model/core/floem'
 
-import "reactflow/dist/style.css";
-import { Mutate } from "../app";
-import FlowNode, { FlowNodeProps } from "./flowNode";
+import 'reactflow/dist/style.css'
+import { Mutate } from '../app'
+import FlowNode, { FlowNodeProps } from './flowNode'
 
-const nodeTypes = { flow: FlowNode };
+const nodeTypes = { flow: FlowNode }
 
 interface FlowpadProps {
-  mutate: Mutate;
-  floem: Floem;
+  mutate: Mutate
+  floem: Floem
 }
 
 export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
-  const nodes: Node<FlowNodeProps>[] = toReactFlowNodes(mutate, floem);
-  const edges: DartEdge[] = toReactFlowEdges(floem);
+  const nodes: Node<FlowNodeProps>[] = toReactFlowNodes(mutate, floem)
+  const edges: DartEdge[] = toReactFlowEdges(floem)
 
   const onNodesChange = useCallback(
-    (changes) => {
-      const newNodes = applyNodeChanges(changes, nodes);
-      mutate.updateFloem({ id: floem.id, flows: toFloemFlows(newNodes) });
+    changes => {
+      const newNodes = applyNodeChanges(changes, nodes)
+      mutate.updateFloem({ id: floem.id, flows: toFloemFlows(newNodes) })
     },
-    [floem]
-  );
+    [floem],
+  )
 
   const onEdgesChange = useCallback(
-    (changes) => {
-      const newEdges = applyEdgeChanges(changes, edges) as DartEdge[];
-      mutate.updateFloem({ id: floem.id, darts: toFloemDarts(newEdges) });
+    changes => {
+      const newEdges = applyEdgeChanges(changes, edges) as DartEdge[]
+      mutate.updateFloem({ id: floem.id, darts: toFloemDarts(newEdges) })
     },
-    [floem]
-  );
+    [floem],
+  )
 
   const onConnect = useCallback(
-    (params) => {
-      const newEdges = addEdge(params, edges) as DartEdge[];
-      mutate.updateFloem({ id: floem.id, darts: toFloemDarts(newEdges) });
+    params => {
+      const newEdges = addEdge(params, edges) as DartEdge[]
+      mutate.updateFloem({ id: floem.id, darts: toFloemDarts(newEdges) })
     },
-    [floem]
-  );
+    [floem],
+  )
 
   const onClickAddFlowButton = () => {
-    console.log("Adding new flow");
-    mutate.addFlow(floem.id);
-  };
+    console.log('Adding new flow')
+    mutate.addFlow(floem.id)
+  }
 
   const onClickRemoveFlowButton = () => {
-    console.log("Removing flow");
+    console.log('Removing flow')
     // mutate.removeFlow(floem.id, state.selectedId)
-  };
+  }
 
   // const onSelectionChange = useCallback(
   //   (e: OnSelectionChangeParams) => {
@@ -73,8 +73,8 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
   // )
 
   return (
-    <div className="grow">
-      <div id="toolbar" className='m-1'>
+    <div className='grow'>
+      <div id='toolbar' className='m-1'>
         <button className='tool-button' onClick={onClickAddFlowButton}>
           <div>Add Flow</div>
         </button>
@@ -89,11 +89,11 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
-        onSelectionChange={(e) => console.log(e)}
+        onSelectionChange={e => console.log(e)}
       >
         <Background />
         <Controls />
       </ReactFlow>
     </div>
-  );
-};
+  )
+}
