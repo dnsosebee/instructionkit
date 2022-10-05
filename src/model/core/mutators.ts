@@ -1,6 +1,8 @@
 import { WriteTransaction } from "replicache";
 import { Floem, FloemUpdate } from "./floem";
-import { FlowUpdate } from "./flow";
+import { Flow, FlowUpdate } from "./flow";
+import { nanoid } from 'nanoid'
+import { sample, times, random, uniq } from 'lodash'
 
 export type M = typeof floemMutators;
 
@@ -32,4 +34,32 @@ export const floemMutators = {
     );
     await tx.put(flow.floem, { ...old, flows });
   },
+
+  async addFlow(tx: WriteTransaction, floemId: string) {
+    const old: Floem = (await tx.get(floemId)) as Floem;
+    if (!old) {
+      throw new Error(`No floem with id ${floemId}`);
+    }
+    const newFlow: Flow = {
+      id: nanoid(),
+      floem: floemId,
+      createdAt: Date.now(),
+      position: {x: 0, y: 0},
+      flowtext: uniq(times(random(1, 5), sample.bind(null, [
+        '<page-stanza>Yupyupyupyup</page-stanza>',
+        '<page-stanza>rootin\' tootin\' flowtext scootin\'!</page-stanza>',
+        '<page-stanza>do you think they should make iphones for babies cuz I do!!</page-stanza>',
+        '<page-stanza>there is such a thing as a compassionate conspiracy, Daniel.</page-stanza>',
+        '<page-stanza>I\'m sorry, Daniel. I\'m afraid I can\'t do that.</page-stanza>',
+        '<page-stanza>oh christ not this shit again MORE EXAMPLE TEXT???</page-stanza>',
+        '<page-stanza>fool me once, shame on shoes.</page-stanza>',
+        '<page-stanza>fool me twice, shame on trees.</page-stanza>',
+        '<page-stanza>How much ketamine can I have before you will physically pull me off this forklift, officer?</page-stanza>',
+        '<code-stanza><pre>help I\'m trapped in a code stanza</pre></code-stanza>',
+        '<code-stanza><pre>leet(hacker[text]);</pre></code-stanza>',
+      ]))).join(''),
+    }
+    const flows = [...old.flows, newFlow]
+    await tx.put(floemId, { ...old, flows });
+  }
 };

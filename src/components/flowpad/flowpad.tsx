@@ -57,9 +57,18 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
     [floem, mutate]
   );
 
+  const onClickNewFlowButton = () => {
+    console.log('Adding new flow')
+    mutate.addFlow(floem.id)
+  }
+
   return (
     <div className="grow">
-      <div id="toolbar"></div>
+      <div id="toolbar" className='m-1'>
+        <button className='tool-button' onClick={onClickNewFlowButton}>
+          <div>New Flow</div>
+        </button>
+      </div>
       <ReactFlow
         nodes={nodes}
         onNodesChange={onNodesChange}

@@ -30,3 +30,7 @@ body {
 .react-flow__node {
   @apply p-0 m-0;
 }
+
+.tool-button {
+  @apply border rounded hover:bg-zinc-200 flex bg-blue-200 p-1;
+}
