@@ -29,7 +29,7 @@ export const PageStanza = Node.create<PageStanzaOptions>({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['page-stanza', 0]
+    return ['page-stanza', HTMLAttributes, 0]
   },
 
   addNodeView() {

@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "format": "prettier --write './**/*.{js,jsx,json,ts,tsx,html,css,md}'"
+    "format": "prettier --write './**/*.{js,jsx,json,ts,tsx,html,css,md}'",
+    "lint": "eslint src/**/*.{ts,tsx}; npx stylelint '**/*.css'",
+    "inconsistencies": "npx eslint-config-prettier pages/index.tsx",
+    "pre-commit": "lint-staged --verbose",
+    "prepare": "husky install"
   },
   "engines": {
     "//": "replicache-nextjs requires npm >= 7. This was released in Node 15, but 16 is current stable so we choose that. Render looks at package.json to determine which Node to use: https://render.com/docs/node-version.",
@@ -35,9 +39,18 @@
     "@types/lodash": "^4.14.186",
     "@types/node": "^14.14.37",
     "@types/react": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.39.0",
+    "@typescript-eslint/parser": "^5.39.0",
     "autoprefixer": "^10.4.11",
+    "eslint": "^8.24.0",
+    "eslint-config-prettier": "^8.5.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
     "postcss": "^8.4.16",
     "prettier": "^2.2.1",
+    "stylelint": "^14.13.0",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-standard": "^28.0.0",
     "tailwindcss": "^3.1.8",
     "ts-node": "^10.7.0",
     "typescript": "^4.7.4"
@@ -69,12 +82,13 @@
       "react"
     ]
   },
-  "prettier": {
-    "singleQuote": false,
-    "trailingComma": "es5",
-    "arrowParens": "always",
-    "bracketSpacing": true,
-    "tabWidth": 2,
-    "useTabs": false
+  "lint-staged": {
+    "src/**/*.{js,ts,jsx,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{css,scss}": [
+      "stylelint --allow-empty-input"
+    ]
   }
 }
