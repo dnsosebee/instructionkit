@@ -8,14 +8,15 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-
   display: flex;
 }
 
+/* stylelint-disable selector-id-pattern */
 #__next {
   display: flex;
   flex-grow: 1;
 }
+/* stylelint-enable selector-id-pattern */
 
 .todoapp {
   display: flex;
@@ -27,6 +28,7 @@ body {
   flex-grow: 1;
 }
 
+/* stylelint-disable selector-class-pattern */
 .react-flow__node {
   @apply p-0 m-0;
 }
@@ -34,6 +36,7 @@ body {
 .react-flow__node.selected {
   @apply bg-pink-600;
 }
+/* stylelint-enable selector-class-pattern */
 
 .tool-button {
   @apply border rounded hover:bg-zinc-200 flex bg-blue-200 p-1;
