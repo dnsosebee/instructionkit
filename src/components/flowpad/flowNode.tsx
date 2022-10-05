@@ -26,6 +26,7 @@ function FlowNode({ data: { mutate, flow } }: { data: FlowNodeProps }) {
         id="c"
         style={{ position: "absolute", right: 20 }}
       />
+      <div className='bg-zinc-300 p-4 m-2'></div>
     </div>
   );
 }
