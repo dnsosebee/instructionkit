@@ -4,7 +4,6 @@ import { useSubscribe } from 'replicache-react'
 import { proxy, useSnapshot } from 'valtio'
 import { genDummyFloem } from '../model/core/data/dummyFloem'
 import { Floem, listFloems } from '../model/core/floem'
-import { FlowUpdate } from '../model/core/flow'
 import { M } from '../model/core/mutators'
 import { Flowcard } from './flowcard'
 import { Flowpad } from './flowpad/flowpad'
@@ -19,7 +18,7 @@ export type Rep = Replicache<M>
 export type Mutate = Rep['mutate']
 
 // This is the top-level component for our app.
-const App = ({ rep, listID }: { rep: Rep; listID: string }) => {
+const App = ({ rep }: { rep: Rep }) => {
   // Subscribe to all floems.
   const floems = useSubscribe(rep, listFloems, [], [rep])
   const snap: State = useSnapshot(state)
@@ -31,8 +30,6 @@ const App = ({ rep, listID }: { rep: Rep; listID: string }) => {
     rep.mutate.createFloem(floem)
     state.selectedId = floem.id
   }
-
-  const handleUpdateFloem = (update: FlowUpdate) => rep.mutate.updateFloem(update)
 
   const handleUpdateTitle = (id: string, title: string) => rep.mutate.updateFloem({ id, title })
 
@@ -72,8 +69,8 @@ const Sidebar = ({
   handleUpdateTitle,
 }: {
   floems: Floem[]
-  handleNewItem: any
-  handleDeleteFloem: any
+  handleNewItem: (floem: Floem) => void
+  handleDeleteFloem: (ids: string[]) => void
   handleUpdateTitle: (id: string, title: string) => void
 }) => {
   return (

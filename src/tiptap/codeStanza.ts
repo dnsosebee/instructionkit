@@ -4,7 +4,7 @@ import { mergeAttributes, Node, ReactNodeViewRenderer } from '@tiptap/react'
 import CodeStanzaView from '../components/flowpad/tiptap/codeStanzaView'
 
 export interface CodeStanzaOptions {
-  HTMLAttributes: Record<string, any>
+  HTMLAttributes: Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 declare module '@tiptap/core' {

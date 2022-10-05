@@ -4,7 +4,7 @@ import { Node, ReactNodeViewRenderer } from '@tiptap/react'
 import pageStanzaView from '../components/flowpad/tiptap/pageStanzaView'
 
 export interface PageStanzaOptions {
-  HTMLAttributes: Record<string, any>
+  HTMLAttributes: Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 export const PageStanza = Node.create<PageStanzaOptions>({
