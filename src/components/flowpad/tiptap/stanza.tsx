@@ -9,7 +9,7 @@ export interface StanzaWrapperProps {
 export default function Stanza({ name }: StanzaWrapperProps) {
   return (
     <NodeViewWrapper>
-      <div className='flex flex-col mb-2'>
+      <div className='flex flex-col'>
         <div
           contentEditable={false}
           data-drag-handle // necessary for drag and drop
