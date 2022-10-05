@@ -10,7 +10,7 @@ export interface FlowNodeProps {
 
 function FlowNode({ data: { mutate, flow } }: { data: FlowNodeProps }) {
   return (
-    <div className="border rounded-3xl overflow-hidden bg-blue-200 shadow-2xl p-6">
+    <div className="border overflow-hidden bg-zinc-50 shadow-2xl p-1">
       <Handle type="target" position={Position.Top} />
       <FlowEditor flow={flow} mutate={mutate} />
       <Handle type="source" position={Position.Bottom} id="a" />

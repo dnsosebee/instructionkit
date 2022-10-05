@@ -71,7 +71,10 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
     <div className="grow">
       <div id="toolbar" className='m-1'>
         <button className='tool-button' onClick={onClickAddFlowButton}>
-          <div>New Flow</div>
+          <div>Add Flow</div>
+        </button>
+        <button className='tool-button' onClick={onClickRemoveFlowButton}>
+          <div>Delete Flow</div>
         </button>
       </div>
       <ReactFlow
