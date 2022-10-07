@@ -10,14 +10,14 @@ export const genDummyFloem = (): Floem => {
     createdAt: Date.now(),
     flows: [
       {
-        id: 'flow1',
+        id: 'flow-start',
         floem: id,
         flowtext: starterContent,
         createdAt: Date.now(),
         position: { x: 0, y: 0 },
       },
       {
-        id: 'flow2',
+        id: 'flow-l0Lo1',
         floem: id,
         flowtext: 'Flow 2',
         createdAt: Date.now(),
@@ -27,8 +27,8 @@ export const genDummyFloem = (): Floem => {
     darts: [
       {
         id: 'dart1',
-        from: 'flow1',
-        to: 'flow2',
+        from: 'flow-start',
+        to: 'flow-l0Lo1',
         case: 'hello',
       },
     ],

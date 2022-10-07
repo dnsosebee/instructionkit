@@ -12,7 +12,9 @@ export interface FlowNodeProps {
 function FlowNode({ data: { mutate, flow } }: { data: FlowNodeProps }) {
   return (
     <div className='border overflow-hidden bg-zinc-50 shadow-2xl'>
-      <Handle type='target' position={Position.Top} className='p-1' />
+      {flow.id == 'flow-start' ? (
+        <Handle type='target' position={Position.Top} className='p-1' />
+      ) : null}
       <FlowEditor flow={flow} mutate={mutate} />
       <Handle type='source' position={Position.Bottom} className='p-1' />
     </div>
