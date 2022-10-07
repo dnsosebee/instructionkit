@@ -2,5 +2,8 @@
   "prettier.configPath": ".prettierrc",
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "formatFiles.runOrganizeImports": true
+  "formatFiles.runOrganizeImports": true,
+  "[properties]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  }
 }
