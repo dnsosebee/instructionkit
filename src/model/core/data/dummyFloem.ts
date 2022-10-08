@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid'
-import { Floem } from '../floem'
+import { DataFloem } from '../floem'
 import { starterContent } from './content'
 
-export const genDummyFloem = (): Floem => {
+export const genDummyFloem = (): DataFloem => {
   const id = nanoid()
   return {
     id,
@@ -21,12 +21,13 @@ export const genDummyFloem = (): Floem => {
         floem: id,
         flowtext: 'Flow 2',
         createdAt: Date.now(),
-        position: { x: 100, y: 0 },
+        position: { x: 100, y: 600 },
       },
     ],
     darts: [
       {
         id: 'dart1',
+        floem: id,
         from: 'flow-start',
         to: 'flow-l0Lo1',
         case: 'hello',

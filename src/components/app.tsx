@@ -3,9 +3,9 @@ import { useSubscribe } from 'replicache-react'
 
 import { proxy, useSnapshot } from 'valtio'
 import { genDummyFloem } from '../model/core/data/dummyFloem'
-import { Floem, listFloems } from '../model/core/floem'
+import { DataFloem, listFloems } from '../model/core/floem'
 import { M } from '../model/core/mutators'
-import { Flowcard } from './flowcard'
+import { Flowcard } from './Flowcard'
 import { Flowpad } from './flowpad/flowpad'
 
 type State = { selectedId: string | null }
@@ -26,7 +26,7 @@ const App = ({ rep }: { rep: Rep }) => {
   // Define event handlers and connect them to Replicache mutators. Each
   // of these mutators runs immediately (optimistically) locally, then runs
   // again on the server-side automatically.
-  const handleNewItem = (floem: Floem) => {
+  const handleNewItem = (floem: DataFloem) => {
     rep.mutate.createFloem(floem)
     state.selectedId = floem.id
   }
@@ -68,8 +68,8 @@ const Sidebar = ({
   handleDeleteFloem,
   handleUpdateTitle,
 }: {
-  floems: Floem[]
-  handleNewItem: (floem: Floem) => void
+  floems: DataFloem[]
+  handleNewItem: (floem: DataFloem) => void
   handleDeleteFloem: (ids: string[]) => void
   handleUpdateTitle: (id: string, title: string) => void
 }) => {

@@ -9,7 +9,7 @@ type Position = {
   y: number
 }
 
-export type Flow = {
+export type DataFlow = {
   id: string
   floem: string
   flowtext: string
@@ -17,8 +17,8 @@ export type Flow = {
   position: Position
 }
 
-export type FlowUpdate = Partial<Flow> & Pick<Flow, 'id'> & Pick<Flow, 'floem'>
+export type FlowUpdate = Partial<DataFlow> & Pick<DataFlow, 'id'> & Pick<DataFlow, 'floem'>
 
 export async function listFlows(tx: ReadTransaction) {
-  return (await tx.scan().values().toArray()) as Flow[]
+  return (await tx.scan().values().toArray()) as DataFlow[]
 }

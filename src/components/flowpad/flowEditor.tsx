@@ -1,6 +1,6 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useEffect, useRef } from 'react'
-import { Flow } from '../../model/core/flow'
+import { DataFlow } from '../../model/core/flow'
 import flowDocument from '../../tiptap/flowDocument'
 import { Mutate } from '../app'
 
@@ -8,7 +8,7 @@ export const PREVENT_TIPTAP_DEFAULT = true
 export const ALLOW_TIPTAP_DEFAULT = false
 
 export interface FlowEditorProps {
-  flow: Flow
+  flow: DataFlow
   mutate: Mutate
 }
 

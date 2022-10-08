@@ -9,7 +9,7 @@ import ReactFlow, {
 } from 'reactflow'
 import {
   DartEdge,
-  Floem,
+  DataFloem,
   toFloemDarts,
   toFloemFlows,
   toReactFlowEdges,
@@ -19,20 +19,23 @@ import {
 import 'reactflow/dist/style.css'
 import { Mutate } from '../app'
 import FlowNode, { FlowNodeProps } from './flowNode'
+import Dart from './dartEdge'
 
 const nodeTypes = { flow: FlowNode }
+const edgeTypes = { dart: Dart }
 
 interface FlowpadProps {
   mutate: Mutate
-  floem: Floem
+  floem: DataFloem
 }
 
 export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
   const nodes: Node<FlowNodeProps>[] = toReactFlowNodes(mutate, floem)
-  const edges: DartEdge[] = toReactFlowEdges(floem)
+  const edges: DartEdge[] = toReactFlowEdges(mutate, floem)
 
   const onNodesChange = useCallback(
     changes => {
+      console.log(`Edge changes: `, changes)
       const newNodes = applyNodeChanges(changes, nodes)
       mutate.updateFloem({ id: floem.id, flows: toFloemFlows(newNodes) })
     },
@@ -41,6 +44,7 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
 
   const onEdgesChange = useCallback(
     changes => {
+      console.log(`Edge changes: `, changes)
       const newEdges = applyEdgeChanges(changes, edges) as DartEdge[]
       mutate.updateFloem({ id: floem.id, darts: toFloemDarts(newEdges) })
     },
@@ -89,6 +93,7 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
         onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
+        edgeTypes={edgeTypes}
         onSelectionChange={e => console.log(e)}
       >
         <Background />

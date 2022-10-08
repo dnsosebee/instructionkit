@@ -1,8 +1,8 @@
 import { proxy } from 'valtio'
-import { Dart } from '../core/floem'
-import { Flow } from '../core/flow'
+import { DataDart } from '../core/floem'
+import { DataFlow } from '../core/flow'
 
-type Selectable = Flow | Dart | null
+type Selectable = DataFlow | DataDart | null
 
 type FlowpadState = { selected: Selectable }
 

@@ -6,34 +6,37 @@ import { Edge, Node } from 'reactflow'
 import { ReadTransaction } from 'replicache'
 import { Mutate } from '../../components/app'
 import { FlowNodeProps } from '../../components/flowpad/flowNode'
-import { Flow } from './flow'
+import { DataFlow } from './flow'
 
-export type Floem = {
+export type DataFloem = {
   id: string
   title: string
   createdAt: number
-  flows: Flow[]
-  darts: Dart[]
+  flows: DataFlow[]
+  darts: DataDart[]
 }
 
-export type Dart = {
+export type DataDart = {
   id: string
+  floem: string
   from: string
   to: string
   case: string
 }
 
-export type FloemUpdate = Partial<Floem> & Pick<Floem, 'id'>
+export type DataDartUpdate = Partial<DataDart> & Pick<DataDart, 'id'> & Pick<DataDart, 'floem'>
+
+export type FloemUpdate = Partial<DataFloem> & Pick<DataFloem, 'id'>
 
 export async function listFloems(tx: ReadTransaction) {
-  return (await tx.scan().values().toArray()) as Floem[]
+  return (await tx.scan().values().toArray()) as DataFloem[]
 }
 
 // adapters from Floem to React Flow nodes and edges
 
-export type DartEdge = Edge & { label: string }
+export type DartEdge = Edge & { data: { dart: DataDart; mutate: Mutate } }
 
-export const toReactFlowNodes = (mutate: Mutate, floem: Floem): Node<FlowNodeProps>[] => {
+export const toReactFlowNodes = (mutate: Mutate, floem: DataFloem): Node<FlowNodeProps>[] => {
   return floem.flows.map(flow => ({
     id: flow.id,
     type: 'flow',
@@ -43,18 +46,20 @@ export const toReactFlowNodes = (mutate: Mutate, floem: Floem): Node<FlowNodePro
   }))
 }
 
-export const toReactFlowEdges = (floem: Floem): DartEdge[] => {
+export const toReactFlowEdges = (mutate: Mutate, floem: DataFloem): DartEdge[] => {
   return floem.darts.map(dart => ({
     id: dart.id,
     source: dart.from,
     target: dart.to,
     label: dart.case,
+    data: { mutate, dart },
+    type: 'dart',
   }))
 }
 
 // adapters from React Flow nodes and edges to Floem
 
-export const toFloemFlows = (nodes: Node<FlowNodeProps>[]): Floem['flows'] => {
+export const toFloemFlows = (nodes: Node<FlowNodeProps>[]): DataFloem['flows'] => {
   return nodes.map(node => ({
     id: node.id,
     floem: node.data.flow.floem,
@@ -64,11 +69,6 @@ export const toFloemFlows = (nodes: Node<FlowNodeProps>[]): Floem['flows'] => {
   }))
 }
 
-export const toFloemDarts = (edges: DartEdge[]): Floem['darts'] => {
-  return edges.map(edge => ({
-    id: edge.id,
-    from: edge.source,
-    to: edge.target,
-    case: edge.label,
-  }))
+export const toFloemDarts = (edges: DartEdge[]): DataFloem['darts'] => {
+  return edges.map(edge => edge.data.dart)
 }

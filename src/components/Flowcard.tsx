@@ -3,7 +3,7 @@ import { Paragraph } from '@tiptap/extension-paragraph'
 import { Text } from '@tiptap/extension-text'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useEffect } from 'react'
-import { Floem } from '../model/core/floem'
+import { DataFloem } from '../model/core/floem'
 
 export const Flowcard = ({
   floem,
@@ -12,7 +12,7 @@ export const Flowcard = ({
   selected,
   handleUpdateTitle,
 }: {
-  floem: Floem
+  floem: DataFloem
   onSelect: () => void
   onDelete: () => void
   selected: boolean
