@@ -68,10 +68,10 @@ export default function Dart({
       <foreignObject
         style={{ overflow: 'visible' }}
         width={1000}
-        x={(sourceX + targetX) / 2}
+        x={(sourceX + targetX) / 2 - 500}
         y={(sourceY + targetY) / 2}
       >
-        <EditorContent editor={editor} style={{ display: 'flex' }} />
+        <EditorContent editor={editor} className='flex justify-center' />
       </foreignObject>
     </>
   )
