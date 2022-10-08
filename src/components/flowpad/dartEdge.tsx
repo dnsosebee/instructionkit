@@ -71,7 +71,7 @@ export default function Dart({
         x={(sourceX + targetX) / 2}
         y={(sourceY + targetY) / 2}
       >
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} style={{ display: 'flex' }} />
       </foreignObject>
     </>
   )
