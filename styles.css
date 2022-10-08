@@ -39,5 +39,5 @@ body {
 /* stylelint-enable selector-class-pattern */
 
 .tool-button {
-  @apply border rounded hover:bg-zinc-200 flex bg-blue-200 p-1;
+  @apply border rounded hover:bg-zinc-200 flex bg-blue-200 px-2 py-1;
 }

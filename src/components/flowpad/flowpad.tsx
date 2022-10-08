@@ -69,6 +69,10 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
     // mutate.removeFlow(floem.id, state.selectedId)
   }
 
+  const onClickRunFloemButton = () => {
+    console.log('Running floem')
+  }
+
   // const onSelectionChange = useCallback(
   //   (e: OnSelectionChangeParams) => {
   //     console.log("Selected elements:", selectedElements);
@@ -78,12 +82,17 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
 
   return (
     <div className='grow'>
-      <div id='toolbar' className='m-1'>
-        <button className='tool-button' onClick={onClickAddFlowButton}>
-          <div>Add Flow</div>
-        </button>
-        <button className='tool-button' onClick={onClickRemoveFlowButton}>
-          <div>Delete Flow</div>
+      <div id='toolbar' className='flex justify-between m-1'>
+        <div className='flex'>
+          <button className='tool-button' onClick={onClickAddFlowButton}>
+            <div>Add Flow</div>
+          </button>
+          <button className='tool-button' onClick={onClickRemoveFlowButton}>
+            <div>Delete Flow</div>
+          </button>
+        </div>
+        <button className='tool-button' onClick={onClickRunFloemButton}>
+          <div>▶</div>
         </button>
       </div>
       <ReactFlow
