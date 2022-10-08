@@ -82,9 +82,9 @@ export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
 
   return (
     <div className='grow'>
-      <div id='toolbar' className='flex justify-between m-1'>
+      <div id='toolbar' className='flex justify-between p-1 bg-slate-800'>
         <div className='flex'>
-          <button className='tool-button' onClick={onClickAddFlowButton}>
+          <button className='tool-button mr-1' onClick={onClickAddFlowButton}>
             <div>Add Flow</div>
           </button>
           <button className='tool-button' onClick={onClickRemoveFlowButton}>

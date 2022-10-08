@@ -74,9 +74,9 @@ const Sidebar = ({
   handleUpdateTitle: (id: string, title: string) => void
 }) => {
   return (
-    <div className='bg-blue-100 h-screen w-64'>
+    <div className='bg-slate-900 h-screen w-64'>
       <div className='flex flex-col'>
-        <p className='text-2xl text-center my-2'>My Documents</p>
+        <p className='text-2xl text-center my-2 text-white'>FLOWDART</p>
         {floems.map(floem => (
           <Flowcard
             handleUpdateTitle={handleUpdateTitle}
@@ -92,10 +92,7 @@ const Sidebar = ({
           />
         ))}
       </div>
-      <button
-        className='rounded shadow-lg bg-green-100 hover:bg-green-200 text-gray-800 py-2 px-4 m-2'
-        onClick={() => handleNewItem(genDummyFloem())}
-      >
+      <button className='tool-button ml-2' onClick={() => handleNewItem(genDummyFloem())}>
         ➕ New Floem ➕
       </button>
     </div>
