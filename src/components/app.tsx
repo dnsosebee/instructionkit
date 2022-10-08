@@ -6,7 +6,7 @@ import { genDummyFloem } from '../model/core/data/dummyFloem'
 import { DataFloem, listFloems } from '../model/core/floem'
 import { M } from '../model/core/mutators'
 import { Flowcard } from './Flowcard'
-import { Flowpad } from './flowpad/flowpad'
+import { Chart } from './chart/chart'
 
 type State = { selectedId: string | null }
 
@@ -54,7 +54,7 @@ const App = ({ rep }: { rep: Rep }) => {
         handleUpdateTitle={handleUpdateTitle}
       />
       {floem ? (
-        <Flowpad mutate={rep.mutate} floem={floem} key={`RF/${floem.id}`} />
+        <Chart mutate={rep.mutate} floem={floem} key={`RF/${floem.id}`} />
       ) : (
         <h1 className='text-4xl m-10'>⬅️ Select a floem to begin</h1>
       )}
@@ -74,26 +74,24 @@ const Sidebar = ({
   handleUpdateTitle: (id: string, title: string) => void
 }) => {
   return (
-    <div className='bg-slate-900 h-screen w-64'>
-      <div className='flex flex-col'>
-        <p className='text-2xl text-center my-2 text-white'>FLOWDART</p>
-        {floems.map(floem => (
-          <Flowcard
-            handleUpdateTitle={handleUpdateTitle}
-            selected={state.selectedId === floem.id}
-            key={`FloemSelector/${floem.id}`}
-            floem={floem}
-            onSelect={() => {
-              state.selectedId = floem.id
-            }}
-            onDelete={() => {
-              handleDeleteFloem([floem.id])
-            }}
-          />
-        ))}
-      </div>
-      <button className='tool-button ml-2' onClick={() => handleNewItem(genDummyFloem())}>
-        ➕ New Floem ➕
+    <div className='bg-slate-900 h-screen flex flex-col'>
+      <p className='text-4xl text-center mx-3 my-2 text-white'>FLOWDART</p>
+      {floems.map(floem => (
+        <Flowcard
+          handleUpdateTitle={handleUpdateTitle}
+          selected={state.selectedId === floem.id}
+          key={`FloemSelector/${floem.id}`}
+          floem={floem}
+          onSelect={() => {
+            state.selectedId = floem.id
+          }}
+          onDelete={() => {
+            handleDeleteFloem([floem.id])
+          }}
+        />
+      ))}
+      <button className='tool-button mx-2' onClick={() => handleNewItem(genDummyFloem())}>
+        <div>➕ New Floem ➕</div>
       </button>
     </div>
   )

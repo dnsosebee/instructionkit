@@ -4,8 +4,8 @@ import { DataFlow } from '../core/flow'
 
 type Selectable = DataFlow | DataDart | null
 
-type FlowpadState = { selected: Selectable }
+type ChartState = { selected: Selectable }
 
-const flowpadState = proxy<FlowpadState>({
+const chartState = proxy<ChartState>({
   selected: null,
 })

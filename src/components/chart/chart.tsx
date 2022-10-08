@@ -24,12 +24,12 @@ import Dart from './dartEdge'
 const nodeTypes = { flow: FlowNode }
 const edgeTypes = { dart: Dart }
 
-interface FlowpadProps {
+interface ChartProps {
   mutate: Mutate
   floem: DataFloem
 }
 
-export const Flowpad = ({ floem, mutate }: FlowpadProps) => {
+export const Chart = ({ floem, mutate }: ChartProps) => {
   const nodes: Node<FlowNodeProps>[] = toReactFlowNodes(mutate, floem)
   const edges: DartEdge[] = toReactFlowEdges(mutate, floem)
 
