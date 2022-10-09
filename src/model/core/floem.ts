@@ -70,5 +70,16 @@ export const toFloemFlows = (nodes: Node<FlowNodeProps>[]): DataFloem['flows'] =
 }
 
 export const toFloemDarts = (edges: DartEdge[]): DataFloem['darts'] => {
+  console.log(edges)
   return edges.map(edge => edge.data.dart)
+}
+
+export const toNewFloemDarts = (edges: DartEdge[], floem: string): DataFloem['darts'] => {
+  return edges.map(edge => ({
+    id: edge.id,
+    floem,
+    from: edge.source,
+    to: edge.target,
+    case: 'hello',
+  }))
 }
