@@ -89,7 +89,7 @@ const Sidebar = ({
 }) => {
   return (
     <div className='bg-slate-900 h-screen flex flex-col'>
-      <p className='text-4xl text-center mx-3 my-2 text-white italic'>⤜FLOWDART➛</p>
+      <p className='text-3xl text-center mx-3 my-2 text-white italic'>⤜FLOWDART➛</p>
       {floems.map(floem => (
         <Flowcard
           handleUpdateTitle={handleUpdateTitle}
