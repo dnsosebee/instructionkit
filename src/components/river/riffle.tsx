@@ -10,9 +10,9 @@ interface RiffleProps {
 
 export const Riffle = ({ flow, mutate, paddle }: RiffleProps) => {
   return (
-    <div className='flex grow justify-center items-center'>
+    <div className='flex grow justify-center items-center bg-slate-100'>
       <div
-        className='riffle prose min-w-[400px] m-4'
+        className='riffle prose min-w-[400px] m-4 p-6 shadow-2xl bg-white'
         dangerouslySetInnerHTML={{ __html: flow.flowtext }}
       ></div>
     </div>
