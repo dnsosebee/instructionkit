@@ -1,4 +1,4 @@
-import { first } from 'lodash'
+import { first, last, initial } from 'lodash'
 import { useState } from 'react'
 import { DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
@@ -20,17 +20,34 @@ export const River = ({ floem, mutate, stopFlowing }: RiverProps) => {
     const darts = floem.darts.filter(v => v.from == flocation)
     const dart = first(darts)
 
-    if (dart) setFlocation(dart.to)
+    if (dart) {
+      setPath([...path, dart.to])
+      setFlocation(dart.to)
+    }
+  }
+
+  const onClickBackButton = () => {
+    setFlocation(last(path) as string)
+    setPath(initial(path))
   }
 
   const flow = floem.flows.find(v => v.id == flocation) as DataFlow
 
   return (
     <div className='grow'>
-      <button className='tool-button fixed right-1 top-1' onClick={stopFlowing}>
-        <div>✕</div>
-      </button>
-      <button className='tool-button fixed right-1 bottom-1' onClick={paddle}>
+      <div className='bg-slate-800 flex justify-between p-1'>
+        <div className='flex'>
+          {path.length > 1 ? (
+            <button className='tool-button' onClick={stopFlowing}>
+              <div>❮</div>
+            </button>
+          ) : null}
+        </div>
+        <button className='tool-button' onClick={stopFlowing}>
+          <div>✕</div>
+        </button>
+      </div>
+      <button className='tool-button absolute right-1 bottom-1' onClick={paddle}>
         <div>Continue</div>
       </button>
       <Riffle flow={flow} mutate={mutate} paddle={paddle} />
