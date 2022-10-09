@@ -7,6 +7,7 @@ import { DataFloem, listFloems } from '../model/core/floem'
 import { M } from '../model/core/mutators'
 import { Flowcard } from './Flowcard'
 import { Chart } from './chart/chart'
+import { useState } from 'react'
 
 type State = { selectedId: string | null }
 
@@ -19,6 +20,8 @@ export type Mutate = Rep['mutate']
 
 // This is the top-level component for our app.
 const App = ({ rep }: { rep: Rep }) => {
+  const [flowing, setFlowing] = useState(false)
+
   // Subscribe to all floems.
   const floems = useSubscribe(rep, listFloems, [], [rep])
   const snap: State = useSnapshot(state)
