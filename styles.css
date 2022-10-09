@@ -36,6 +36,11 @@ body {
 .react-flow__node.selected {
   @apply bg-pink-600;
 }
+
+hr.ProseMirror-selectednode {
+  @apply border-2 border-blue-600;
+}
+
 /* stylelint-enable selector-class-pattern */
 
 .tool-button {
