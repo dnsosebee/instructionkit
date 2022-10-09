@@ -1,7 +1,7 @@
 import { EditorContent, useEditor } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
 import { useEffect, useRef } from 'react'
 import { DataFlow } from '../../model/core/flow'
-import flowDocument from '../../tiptap/flowDocument'
 import { Mutate } from '../app'
 
 export const PREVENT_TIPTAP_DEFAULT = true
@@ -21,14 +21,15 @@ export const FlowEditor = ({ flow, mutate }: FlowEditorProps) => {
 
   // Content stuff
   const contentEditor = useEditor({
-    extensions: [flowDocument],
+    extensions: [StarterKit.configure({ dropcursor: false })], //.configure({ horizontalRule: { HTMLAttributes: { class: 'h-5' } } })],
     content: `${flowRef.current.flowtext}`,
     onUpdate: ({ editor }) => {
       mutate.updateFlow({ ...flowRef.current, flowtext: editor.getHTML() })
     },
     editorProps: {
       attributes: {
-        class: 'p-2',
+        class:
+          'p-5 prose prose-hr:border-2 prose-hr:border-black cursor-text prose-hr:selected:border-blue-600',
       },
     },
   })

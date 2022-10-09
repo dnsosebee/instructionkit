@@ -19,7 +19,7 @@ export const genDummyFloem = (): DataFloem => {
       {
         id: 'flow-l0Lo1',
         floem: id,
-        flowtext: 'Flow 2',
+        flowtext: '<p>Flow 2</p>',
         createdAt: Date.now(),
         position: { x: 100, y: 600 },
       },
