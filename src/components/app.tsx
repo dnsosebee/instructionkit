@@ -52,7 +52,9 @@ const App = ({ rep }: { rep: Rep }) => {
     floem = floems.find(floem => floem.id === snap.selectedId)
   }
 
-  return (
+  return flowing ? (
+    <River mutate={rep.mutate} floem={floem} stopFlowing={stopFlowing} />
+  ) : (
     <div className='flex'>
       <Sidebar
         floems={floems}
@@ -61,16 +63,12 @@ const App = ({ rep }: { rep: Rep }) => {
         handleUpdateTitle={handleUpdateTitle}
       />
       {floem ? (
-        flowing ? (
-          <River mutate={rep.mutate} floem={floem} stopFlowing={stopFlowing} />
-        ) : (
-          <Chart
-            mutate={rep.mutate}
-            floem={floem}
-            startFlowing={startFlowing}
-            key={`RF/${floem.id}`}
-          />
-        )
+        <Chart
+          mutate={rep.mutate}
+          floem={floem}
+          startFlowing={startFlowing}
+          key={`RF/${floem.id}`}
+        />
       ) : (
         <h1 className='text-4xl m-10'>⬅️ Select a floem to begin</h1>
       )}
@@ -91,7 +89,7 @@ const Sidebar = ({
 }) => {
   return (
     <div className='bg-slate-900 h-screen flex flex-col'>
-      <p className='text-4xl text-center mx-3 my-2 text-white'>FLOWDART</p>
+      <p className='text-4xl text-center mx-3 my-2 text-white italic'>FLOWDART</p>
       {floems.map(floem => (
         <Flowcard
           handleUpdateTitle={handleUpdateTitle}
