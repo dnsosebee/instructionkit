@@ -103,6 +103,7 @@ export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onSelectionChange={e => console.log(e)}
+        minZoom={0.2}
       >
         <Background />
         <Controls />
