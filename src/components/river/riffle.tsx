@@ -5,8 +5,9 @@ import { Mutate } from '../app'
 interface RiffleProps {
   mutate: Mutate
   flow: DataFlow
+  paddle: () => void
 }
 
-export const Riffle = ({ flow, mutate }: RiffleProps) => {
-  return <div className='grow' dangerouslySetInnerHTML={{ __html: flow.flowtext }}></div>
+export const Riffle = ({ flow, mutate, paddle }: RiffleProps) => {
+  return <div className='grow riffle' dangerouslySetInnerHTML={{ __html: flow.flowtext }}></div>
 }

@@ -46,3 +46,7 @@ hr.ProseMirror-selectednode {
 .tool-button {
   @apply rounded bg-orange-500 hover:bg-white text-slate-900 hover:text-slate-800 flex justify-center px-2 py-1 transition-colors;
 }
+
+.riffle h1 {
+  @apply text-2xl;
+}
