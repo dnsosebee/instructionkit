@@ -38,7 +38,7 @@ export const River = ({ floem, mutate, stopFlowing }: RiverProps) => {
       <div className='bg-slate-800 flex justify-between p-1'>
         <div className='flex'>
           {path.length > 1 ? (
-            <button className='tool-button' onClick={stopFlowing}>
+            <button className='tool-button' onClick={onClickBackButton}>
               <div>❮</div>
             </button>
           ) : null}
