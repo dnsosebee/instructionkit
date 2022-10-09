@@ -9,5 +9,7 @@ interface RiffleProps {
 }
 
 export const Riffle = ({ flow, mutate, paddle }: RiffleProps) => {
-  return <div className='grow riffle' dangerouslySetInnerHTML={{ __html: flow.flowtext }}></div>
+  return (
+    <div className='grow riffle prose' dangerouslySetInnerHTML={{ __html: flow.flowtext }}></div>
+  )
 }
