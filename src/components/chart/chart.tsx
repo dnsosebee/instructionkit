@@ -12,14 +12,15 @@ import {
   DataFloem,
   toFloemDarts,
   toFloemFlows,
+  toNewFloemDarts,
   toReactFlowEdges,
   toReactFlowNodes,
 } from '../../model/core/floem'
 
 import 'reactflow/dist/style.css'
 import { Mutate } from '../app'
-import FlowNode, { FlowNodeProps } from './flowNode'
 import Dart from './dartEdge'
+import FlowNode, { FlowNodeProps } from './flowNode'
 
 const nodeTypes = { flow: FlowNode }
 const edgeTypes = { dart: Dart }
@@ -55,7 +56,8 @@ export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
   const onConnect = useCallback(
     params => {
       const newEdges = addEdge(params, edges) as DartEdge[]
-      mutate.updateFloem({ id: floem.id, darts: toFloemDarts(newEdges) })
+      console.log(`New edges: `, newEdges)
+      mutate.updateFloem({ id: floem.id, darts: toNewFloemDarts(newEdges, floem.id) })
     },
     [floem],
   )
