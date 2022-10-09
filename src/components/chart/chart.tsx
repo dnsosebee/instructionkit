@@ -27,9 +27,10 @@ const edgeTypes = { dart: Dart }
 interface ChartProps {
   mutate: Mutate
   floem: DataFloem
+  startFlowing: () => void
 }
 
-export const Chart = ({ floem, mutate }: ChartProps) => {
+export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
   const nodes: Node<FlowNodeProps>[] = toReactFlowNodes(mutate, floem)
   const edges: DartEdge[] = toReactFlowEdges(mutate, floem)
 
@@ -69,10 +70,6 @@ export const Chart = ({ floem, mutate }: ChartProps) => {
     // mutate.removeFlow(floem.id, state.selectedId)
   }
 
-  const onClickRunFloemButton = () => {
-    console.log('Running floem')
-  }
-
   // const onSelectionChange = useCallback(
   //   (e: OnSelectionChangeParams) => {
   //     console.log("Selected elements:", selectedElements);
@@ -91,7 +88,7 @@ export const Chart = ({ floem, mutate }: ChartProps) => {
             <div>Delete Flow</div>
           </button>
         </div>
-        <button className='tool-button' onClick={onClickRunFloemButton}>
+        <button className='tool-button' onClick={startFlowing}>
           <div>▶</div>
         </button>
       </div>

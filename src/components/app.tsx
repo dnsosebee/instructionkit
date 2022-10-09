@@ -8,6 +8,7 @@ import { M } from '../model/core/mutators'
 import { Flowcard } from './Flowcard'
 import { Chart } from './chart/chart'
 import { useState } from 'react'
+import { River } from './river/river'
 
 type State = { selectedId: string | null }
 
@@ -21,6 +22,9 @@ export type Mutate = Rep['mutate']
 // This is the top-level component for our app.
 const App = ({ rep }: { rep: Rep }) => {
   const [flowing, setFlowing] = useState(false)
+
+  const startFlowing = () => setFlowing(true)
+  const stopFlowing = () => setFlowing(false)
 
   // Subscribe to all floems.
   const floems = useSubscribe(rep, listFloems, [], [rep])
@@ -57,7 +61,16 @@ const App = ({ rep }: { rep: Rep }) => {
         handleUpdateTitle={handleUpdateTitle}
       />
       {floem ? (
-        <Chart mutate={rep.mutate} floem={floem} key={`RF/${floem.id}`} />
+        flowing ? (
+          <River mutate={rep.mutate} floem={floem} stopFlowing={stopFlowing} />
+        ) : (
+          <Chart
+            mutate={rep.mutate}
+            floem={floem}
+            startFlowing={startFlowing}
+            key={`RF/${floem.id}`}
+          />
+        )
       ) : (
         <h1 className='text-4xl m-10'>⬅️ Select a floem to begin</h1>
       )}
