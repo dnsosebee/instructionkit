@@ -29,7 +29,7 @@ export const River = ({ floem, mutate, stopFlowing }: RiverProps) => {
   }
 
   const onClickBackButton = () => {
-    setFlocation(last(path) as string)
+    setFlocation(path[path.length - 2] as string)
     setPath(initial(path))
   }
 
