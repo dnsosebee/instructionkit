@@ -12,14 +12,14 @@ export const genDummyFloem = (): DataFloem => {
       {
         id: 'flow-start',
         floem: id,
-        flowtext: starterContent,
+        flowtext: '',
         createdAt: Date.now(),
         position: { x: 0, y: 0 },
       },
       {
         id: 'flow-l0Lo1',
         floem: id,
-        flowtext: '<p>Flow 2</p>',
+        flowtext: '',
         createdAt: Date.now(),
         position: { x: 100, y: 600 },
       },
