@@ -4,7 +4,7 @@ import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { Dashboard } from '../../../src/components/dashboard'
 import { floemMutators } from '../../../src/model/core/mutators'
 
-export const ensureSpaceExists: GetServerSideProps = async context => {
+export const getServerSideProps: GetServerSideProps = async context => {
   const { params } = context
   const { spaceId } = params as { spaceId: string }
 
@@ -28,10 +28,9 @@ export const ensureSpaceExists: GetServerSideProps = async context => {
   }
 }
 
-export const getServerSideProps = ensureSpaceExists
-
 export default ({ spaceId }: { spaceId: string }) => {
   const rep = useReplicache({ name: spaceId, mutators: floemMutators })
+  console.log('rep', rep)
   if (!rep) {
     return null
   }

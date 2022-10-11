@@ -1,15 +1,32 @@
 import { GetServerSideProps } from 'next'
+import { spaceExists } from 'replicache-nextjs/lib/backend'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
-import { useSubscribe } from 'replicache-react'
-import { ensureSpaceExists } from '.'
-import { Chart } from '../../../src/components/chart/chart'
-import { listFloems } from '../../../src/model/core/floem'
+import { Floem } from '../../../src/components/floem'
 import { floemMutators } from '../../../src/model/core/mutators'
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const { params } = context
-  const { floemId } = params as { floemId: string }
-  return { ...ensureSpaceExists(context), floemId }
+  const { spaceId, floemId } = params as { floemId: string; spaceId: string }
+
+  // Ensure the selected space exists. It's common during development for
+  // developers to delete the backend database. As a convenience, we
+  // automatically pick a new one when this occurs by redirecting back to the
+  // root.
+  if (!(await spaceExists(spaceId))) {
+    return {
+      redirect: {
+        destination: `/`,
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {
+      spaceId,
+      floemId,
+    },
+  }
 }
 
 export default ({ spaceId, floemId }: { spaceId: string; floemId: string }) => {
@@ -17,9 +34,5 @@ export default ({ spaceId, floemId }: { spaceId: string; floemId: string }) => {
   if (!rep) {
     return null
   }
-  const floem = useSubscribe(rep, listFloems, []).find(f => f.id === floemId)
-  if (!floem) {
-    return <div>Not found</div>
-  }
-  return <Chart mutate={rep.mutate} floem={floem} startFlowing={() => null} />
+  return <Floem rep={rep} id={floemId} />
 }
