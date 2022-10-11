@@ -1,12 +1,11 @@
-import { EditorContent, useEditor } from '@tiptap/react'
-import React from 'react'
-import { getBezierPath } from 'reactflow'
-import { Position } from 'reactflow'
-import { DataDart } from '../../model/core/floem'
-import { Mutate } from '../app'
 import Document from '@tiptap/extension-document'
 import Paragraph from '@tiptap/extension-paragraph'
 import Text from '@tiptap/extension-text'
+import { EditorContent, useEditor } from '@tiptap/react'
+import React from 'react'
+import { getBezierPath, Position } from 'reactflow'
+import { DataDart } from '../../model/core/floem'
+import { Mutate } from '../app'
 
 export interface DartProps {
   id: string
@@ -17,7 +16,7 @@ export interface DartProps {
   sourcePosition: Position
   targetPosition: Position
   style?: React.CSSProperties
-  data: { dart: DataDart; mutate: Mutate }
+  data?: { dart: DataDart; mutate: Mutate }
   markerEnd?: string | undefined
 }
 
@@ -30,7 +29,7 @@ export default function Dart({
   sourcePosition,
   targetPosition,
   style = {},
-  data: { dart, mutate },
+  data,
   markerEnd = 'arrow',
 }: DartProps) {
   const [edgePath] = getBezierPath({
@@ -41,7 +40,10 @@ export default function Dart({
     targetY,
     targetPosition,
   })
-  console.log(`Rendering dart with data: `, dart)
+  if (!data) {
+    return null
+  }
+  const { dart, mutate } = data
 
   const editor = useEditor({
     extensions: [Document, Paragraph, Text],
@@ -71,7 +73,7 @@ export default function Dart({
         x={(sourceX + targetX) / 2 - 500}
         y={(sourceY + targetY) / 2}
       >
-        <EditorContent editor={editor} className='flex justify-center' />
+        <EditorContent editor={editor} className='flex justify-center cursor-text' />
       </foreignObject>
     </>
   )

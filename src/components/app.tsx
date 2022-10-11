@@ -1,13 +1,13 @@
 import { Replicache } from 'replicache'
 import { useSubscribe } from 'replicache-react'
 
+import { useState } from 'react'
 import { proxy, useSnapshot } from 'valtio'
 import { genDummyFloem } from '../model/core/data/dummyFloem'
 import { DataFloem, listFloems } from '../model/core/floem'
 import { M } from '../model/core/mutators'
-import { Flowcard } from './Flowcard'
 import { Chart } from './chart/chart'
-import { useState } from 'react'
+import { Flowcard } from './Flowcard'
 import { River } from './river/river'
 
 type State = { selectedId: string | null }
@@ -52,7 +52,7 @@ const App = ({ rep }: { rep: Rep }) => {
     floem = floems.find(floem => floem.id === snap.selectedId)
   }
 
-  return flowing ? (
+  return flowing && floem ? (
     <River mutate={rep.mutate} floem={floem} stopFlowing={stopFlowing} />
   ) : (
     <div className='flex'>
