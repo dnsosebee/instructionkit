@@ -1,4 +1,3 @@
-import { DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 import { Mutate } from '../app'
 

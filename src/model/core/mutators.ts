@@ -1,6 +1,7 @@
-import { random, sample, times, uniq, without } from 'lodash'
+import { without } from 'lodash'
 import { nanoid } from 'nanoid'
 import { WriteTransaction } from 'replicache'
+import { STARTER_CONTENT } from './data/content'
 import { DataDart, DataDartUpdate, DataFloem, FloemUpdate } from './floem'
 import { DataFlow, FlowUpdate } from './flow'
 
@@ -46,7 +47,7 @@ export const floemMutators = {
       floem: floemId,
       createdAt: Date.now(),
       position: { x: 0, y: 0 },
-      flowtext: '',
+      flowtext: STARTER_CONTENT,
     }
     const flows = [...old.flows, newFlow]
     await tx.put(floemId, { ...old, flows })
