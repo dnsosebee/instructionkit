@@ -1,18 +1,16 @@
 import { PlusCircleIcon, PlusIcon } from '@heroicons/react/20/solid'
-import Link from 'next/link'
-import { useState } from 'react'
-import { Replicache } from 'replicache'
+import React from 'react'
 import { useSubscribe } from 'replicache-react'
 import { genDummyFloem, genDummyFloemId } from '../model/core/data/dummyFloem'
 import { listFloems } from '../model/core/floem'
-import { M } from '../model/core/mutators'
-import ContextMenu from './contextMenu'
-
-export type Rep = Replicache<M>
+import { Rep } from '../model/core/mutators'
+import { spaceRelativeUrl } from './floem'
+import { FloemCard } from './floemCard'
 
 export const Dashboard = ({ rep }: { rep: Rep }) => {
   const floems = useSubscribe(rep, listFloems, [], [rep])
-  const [creatingNew, setCreatingNew] = useState(false)
+
+  const [creatingNew, setCreatingNew] = React.useState(false)
 
   const onClickNewFloemButton = () => {
     const id = genDummyFloemId()
@@ -20,6 +18,8 @@ export const Dashboard = ({ rep }: { rep: Rep }) => {
     rep.mutate.createFloem(genDummyFloem(id))
     window.location.href = `/space/${rep.name}/${id}`
   }
+
+  const mutate = { ...rep.mutate, spaceRelativeUrl: spaceRelativeUrl(rep.name) }
 
   return (
     <>
@@ -29,30 +29,13 @@ export const Dashboard = ({ rep }: { rep: Rep }) => {
         </div>
       </header>
       <div className='pt-6 pb-8'>
-        {floems.length > 0 && !creatingNew ? (
+        {creatingNew ? (
+          <p>Creating Floem...</p>
+        ) : floems.length > 0 ? (
           <div className='mx-auto max-w-7xl sm:px-6 lg:px-8'>
             <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
               {floems.map(floem => (
-                <div
-                  key={floem.id}
-                  className='relative flex items-center space-x-3 rounded-lg border border-gray-300 bg-white px-6 py-5 shadow-sm focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 hover:border-gray-400'
-                >
-                  {/* <div className="flex-shrink-0">
-            <img className="h-10 w-10 rounded-full" src={floem.imageUrl} alt="" />
-          </div> */}
-                  <div className='min-w-0 flex-1'>
-                    <Link href={`/space/${rep.name}/${floem.id}`}>
-                      <a className='focus:outline-none'>
-                        <span className='absolute inset-0' aria-hidden='true' />
-                        <p className='text-sm font-medium text-gray-900'>{floem.title}</p>
-                        <p className='truncate text-sm text-gray-500'>
-                          {floem.createdAt.toString()}
-                        </p>
-                      </a>
-                    </Link>
-                  </div>
-                  <ContextMenu onClickDeleteButton={() => rep.mutate.deleteFloem(floem.id)} />
-                </div>
+                <FloemCard key={floem.id} floem={floem} mutate={mutate} />
               ))}
               <NewFloemButton onClickNewFloemButton={onClickNewFloemButton} />
             </div>

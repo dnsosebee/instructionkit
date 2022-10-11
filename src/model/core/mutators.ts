@@ -1,11 +1,13 @@
 import { without } from 'lodash'
 import { nanoid } from 'nanoid'
-import { WriteTransaction } from 'replicache'
+import { Replicache, WriteTransaction } from 'replicache'
 import { STARTER_CONTENT } from './data/content'
 import { DataDart, DataDartUpdate, DataFloem, FloemUpdate } from './floem'
 import { DataFlow, FlowUpdate } from './flow'
 
 export type M = typeof floemMutators
+export type Rep = Replicache<M>
+export type Mutate = Rep['mutate'] & { spaceRelativeUrl: (path: string) => string }
 
 export const floemMutators = {
   async createFloem(tx: WriteTransaction, floem: DataFloem) {

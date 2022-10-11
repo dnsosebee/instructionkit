@@ -18,7 +18,8 @@ import {
 } from '../../model/core/floem'
 
 import 'reactflow/dist/style.css'
-import { Mutate } from '../app'
+import { Mutate } from '../../model/core/mutators'
+import Breadcrumbs from '../breadcrumbs'
 import Dart from './dartEdge'
 import FlowNode, { FlowNodeProps } from './flowNode'
 
@@ -93,6 +94,9 @@ export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
         <button className='tool-button' onClick={startFlowing}>
           <div>▶</div>
         </button>
+      </div>
+      <div className='absolute z-50 '>
+        <Breadcrumbs floem={floem} mutate={mutate} />
       </div>
       <ReactFlow
         nodes={nodes}
