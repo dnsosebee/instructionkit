@@ -46,7 +46,12 @@ export const toReactFlowNodes = (
     type: 'flow',
     // dragHandle: ".drag-handle",
     position: flow.position,
-    data: { mutate, flow, selected: selections[i] },
+    data: {
+      mutate,
+      flow,
+      selected: selections[i],
+      floem: floem,
+    },
     selected: selections[i],
   }))
 }

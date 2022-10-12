@@ -1,11 +1,8 @@
 import { HomeIcon } from '@heroicons/react/20/solid'
-import Document from '@tiptap/extension-document'
-import Paragraph from '@tiptap/extension-paragraph'
-import Text from '@tiptap/extension-text'
-import { EditorContent, useEditor } from '@tiptap/react'
 import Link from 'next/link'
 import { DataFloem } from '../model/core/floem'
 import { Mutate } from '../model/core/mutators'
+import { TitleEditor } from './titleEditor'
 
 export interface BreadcrumbsProps {
   floem: DataFloem
@@ -13,19 +10,6 @@ export interface BreadcrumbsProps {
 }
 
 export default function Breadcrumbs({ floem, mutate }: BreadcrumbsProps) {
-  const titleText = useEditor({
-    extensions: [Document, Paragraph, Text],
-    content: `${floem.title}`,
-    onUpdate: ({ editor }) => {
-      mutate.updateFloem({ id: floem.id, title: editor.getText() })
-    },
-    editorProps: {
-      attributes: {
-        class: 'p-1',
-      },
-    },
-  })
-
   return (
     <nav className='flex p-2 rounded-br-lg bg-white shadow' aria-label='Breadcrumb'>
       <ol role='list' className='flex items-center space-x-4'>
@@ -50,8 +34,12 @@ export default function Breadcrumbs({ floem, mutate }: BreadcrumbsProps) {
             >
               <path d='M5.555 17.776l8-16 .894.448-8 16-.894-.448z' />
             </svg>
-            <div className='ml-3 text-sm font-medium text-gray-500' aria-current={true}>
-              <EditorContent editor={titleText} />
+            <div className='ml-3' aria-current={true}>
+              <TitleEditor
+                mutate={mutate}
+                floem={floem}
+                classNames='text-sm font-medium text-gray-500 p-1'
+              />
             </div>
           </div>
         </li>

@@ -41,7 +41,7 @@ export const FlowEditor = ({ flow, mutate }: FlowEditorProps) => {
   }, [flow.flowtext])
 
   return (
-    <div className='list-disc flex-grow cursor-default nodrag w-96 bg-zinc-50 m-4'>
+    <div className='list-disc flex-grow cursor-default nodrag bg-zinc-50 m-4'>
       <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
     </div>
   )

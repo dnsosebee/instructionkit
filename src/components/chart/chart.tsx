@@ -21,7 +21,7 @@ import React from 'react'
 import 'reactflow/dist/style.css'
 import { Mutate } from '../../model/core/mutators'
 import Breadcrumbs from '../breadcrumbs'
-import { Toolbar } from '../toolbar'
+import { Toolbar, ToolbarProps } from '../toolbar'
 import Dart from './dartEdge'
 import FlowNode, { FlowNodeProps } from './flowNode'
 
@@ -72,13 +72,20 @@ export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
     [floem],
   )
 
+  const toolbarProps: ToolbarProps = {
+    mutate,
+    floem,
+    nodeSelections,
+    edgeSelections,
+  }
+
   return (
     <div className='grow'>
       <div className='absolute z-50'>
         <Breadcrumbs floem={floem} mutate={mutate} />
       </div>
       <div className='absolute z-50 right-0'>
-        <Toolbar mutate={mutate} flow={floem.flows[0]} />
+        <Toolbar {...toolbarProps} />
       </div>
       <ReactFlow
         nodes={nodes}

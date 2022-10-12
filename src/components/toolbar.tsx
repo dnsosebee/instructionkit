@@ -1,21 +1,39 @@
 import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon } from '@heroicons/react/20/solid'
-import { DataFlow } from '../model/core/flow'
+import { DataFloem } from '../model/core/floem'
 import { Mutate } from '../model/core/mutators'
 import { IconButton } from './iconButton'
 
-export const Toolbar = ({ mutate, flow }: { mutate: Mutate; flow: DataFlow }) => {
+export interface ToolbarProps {
+  mutate: Mutate
+  floem: DataFloem
+  nodeSelections: boolean[]
+  edgeSelections: boolean[]
+}
+
+export const Toolbar = ({ mutate, floem, nodeSelections, edgeSelections }: ToolbarProps) => {
+  const disableDelete =
+    (nodeSelections.every(v => !v) && edgeSelections.every(v => !v)) ||
+    nodeSelections[floem.flows.findIndex(flow => flow.id === 'flow-start')]
+
   return (
     <div className='static'>
       <span className='isolate shadow bg-white rounded-bl-lg inline-flex overflow-hidden'>
         <IconButton
           Icon={DocumentPlusIcon}
-          onClick={() => mutate.addFlow(flow.floem)}
+          onClick={() => mutate.addFlow(floem.id)}
           title='Add Flow'
         />
         <IconButton
           Icon={DocumentMinusIcon}
-          onClick={() => mutate.removeFlow({ floemId: flow.floem, flowId: flow.id })}
-          title='Delete Flow'
+          onClick={() =>
+            mutate.updateFloem({
+              id: floem.id,
+              flows: floem.flows.filter((_, i) => !nodeSelections[i]),
+              darts: floem.darts.filter((_, i) => !edgeSelections[i]),
+            })
+          }
+          title='Delete'
+          disabled={disableDelete}
         />
         <IconButton Icon={PlayIcon} onClick={() => null} title='Embark' />
       </span>
