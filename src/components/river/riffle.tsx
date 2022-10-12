@@ -1,5 +1,5 @@
 import { DataFlow } from '../../model/core/flow'
-import { Mutate } from '../app'
+import { Mutate } from '../../model/core/mutators'
 
 interface RiffleProps {
   mutate: Mutate

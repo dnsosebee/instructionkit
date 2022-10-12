@@ -12,7 +12,7 @@ export const spaceRelativeUrl = (spaceId: string) => (path: string) => `/space/$
 export const Floem = ({ rep, id }: { rep: Rep; id: string }) => {
   const floem = useSubscribe(rep, listFloems, []).find(f => f.id === id)
   if (!floem) {
-    return <div>Not found</div>
+    return null
   }
   return (
     <Chart

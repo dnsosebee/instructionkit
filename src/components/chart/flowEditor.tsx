@@ -2,7 +2,7 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useEffect, useRef } from 'react'
 import { DataFlow } from '../../model/core/flow'
-import { Mutate } from '../app'
+import { Mutate } from '../../model/core/mutators'
 
 export const PREVENT_TIPTAP_DEFAULT = true
 export const ALLOW_TIPTAP_DEFAULT = false

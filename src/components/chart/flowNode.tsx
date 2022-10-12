@@ -1,7 +1,6 @@
-import { useState } from 'react'
 import { Handle, Position } from 'reactflow'
 import { DataFlow } from '../../model/core/flow'
-import { Mutate } from '../app'
+import { Mutate } from '../../model/core/mutators'
 import { FlowEditor } from './flowEditor'
 
 export interface FlowNodeProps {

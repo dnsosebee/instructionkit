@@ -1,8 +1,8 @@
-import { first, last, initial } from 'lodash'
+import { first, initial } from 'lodash'
 import { useState } from 'react'
 import { DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
-import { Mutate } from '../app'
+import { Mutate } from '../../model/core/mutators'
 import { Riffle } from './riffle'
 
 interface RiverProps {

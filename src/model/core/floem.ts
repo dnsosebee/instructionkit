@@ -4,9 +4,9 @@
 
 import { Edge, Node } from 'reactflow'
 import { ReadTransaction } from 'replicache'
-import { Mutate } from '../../components/app'
 import { FlowNodeProps } from '../../components/chart/flowNode'
 import { DataFlow } from './flow'
+import { Mutate } from './mutators'
 
 export type DataFloem = {
   id: string

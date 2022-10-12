@@ -5,7 +5,7 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import React from 'react'
 import { getBezierPath, Position } from 'reactflow'
 import { DataDart } from '../../model/core/floem'
-import { Mutate } from '../app'
+import { Mutate } from '../../model/core/mutators'
 
 export interface DartProps {
   id: string
