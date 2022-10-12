@@ -20,6 +20,7 @@ import {
 import 'reactflow/dist/style.css'
 import { Mutate } from '../../model/core/mutators'
 import Breadcrumbs from '../breadcrumbs'
+import { Toolbar } from '../toolbar'
 import Dart from './dartEdge'
 import FlowNode, { FlowNodeProps } from './flowNode'
 
@@ -63,16 +64,6 @@ export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
     [floem],
   )
 
-  const onClickAddFlowButton = () => {
-    console.log('Adding new flow')
-    mutate.addFlow(floem.id)
-  }
-
-  const onClickRemoveFlowButton = () => {
-    console.log('Removing flow')
-    // mutate.removeFlow(floem.id, state.selectedId)
-  }
-
   // const onSelectionChange = useCallback(
   //   (e: OnSelectionChangeParams) => {
   //     console.log("Selected elements:", selectedElements);
@@ -82,21 +73,11 @@ export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
 
   return (
     <div className='grow'>
-      <div id='toolbar' className='flex justify-between p-1 bg-slate-800'>
-        <div className='flex'>
-          <button className='tool-button mr-1' onClick={onClickAddFlowButton}>
-            <div>Add Flow</div>
-          </button>
-          <button className='tool-button' onClick={onClickRemoveFlowButton}>
-            <div>Delete Flow</div>
-          </button>
-        </div>
-        <button className='tool-button' onClick={startFlowing}>
-          <div>▶</div>
-        </button>
-      </div>
-      <div className='absolute z-50 '>
+      <div className='absolute z-50'>
         <Breadcrumbs floem={floem} mutate={mutate} />
+      </div>
+      <div className='absolute z-50 right-0 pt-3 pr-3'>
+        <Toolbar mutate={mutate} flow={floem.flows[0]} />
       </div>
       <ReactFlow
         nodes={nodes}
