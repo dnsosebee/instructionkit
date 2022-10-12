@@ -64,19 +64,12 @@ export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
     [floem],
   )
 
-  // const onSelectionChange = useCallback(
-  //   (e: OnSelectionChangeParams) => {
-  //     console.log("Selected elements:", selectedElements);
-  //   },
-  //   [floem, mutate]
-  // )
-
   return (
     <div className='grow'>
       <div className='absolute z-50'>
         <Breadcrumbs floem={floem} mutate={mutate} />
       </div>
-      <div className='absolute z-50 right-0 pt-3 pr-3'>
+      <div className='absolute z-50 right-0'>
         <Toolbar mutate={mutate} flow={floem.flows[0]} />
       </div>
       <ReactFlow

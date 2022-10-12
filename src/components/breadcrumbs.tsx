@@ -27,7 +27,7 @@ export default function Breadcrumbs({ floem, mutate }: BreadcrumbsProps) {
   })
 
   return (
-    <nav className='flex p-3 rounded-lg bg-white shadow' aria-label='Breadcrumb'>
+    <nav className='flex p-2 rounded-br-lg bg-white shadow' aria-label='Breadcrumb'>
       <ol role='list' className='flex items-center space-x-4'>
         <li>
           <div>
@@ -50,7 +50,7 @@ export default function Breadcrumbs({ floem, mutate }: BreadcrumbsProps) {
             >
               <path d='M5.555 17.776l8-16 .894.448-8 16-.894-.448z' />
             </svg>
-            <div className='ml-4 text-sm font-medium text-gray-500' aria-current={true}>
+            <div className='ml-3 text-sm font-medium text-gray-500' aria-current={true}>
               <EditorContent editor={titleText} />
             </div>
           </div>

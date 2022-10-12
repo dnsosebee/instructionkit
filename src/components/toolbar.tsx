@@ -5,7 +5,7 @@ import { IconButton } from './iconButton'
 
 export const Toolbar = ({ mutate, flow }: { mutate: Mutate; flow: DataFlow }) => {
   return (
-    <span className='inline-flex space-x-1'>
+    <span className='shadow p-1 bg-white rounded-bl-lg inline-flex space-x-1'>
       <IconButton
         Icon={DocumentPlusIcon}
         onClick={() => mutate.addFlow(flow.floem)}
