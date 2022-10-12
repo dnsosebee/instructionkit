@@ -35,7 +35,9 @@ export const Toolbar = ({ mutate, floem, nodeSelections, edgeSelections }: Toolb
           title='Delete'
           disabled={disableDelete}
         />
-        <IconButton Icon={PlayIcon} onClick={() => null} title='Embark' />
+        <a href={mutate.spaceRelativeUrl(`/river/${floem.id}`)} target='_blank'>
+          <IconButton Icon={PlayIcon} onClick={() => null} title='Embark' />
+        </a>
       </span>
     </div>
   )

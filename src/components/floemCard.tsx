@@ -19,7 +19,7 @@ export const FloemCard = ({ floem, mutate }: FloemCardProps) => {
             <img className="h-10 w-10 rounded-full" src={floem.imageUrl} alt="" />
           </div> */}
       <div className='min-w-0 flex-1'>
-        <Link href={mutate.spaceRelativeUrl(floem.id)}>
+        <Link href={mutate.spaceRelativeUrl(`/chart/${floem.id}`)}>
           <a className='focus:outline-none'>
             <span className='absolute inset-0' aria-hidden='true' />
             <p className='text-sm font-medium text-gray-900'>{floem.title}</p>

@@ -8,10 +8,9 @@ import { Riffle } from './riffle'
 interface RiverProps {
   mutate: Mutate
   floem: DataFloem
-  stopFlowing: () => void
 }
 
-export const River = ({ floem, mutate, stopFlowing }: RiverProps) => {
+export const River = ({ mutate, floem }: RiverProps) => {
   const [flocation, setFlocation] = useState('flow-start')
   const [path, setPath] = useState(['flow-start'])
 
@@ -44,9 +43,6 @@ export const River = ({ floem, mutate, stopFlowing }: RiverProps) => {
             </button>
           )}
         </div>
-        <button className='tool-button' onClick={stopFlowing}>
-          <div>✕</div>
-        </button>
       </div>
       {showContinueButton && (
         <button className='tool-button absolute right-1 bottom-1' onClick={paddle}>

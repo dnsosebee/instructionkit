@@ -1,7 +1,7 @@
 import { PlusCircleIcon, PlusIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
-import { genDummyFloem, genDummyFloemId } from '../model/core/data/dummyFloem'
+import { genFloemId, starterFloem } from '../model/core/data/dummyFloem'
 import { listFloems } from '../model/core/floem'
 import { Rep } from '../model/core/mutators'
 import { spaceRelativeUrl } from './floem'
@@ -12,14 +12,16 @@ export const Dashboard = ({ rep }: { rep: Rep }) => {
 
   const [creatingNew, setCreatingNew] = React.useState(false)
 
+  const relativeUrl = spaceRelativeUrl(rep.name)
+
   const onClickNewFloemButton = () => {
-    const id = genDummyFloemId()
+    const id = genFloemId()
     setCreatingNew(true)
-    rep.mutate.createFloem(genDummyFloem(id))
-    window.location.href = `/space/${rep.name}/${id}`
+    rep.mutate.createFloem(starterFloem(id))
+    window.location.href = relativeUrl(`/chart/${id}`)
   }
 
-  const mutate = { ...rep.mutate, spaceRelativeUrl: spaceRelativeUrl(rep.name) }
+  const mutate = { ...rep.mutate, spaceRelativeUrl: relativeUrl }
 
   return (
     <>

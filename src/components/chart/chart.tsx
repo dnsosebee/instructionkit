@@ -31,10 +31,9 @@ const edgeTypes = { dart: Dart }
 interface ChartProps {
   mutate: Mutate
   floem: DataFloem
-  startFlowing: () => void
 }
 
-export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
+export const Chart = ({ floem, mutate }: ChartProps) => {
   const [nodeSelections, setNodeSelections] = React.useState<boolean[]>(
     Array(floem.flows.length).fill(false),
   )
