@@ -30,7 +30,6 @@ export const getServerSideProps: GetServerSideProps = async context => {
 
 export default ({ spaceId }: { spaceId: string }) => {
   const rep = useReplicache({ name: spaceId, mutators: floemMutators })
-  console.log('rep', rep)
   if (!rep) {
     return null
   }

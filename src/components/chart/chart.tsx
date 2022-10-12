@@ -17,6 +17,7 @@ import {
   toReactFlowNodes,
 } from '../../model/core/floem'
 
+import React from 'react'
 import 'reactflow/dist/style.css'
 import { Mutate } from '../../model/core/mutators'
 import Breadcrumbs from '../breadcrumbs'
@@ -34,23 +35,31 @@ interface ChartProps {
 }
 
 export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
-  const nodes: Node<FlowNodeProps>[] = toReactFlowNodes(mutate, floem)
-  const edges: DartEdge[] = toReactFlowEdges(mutate, floem)
+  const [nodeSelections, setNodeSelections] = React.useState<boolean[]>(
+    Array(floem.flows.length).fill(false),
+  )
+  const [edgeSelections, setEdgeSelections] = React.useState<boolean[]>(
+    Array(floem.darts.length).fill(false),
+  )
+  const nodes: Node<FlowNodeProps>[] = toReactFlowNodes(mutate, floem, nodeSelections)
+  const edges: DartEdge[] = toReactFlowEdges(mutate, floem, edgeSelections)
 
   const onNodesChange = useCallback(
     changes => {
-      console.log(`Edge changes: `, changes)
       const newNodes = applyNodeChanges(changes, nodes)
-      mutate.updateFloem({ id: floem.id, flows: toFloemFlows(newNodes) })
+      const { flows, selections } = toFloemFlows(newNodes)
+      mutate.updateFloem({ id: floem.id, flows }) // this might be race condition with below
+      setNodeSelections(selections)
     },
     [floem],
   )
 
   const onEdgesChange = useCallback(
     changes => {
-      console.log(`Edge changes: `, changes)
       const newEdges = applyEdgeChanges(changes, edges) as DartEdge[]
-      mutate.updateFloem({ id: floem.id, darts: toFloemDarts(newEdges) })
+      const { darts, selections } = toFloemDarts(newEdges)
+      mutate.updateFloem({ id: floem.id, darts })
+      setEdgeSelections(selections)
     },
     [floem],
   )
@@ -58,7 +67,6 @@ export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
   const onConnect = useCallback(
     params => {
       const newEdges = addEdge(params, edges) as DartEdge[]
-      console.log(`New edges: `, newEdges)
       mutate.updateFloem({ id: floem.id, darts: toNewFloemDarts(newEdges, floem.id) })
     },
     [floem],
@@ -80,8 +88,8 @@ export const Chart = ({ floem, mutate, startFlowing }: ChartProps) => {
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
-        onSelectionChange={e => console.log(e)}
         minZoom={0.2}
+        onSelectionChange={e => console.log(e)}
       >
         <Background />
         <Controls />

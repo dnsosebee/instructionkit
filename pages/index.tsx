@@ -9,7 +9,6 @@ function Page() {
 export const getServerSideProps: GetServerSideProps = async () => {
   const spaceId = nanoid(6)
   await createSpace(spaceId)
-  console.log('Created space', spaceId)
   return {
     redirect: {
       destination: `/space/${spaceId}`,

@@ -18,6 +18,7 @@ export interface DartProps {
   style?: React.CSSProperties
   data?: { dart: DataDart; mutate: Mutate }
   markerEnd?: string | undefined
+  interactionWidth?: number
 }
 
 export default function Dart({
@@ -31,8 +32,9 @@ export default function Dart({
   style = {},
   data,
   markerEnd = 'arrow',
+  interactionWidth = 5,
 }: DartProps) {
-  const [edgePath] = getBezierPath({
+  const [path] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
@@ -46,14 +48,25 @@ export default function Dart({
   const { dart, mutate } = data
 
   const editor = useEditor({
-    extensions: [Document, Paragraph, Text],
+    extensions: [
+      Document.extend({
+        addKeyboardShortcuts: () => ({
+          enter: () => {
+            return false
+          },
+        }),
+      }),
+      Paragraph,
+      Text,
+    ],
     content: `${dart.case}`,
     onUpdate: ({ editor }) => {
       mutate.updateDart({ ...dart, case: editor.getText() })
     },
+
     editorProps: {
       attributes: {
-        class: 'prose',
+        class: 'prose px-2 py-1 bg-white rounded shadow',
       },
     },
   })
@@ -64,14 +77,17 @@ export default function Dart({
         id={id}
         style={style}
         className='react-flow__edge-path'
-        d={edgePath}
+        d={path}
         markerEnd={markerEnd}
       />
+      {interactionWidth && (
+        <path d={path} fill='none' strokeOpacity={0} strokeWidth={interactionWidth} />
+      )}
+
       <foreignObject
         style={{ overflow: 'visible' }}
-        width={1000}
-        x={(sourceX + targetX) / 2 - 500}
-        y={(sourceY + targetY) / 2}
+        x={(sourceX + targetX) / 2}
+        y={(sourceY + targetY) / 2 - 18} // approx half the height of the editor
       >
         <EditorContent editor={editor} className='flex justify-center cursor-text' />
       </foreignObject>

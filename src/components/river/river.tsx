@@ -19,7 +19,6 @@ export const River = ({ floem, mutate, stopFlowing }: RiverProps) => {
   const showContinueButton = darts.length > 0
 
   const paddle = () => {
-    console.log('Paddling')
     const dart = first(darts)
 
     if (dart) {
