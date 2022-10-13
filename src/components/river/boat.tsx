@@ -1,3 +1,4 @@
+import assert from 'assert'
 import { DataDart } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 
@@ -18,7 +19,7 @@ export interface EmbarkData {
 
 interface NewStoneData extends EmbarkData {
   flocation: DataFlow['id']
-  chunks: string[][]
+  riffleChunks: string[][]
 }
 
 export interface Stone {
@@ -27,23 +28,66 @@ export interface Stone {
   advancer: AdvancerType // continue or input or whatever
 }
 
-const toRiffles = (flowtext: string) =>
-  flowtext.split(STONE_SEPARATOR).map(v => v.split(STONE_SEPARATOR))
+const toRiffleChunks = (flowtext: string) =>
+  flowtext.split(RIFFLE_SEPARATOR).map(v => v.split(STONE_SEPARATOR))
 
-export const newStone = ({ flows, darts, callback, flocation, chunks }: NewStoneData): Stone => {
-  console.log('Generating next stone…', chunks)
+export const newStone = ({
+  flows,
+  darts,
+  callback,
+  flocation,
+  riffleChunks,
+}: NewStoneData): Stone => {
+  assert(riffleChunks.length > 1 || (riffleChunks.length > 0 && riffleChunks[0].length > 0))
+  let paddle = false
+
+  if (riffleChunks[0].length == 0) {
+    paddle = true
+    riffleChunks.shift()
+  }
+
+  if (riffleChunks.length === 1 && riffleChunks[0].length === 1) {
+    const branches = darts.filter(v => v.from == flocation)
+    // console.log(
+    //   `Navigating to new flocation from ${flocation}.\nDarts: ${darts}\nBranches: ${branches}`,
+    //   darts,
+    // )
+    if (branches.length === 0) {
+      return {
+        paddle: false,
+        html: riffleChunks[0][0],
+        advancer: <div className='bg-slate-800 flex justify-between p-1'></div>,
+      }
+    }
+    const dart = branches[0] // TODO flogic
+    flocation = dart.to
+    const flow = flows.find(v => v.id == flocation)!
+    const oldStoneChunk = riffleChunks[0][0]
+    riffleChunks = toRiffleChunks(flow.flowtext)
+    riffleChunks[0][0] = oldStoneChunk + riffleChunks[0][0]
+    if (paddle) {
+      riffleChunks = [[], ...riffleChunks] // hacky and we should have a better type
+    }
+    // console.log(`Moving to new flocation: ${flocation}\nChunks: ${riffleChunks}`)
+    return newStone({ flows, darts, callback, flocation, riffleChunks })
+  }
+
+  const stoneChunks = riffleChunks[0]
+  const html = stoneChunks.shift()!
+
   // TODO use flows and darts and flocation and riffles to figure out paddle, html, and create JSX object for advancer
   return {
-    paddle: false,
-    html: 'figure this out soon',
+    paddle,
+    html,
     advancer: (
       <button
+        className='tool-button'
         onClick={callback(() =>
           newStone({
             flows,
             darts,
             flocation,
-            chunks,
+            riffleChunks,
             callback,
           }),
         )}
@@ -59,6 +103,6 @@ export const embark = (data: EmbarkData) => {
   return newStone({
     ...data,
     flocation: 'flow-start',
-    chunks: toRiffles(data.flows.find(flow => flow.id === 'flow-start')!.flowtext),
+    riffleChunks: toRiffleChunks(data.flows.find(flow => flow.id === 'flow-start')!.flowtext),
   })
 }

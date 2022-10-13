@@ -1,10 +1,8 @@
-import { first, initial, last } from 'lodash'
-import { useState, useEffect } from 'react'
+import { List } from 'immutable'
+import { useEffect, useState } from 'react'
 import { DataFloem } from '../../model/core/floem'
-import { DataFlow } from '../../model/core/flow'
 import { Mutate } from '../../model/core/mutators'
-import { Riffle } from './riffle'
-import { Stone, CallbackType, AdvancerType, embark } from './boat'
+import { AdvancerType, CallbackType, embark, Stone } from './boat'
 
 interface RiverProps {
   mutate: Mutate
@@ -12,22 +10,16 @@ interface RiverProps {
 }
 
 export const River = ({ mutate, floem }: RiverProps) => {
-  const [riffles, setRiffles] = useState<string[]>([''])
+  const [riffles, setRiffles] = useState<List<string>>(List(['']))
   const [advancer, setAdvancer] = useState<AdvancerType>()
 
   const updateRiver = ({ paddle, html, advancer: newAdvancer }: Stone) => {
     console.log('Updating river with HTML:', html)
     console.log('riffles: ', riffles)
-    const newRiffles = [...riffles]
-
-    if (paddle) {
-      console.log('Paddling to a new riffle')
-      newRiffles.push('')
-    }
-    newRiffles[newRiffles.length - 1] = last(newRiffles) + html
-    console.log(`New Riffles: ${newRiffles}`)
-
-    setRiffles(newRiffles)
+    setRiffles(riffles => {
+      const newRiffles = paddle ? riffles.push('') : riffles
+      return newRiffles.set(-1, newRiffles.last() + html)
+    })
     setAdvancer(newAdvancer)
   }
 
@@ -40,7 +32,7 @@ export const River = ({ mutate, floem }: RiverProps) => {
   return (
     <div className='grow flex flex-col h-full'>
       <div className='bg-slate-800 flex justify-between p-1'></div>
-      <div dangerouslySetInnerHTML={{ __html: last(riffles)! }} />
+      <div className='prose' dangerouslySetInnerHTML={{ __html: riffles.last() }} />
       {advancer}
     </div>
   )
