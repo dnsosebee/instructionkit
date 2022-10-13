@@ -1,9 +1,10 @@
-import { first, initial } from 'lodash'
-import { useState } from 'react'
+import { first, initial, last } from 'lodash'
+import { useState, useEffect } from 'react'
 import { DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 import { Mutate } from '../../model/core/mutators'
 import { Riffle } from './riffle'
+import { Stone, CallbackType, AdvancerType, embark } from './boat'
 
 interface RiverProps {
   mutate: Mutate
@@ -11,45 +12,36 @@ interface RiverProps {
 }
 
 export const River = ({ mutate, floem }: RiverProps) => {
-  const [flocation, setFlocation] = useState('flow-start')
-  const [path, setPath] = useState(['flow-start'])
+  const [riffles, setRiffles] = useState<string[]>([''])
+  const [advancer, setAdvancer] = useState<AdvancerType>()
 
-  const darts = floem.darts.filter(v => v.from == flocation)
-  const showContinueButton = darts.length > 0
+  const updateRiver = ({ paddle, html, advancer: newAdvancer }: Stone) => {
+    console.log('Updating river with HTML:', html)
+    console.log('riffles: ', riffles)
+    const newRiffles = [...riffles]
 
-  const paddle = () => {
-    const dart = first(darts)
-
-    if (dart) {
-      setPath([...path, dart.to])
-      setFlocation(dart.to)
+    if (paddle) {
+      console.log('Paddling to a new riffle')
+      newRiffles.push('')
     }
+    newRiffles[newRiffles.length - 1] = last(newRiffles) + html
+    console.log(`New Riffles: ${newRiffles}`)
+
+    setRiffles(newRiffles)
+    setAdvancer(newAdvancer)
   }
 
-  const onClickBackButton = () => {
-    setFlocation(path[path.length - 2] as string)
-    setPath(initial(path))
+  const callback: CallbackType = advance => () => {
+    updateRiver(advance())
   }
 
-  const flow = floem.flows.find(v => v.id == flocation) as DataFlow
+  useEffect(() => updateRiver(embark({ flows: floem.flows, darts: floem.darts, callback })), [])
 
   return (
     <div className='grow flex flex-col h-full'>
-      <div className='bg-slate-800 flex justify-between p-1'>
-        <div className='flex'>
-          {path.length > 1 && (
-            <button className='tool-button' onClick={onClickBackButton}>
-              <div>❮</div>
-            </button>
-          )}
-        </div>
-      </div>
-      {showContinueButton && (
-        <button className='tool-button absolute right-1 bottom-1' onClick={paddle}>
-          <div>Continue</div>
-        </button>
-      )}
-      <Riffle flow={flow} mutate={mutate} paddle={paddle} />
+      <div className='bg-slate-800 flex justify-between p-1'></div>
+      <div dangerouslySetInnerHTML={{ __html: last(riffles)! }} />
+      {advancer}
     </div>
   )
 }
