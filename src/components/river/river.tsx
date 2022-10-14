@@ -28,14 +28,10 @@ export const River = ({ mutate, floem }: RiverProps) => {
   useEffect(() => updateRiver(embark({ flows: floem.flows, darts: floem.darts, callback })), [])
 
   return (
-    <div className='grow flex flex-col h-full'>
-      {riffles.map((riffle, i) => (
-        <div key={i} className='flex-grow flex flex-col border-4'>
-          {riffle.map((element, j) => (
-            <div key={j} className='flex-grow flex flex-col'>
-              {element}
-            </div>
-          ))}
+    <div className=' flex flex-col h-full prose'>
+      {riffles.last()!.map((element, i) => (
+        <div key={i} className=''>
+          {element}
         </div>
       ))}
     </div>

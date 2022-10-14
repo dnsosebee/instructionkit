@@ -1,4 +1,5 @@
 import { trim } from 'lodash'
+import { HTMLElement, NodeType, parse } from 'node-html-parser'
 import { DataDart } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 import { Stone } from './stone'
@@ -27,13 +28,13 @@ export const embark = (data: EmbarkData) => {
 
 export interface NewStoneData extends EmbarkData {
   flocation: DataFlow['id']
-  hopper: ChildNode[]
+  hopper: HTMLElement[]
   fragment: Fragment
 }
 
 interface Fragment {
   paddle: boolean
-  children: ChildNode[]
+  children: HTMLElement[]
 }
 
 export interface Stone {
@@ -41,63 +42,68 @@ export interface Stone {
   element: JSX.Element
 }
 
-const domParser = new DOMParser()
+const toJsx = (elements: HTMLElement[]) => (
+  <div dangerouslySetInnerHTML={{ __html: elements.map(e => e.toString()).join('') }} />
+)
 
-const refill = (flows: DataFlow[], id: DataFlow['id']): ChildNode[] => {
+const refill = (flows: DataFlow[], id: DataFlow['id']): HTMLElement[] => {
   const flow = flows.find(f => f.id === id)!
-  const body = domParser.parseFromString(flow.flowtext, 'text/html').body
-  return Array.from(body.childNodes)
+  const body = parse(flow.flowtext)
+  const childElements = body.childNodes.filter(
+    c => c.nodeType === NodeType.ELEMENT_NODE,
+  ) as HTMLElement[] // redundant probably
+  return Array.from(childElements)
 }
 
 const newStone = (data: NewStoneData): Stone => {
-  const { flows, darts, callback, fragment } = data
-  let { flocation, hopper } = data
+  const { flows, darts, fragment } = data
 
-  if (hopper.length === 0) {
-    const branches = darts.filter(v => v.from == flocation)
+  if (data.hopper.length === 0) {
+    const branches = darts.filter(v => v.from == data.flocation)
     if (branches.length === 0) {
       return {
         paddle: fragment.paddle,
-        element: <div>{fragment.children}</div>,
+        element: toJsx(fragment.children),
       }
     }
     const dart = branches[0] // TODO flogic
-    flocation = dart.to
-    const flow = flows.find(v => v.id == flocation)!
-    hopper = refill(flows, flocation)
-    return newStone(data)
+    const flocation = dart.to
+    const hopper = refill(flows, flocation)
+    return newStone({ ...data, flocation, hopper })
   }
 
-  const node: ChildNode = hopper.shift()!
+  const el = data.hopper.shift()!
   let match
 
-  if (node.nodeName === 'HR') {
+  console.log('el', el.rawText)
+
+  if (el.tagName === 'HR') {
     return {
       paddle: fragment.paddle,
       element: (
         <Stone>
           <>
-            {fragment.children}
-            <NextButton {...data} fragment={{ ...fragment, paddle: true }} />
+            {toJsx(fragment.children)}
+            <NextButton {...data} fragment={{ children: [], paddle: true }} />
           </>
         </Stone>
       ),
     }
-  } else if (node.nodeName == 'P' && (match = node.nodeValue?.match(/^(...)|…$/g))) {
+  } else if (el.tagName === 'P' && (match = el.innerText?.match(/^(...)|…$/g))) {
     return {
       paddle: fragment.paddle,
       element: (
         <Stone>
           <>
-            {fragment.children}
-            <NextButton {...data} fragment={{ ...fragment, paddle: false }} />
+            {toJsx(fragment.children)}
+            <NextButton {...data} fragment={{ children: [], paddle: false }} />
           </>
         </Stone>
       ),
     }
   } else if (
-    node.nodeName == 'P' &&
-    (match = node.nodeValue?.match(
+    el.tagName === 'p' &&
+    (match = el.innerText?.match(
       /(?<=^|\n)(?:(?<assignment>[A-z_]+[A-z0-9_]*) *=)? *\[ *(?<choices>(?:(?:(?:(?:[A-z0-9_!?*'"()^$.]+[A-z0-9_!?*'"()^$ .]*)(?:(?:, *)|(?= *\])))){2,}))\](?=$|\n)/g,
     ))
   ) {
@@ -107,9 +113,9 @@ const newStone = (data: NewStoneData): Stone => {
       element: (
         <Stone>
           <>
-            {fragment.children}
+            {toJsx(fragment.children)}
             <GapChoice
-              data={{ ...data, fragment: { ...data.fragment, paddle: false } }}
+              data={{ ...data, fragment: { children: [], paddle: false } }}
               assignment={match.groups!.assignment}
               choices={choices}
             />
@@ -119,7 +125,7 @@ const newStone = (data: NewStoneData): Stone => {
     }
   }
 
-  fragment.children.push(node)
+  fragment.children.push(el)
   return newStone(data)
 }
 
