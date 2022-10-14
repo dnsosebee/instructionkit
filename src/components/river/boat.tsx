@@ -1,15 +1,13 @@
-import assert from 'assert'
+import { trim } from 'lodash'
 import { DataDart } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
+import { Stone } from './stone'
 
 const STONE_SEPARATOR = '...'
 const RIFFLE_SEPARATOR = '<hr>'
+const INPUT_REGEX = /hello world/
 
-type AdvanceType = () => Stone
-
-export type CallbackType = (advance: AdvanceType) => () => void
-
-export type AdvancerType = JSX.Element
+export type CallbackType = (advance: () => Stone) => () => void
 
 export interface EmbarkData {
   flows: DataFlow[]
@@ -17,92 +15,133 @@ export interface EmbarkData {
   callback: CallbackType
 }
 
-interface NewStoneData extends EmbarkData {
-  flocation: DataFlow['id']
-  riffleChunks: string[][]
-}
-
-export interface Stone {
-  paddle: boolean
-  html: string
-  advancer: AdvancerType // continue or input or whatever
-}
-
-const toRiffleChunks = (flowtext: string) =>
-  flowtext.split(RIFFLE_SEPARATOR).map(v => v.split(STONE_SEPARATOR))
-
-export const newStone = ({
-  flows,
-  darts,
-  callback,
-  flocation,
-  riffleChunks,
-}: NewStoneData): Stone => {
-  assert(riffleChunks.length > 1 || (riffleChunks.length > 0 && riffleChunks[0].length > 0))
-  let paddle = false
-
-  if (riffleChunks[0].length == 0) {
-    paddle = true
-    riffleChunks.shift()
-  }
-
-  if (riffleChunks.length === 1 && riffleChunks[0].length === 1) {
-    const branches = darts.filter(v => v.from == flocation)
-    // console.log(
-    //   `Navigating to new flocation from ${flocation}.\nDarts: ${darts}\nBranches: ${branches}`,
-    //   darts,
-    // )
-    if (branches.length === 0) {
-      return {
-        paddle: false,
-        html: riffleChunks[0][0],
-        advancer: <div className='bg-slate-800 flex justify-between p-1'></div>,
-      }
-    }
-    const dart = branches[0] // TODO flogic
-    flocation = dart.to
-    const flow = flows.find(v => v.id == flocation)!
-    const oldStoneChunk = riffleChunks[0][0]
-    riffleChunks = toRiffleChunks(flow.flowtext)
-    riffleChunks[0][0] = oldStoneChunk + riffleChunks[0][0]
-    if (paddle) {
-      riffleChunks = [[], ...riffleChunks] // hacky and we should have a better type
-    }
-    // console.log(`Moving to new flocation: ${flocation}\nChunks: ${riffleChunks}`)
-    return newStone({ flows, darts, callback, flocation, riffleChunks })
-  }
-
-  const stoneChunks = riffleChunks[0]
-  const html = stoneChunks.shift()!
-
-  // TODO use flows and darts and flocation and riffles to figure out paddle, html, and create JSX object for advancer
-  return {
-    paddle,
-    html,
-    advancer: (
-      <button
-        className='tool-button'
-        onClick={callback(() =>
-          newStone({
-            flows,
-            darts,
-            flocation,
-            riffleChunks,
-            callback,
-          }),
-        )}
-      >
-        next
-      </button>
-    ),
-  }
-}
-
 export const embark = (data: EmbarkData) => {
   console.log('Embarking on an epic riverine journey')
   return newStone({
     ...data,
     flocation: 'flow-start',
-    riffleChunks: toRiffleChunks(data.flows.find(flow => flow.id === 'flow-start')!.flowtext),
+    hopper: refill(data.flows, 'flow-start'),
+    fragment: { paddle: true, children: [] },
   })
+}
+
+export interface NewStoneData extends EmbarkData {
+  flocation: DataFlow['id']
+  hopper: ChildNode[]
+  fragment: Fragment
+}
+
+interface Fragment {
+  paddle: boolean
+  children: ChildNode[]
+}
+
+export interface Stone {
+  paddle: boolean // true if the stone is the beginning of a riffle
+  element: JSX.Element
+}
+
+const domParser = new DOMParser()
+
+const refill = (flows: DataFlow[], id: DataFlow['id']): ChildNode[] => {
+  const flow = flows.find(f => f.id === id)!
+  const body = domParser.parseFromString(flow.flowtext, 'text/html').body
+  return Array.from(body.childNodes)
+}
+
+const newStone = (data: NewStoneData): Stone => {
+  const { flows, darts, callback, fragment } = data
+  let { flocation, hopper } = data
+
+  if (hopper.length === 0) {
+    const branches = darts.filter(v => v.from == flocation)
+    if (branches.length === 0) {
+      return {
+        paddle: fragment.paddle,
+        element: <div>{fragment.children}</div>,
+      }
+    }
+    const dart = branches[0] // TODO flogic
+    flocation = dart.to
+    const flow = flows.find(v => v.id == flocation)!
+    hopper = refill(flows, flocation)
+    return newStone(data)
+  }
+
+  const node: ChildNode = hopper.shift()!
+  let match
+
+  if (node.nodeName === 'HR') {
+    return {
+      paddle: fragment.paddle,
+      element: (
+        <Stone>
+          <>
+            {fragment.children}
+            <NextButton {...data} fragment={{ ...fragment, paddle: true }} />
+          </>
+        </Stone>
+      ),
+    }
+  } else if (node.nodeName == 'P' && (match = node.nodeValue?.match(/^(...)|…$/g))) {
+    return {
+      paddle: fragment.paddle,
+      element: (
+        <Stone>
+          <>
+            {fragment.children}
+            <NextButton {...data} fragment={{ ...fragment, paddle: false }} />
+          </>
+        </Stone>
+      ),
+    }
+  } else if (
+    node.nodeName == 'P' &&
+    (match = node.nodeValue?.match(
+      /(?<=^|\n)(?:(?<assignment>[A-z_]+[A-z0-9_]*) *=)? *\[ *(?<choices>(?:(?:(?:(?:[A-z0-9_!?*'"()^$.]+[A-z0-9_!?*'"()^$ .]*)(?:(?:, *)|(?= *\])))){2,}))\](?=$|\n)/g,
+    ))
+  ) {
+    const choices = match.groups!.choices.split(',').map(trim)
+    return {
+      paddle: fragment.paddle,
+      element: (
+        <Stone>
+          <>
+            {fragment.children}
+            <GapChoice
+              data={{ ...data, fragment: { ...data.fragment, paddle: false } }}
+              assignment={match.groups!.assignment}
+              choices={choices}
+            />
+          </>
+        </Stone>
+      ),
+    }
+  }
+
+  fragment.children.push(node)
+  return newStone(data)
+}
+
+const NextButton = (data: NewStoneData) => {
+  const { callback } = data
+  return <button onClick={callback(() => newStone(data))}>next</button>
+}
+
+interface ChoiceProps {
+  assignment: string | undefined
+  choices: string[]
+  data: NewStoneData
+}
+
+const GapChoice = ({ data, assignment, choices }: ChoiceProps) => {
+  console.log(assignment)
+  const { callback } = data
+  return (
+    <span>
+      {choices.map(v => (
+        <button onClick={callback(() => newStone(data))}>{v}</button>
+      ))}
+    </span>
+  )
 }

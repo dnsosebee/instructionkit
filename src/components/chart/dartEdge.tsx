@@ -1,5 +1,6 @@
 import Document from '@tiptap/extension-document'
 import Paragraph from '@tiptap/extension-paragraph'
+import Placeholder from '@tiptap/extension-placeholder'
 import Text from '@tiptap/extension-text'
 import { EditorContent, useEditor } from '@tiptap/react'
 import React from 'react'
@@ -58,6 +59,11 @@ export default function Dart({
       }),
       Paragraph,
       Text,
+      Placeholder.configure({
+        placeholder: '↓',
+        emptyNodeClass:
+          'first:before:text-gray-400 first:before:float-left first:before:content-[attr(data-placeholder)] first:before:pointer-events-none first:before:h-0',
+      }),
     ],
     content: `${dart.case}`,
     onUpdate: ({ editor }) => {

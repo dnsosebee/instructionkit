@@ -111,6 +111,6 @@ export const toNewFloemDarts = (edges: DartEdge[], floem: string): DataFloem['da
     floem,
     from: edge.source,
     to: edge.target,
-    case: 'hello',
+    case: '',
   }))
 }

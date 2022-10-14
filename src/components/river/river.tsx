@@ -2,25 +2,23 @@ import { List } from 'immutable'
 import { useEffect, useState } from 'react'
 import { DataFloem } from '../../model/core/floem'
 import { Mutate } from '../../model/core/mutators'
-import { AdvancerType, CallbackType, embark, Stone } from './boat'
+import { CallbackType, embark, Stone } from './boat'
 
 interface RiverProps {
   mutate: Mutate
   floem: DataFloem
 }
 
-export const River = ({ mutate, floem }: RiverProps) => {
-  const [riffles, setRiffles] = useState<List<string>>(List(['']))
-  const [advancer, setAdvancer] = useState<AdvancerType>()
+export type Riffle = List<JSX.Element>
 
-  const updateRiver = ({ paddle, html, advancer: newAdvancer }: Stone) => {
-    console.log('Updating river with HTML:', html)
-    console.log('riffles: ', riffles)
+export const River = ({ mutate, floem }: RiverProps) => {
+  const [riffles, setRiffles] = useState<List<Riffle>>(List([List()]))
+
+  const updateRiver = ({ paddle, element }: Stone) => {
     setRiffles(riffles => {
-      const newRiffles = paddle ? riffles.push('') : riffles
-      return newRiffles.set(-1, newRiffles.last() + html)
+      const newRiffles = paddle ? riffles.push(List()) : riffles
+      return newRiffles.set(-1, newRiffles.last()!.push(element))
     })
-    setAdvancer(newAdvancer)
   }
 
   const callback: CallbackType = advance => () => {
@@ -31,9 +29,15 @@ export const River = ({ mutate, floem }: RiverProps) => {
 
   return (
     <div className='grow flex flex-col h-full'>
-      <div className='bg-slate-800 flex justify-between p-1'></div>
-      <div className='prose' dangerouslySetInnerHTML={{ __html: riffles.last() }} />
-      {advancer}
+      {riffles.map((riffle, i) => (
+        <div key={i} className='flex-grow flex flex-col border-4'>
+          {riffle.map((element, j) => (
+            <div key={j} className='flex-grow flex flex-col'>
+              {element}
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   )
 }

@@ -31,7 +31,7 @@ export const starterFloem = (id: string = genFloemId()): DataFloem => {
         floem: id,
         from: 'flow-start',
         to: 'flow-l0Lo1',
-        case: 'hello',
+        case: '',
       },
     ],
   }
