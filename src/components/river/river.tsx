@@ -3,98 +3,114 @@ import { useState } from 'react'
 import { DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 import { Mutate } from '../../model/core/mutators'
-import { stoneAt } from './boat'
+import { riverStoneAt } from './boat'
+import { StoneView } from './stone'
 
-interface RiverProps {
+export interface RiverProps {
   mutate: Mutate
   floem: DataFloem
 }
 
-type LValue = string
-type RValue = any
-type VarMap = Map<LValue, RValue>
+export type VarMap = Map<string, any>
 
-export interface FlowState {
-  vars: VarMap
-  flocation: {
-    flow: DataFlow['id']
-    node: number
-  }
+export interface Flocation {
+  flow: DataFlow['id']
+  node: number
 }
 
-export interface StoneProps {
+export interface AdvancerProps {
   active: boolean
   value: any
   onHop: (value: any) => void
 }
 
-interface Stone<T> {
-  value: T
-  flowState: (value: any) => FlowState
-  view: (props: StoneProps) => JSX.Element
-  paddleAfter: boolean
+export type AdvancerType = 'pause' | 'choice' | 'finish'
+
+export interface StoneUIConfig {
+  fragment: string
+  advancer: {
+    type: AdvancerType
+    params: any
+  }
 }
-const WELCOME_STONE: Stone<null> = {
-  value: null,
-  flowState: () => ({
-    vars: Map(),
-    flocation: {
-      flow: 'flow-start',
-      node: 0,
+
+export interface StoneConsequences {
+  assignTo: string | null // what name in the varmap to assign the value to
+  flowFrom: Flocation
+  newRiffle: boolean // should a new riffle be created after the stone is passed?
+}
+
+export interface Stone {
+  ui: StoneUIConfig
+  consequences: StoneConsequences
+  value: any
+}
+
+export interface RiverStone {
+  vars: VarMap // varmap at the time of stone creation
+  stone: Stone
+}
+
+const WELCOME_STONE: RiverStone = {
+  vars: Map(),
+  stone: {
+    ui: {
+      fragment: 'Welcome to the river',
+      advancer: {
+        type: 'pause',
+        params: {
+          text: 'Begin',
+        },
+      },
     },
-  }),
-  view: ({ active, onHop }) => {
-    if (!active) {
-      return <></>
-    }
-    return (
-      <div>
-        <h1>Welcome to the river</h1>
-        <button onClick={() => onHop(null)}>Start</button>
-      </div>
-    )
+    consequences: {
+      assignTo: null,
+      flowFrom: {
+        flow: 'flow-start',
+        node: 0,
+      },
+      newRiffle: true,
+    },
+    value: null,
   },
-  paddleAfter: true,
 }
 
-export type StoneType = Stone<string> | Stone<number> | Stone<boolean> | Stone<null>
-
-export type Riffle = List<StoneType>
+export type Riffle = List<RiverStone>
 
 const rewindAndApply = (
   state: RiverState,
-  riffleIdx: number,
-  stoneIdx: number,
-  value: any,
-  paddleAfter: boolean,
   floem: DataFloem,
+  riffleIdx: number,
+  riverStoneIdx: number,
+  value: any,
 ): RiverState => {
   const riffle = state.riffles.get(riffleIdx)!
-  const stone = riffle.get(stoneIdx)!
-  const updatedRiffle = riffle
-    .set(stoneIdx, {
+  const riverStone = riffle.get(riverStoneIdx)!
+  const { vars, stone } = riverStone
+  const { flowFrom: flowTo, assignTo, newRiffle } = stone.consequences
+  const newVars = assignTo ? vars.set(assignTo, value) : vars
+  const updatedRiverStone = {
+    ...riverStone,
+    stone: {
       ...stone,
       value,
-    })
-    .slice(0, stoneIdx + 1)
-  let updatedRiffles = state.riffles.set(riffleIdx, updatedRiffle).slice(0, riffleIdx + 1)
-  let updatedActiveRiffle = state.activeRiffle
-  const newStone = stoneAt(floem, stone.flowState(value))
-  if (paddleAfter) {
-    const newRiffle = List<StoneType>([newStone])
-    updatedRiffles = updatedRiffles.push(newRiffle)
-    updatedActiveRiffle = updatedRiffles.size - 1
-  } else {
-    updatedRiffles = updatedRiffles.set(riffleIdx, updatedRiffle.push(newStone))
+    },
   }
+  const updatedRiffle = riffle.set(riverStoneIdx, updatedRiverStone).slice(0, riverStoneIdx + 1)
+  let updatedRiffles = state.riffles.set(riffleIdx, updatedRiffle).slice(0, riffleIdx + 1)
+  if (newRiffle) {
+    updatedRiffles = updatedRiffles.push(List())
+  }
+  const newRiverStone: RiverStone = riverStoneAt(floem, flowTo, newVars)
+  updatedRiffles = updatedRiffles.set(-1, updatedRiffles.get(-1)!.push(newRiverStone))
   return {
     riffles: updatedRiffles,
-    activeRiffle: updatedActiveRiffle,
+    activeRiffle: updatedRiffles.size - 1,
   }
 }
 
 const INITIAL_STATE = {
-  riffles: List<Riffle>([List<StoneType>([WELCOME_STONE])]),
+  riffles: List<Riffle>([List<RiverStone>([WELCOME_STONE])]),
   activeRiffle: 0,
 }
 
@@ -105,21 +121,19 @@ export const River = ({ floem }: RiverProps) => {
   const { riffles, activeRiffle } = state
   return (
     <div>
-      <p>{activeRiffle}</p>
       {riffles.map((riffle, i) => (
-        <div key={i}>
-          {riffle.map((stone, j) => (
-            <stone.view
-              key={j}
-              {...{
-                active: i === activeRiffle && j === riffle.size - 1,
-                value: stone.value,
-                onHop: value => {
-                  setState(state => rewindAndApply(state, i, j, value, stone.paddleAfter, floem))
-                },
-              }}
-            />
-          ))}
+        <div key={i} className='m-5 p-5 bg-gray-100'>
+          <p className='text-xl'>This is a Riffle</p>
+          {riffle.map((riverStone, j) => {
+            const { ui, consequences, value } = riverStone.stone
+            const { assignTo, flowFrom: flowTo, newRiffle } = consequences
+            const active = i === activeRiffle && j === riffle.size - 1
+            const onHop = (value: any) => {
+              setState(rewindAndApply(state, floem, i, j, value))
+            }
+            const View = StoneView(ui)
+            return <View active={active} value={value} onHop={onHop} key={j} />
+          })}
         </div>
       ))}
     </div>
