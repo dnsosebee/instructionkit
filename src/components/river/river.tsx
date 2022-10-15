@@ -1,6 +1,5 @@
 import { List, Map } from 'immutable'
-import { useEffect } from 'react'
-import { proxy, snapshot, useSnapshot } from 'valtio'
+import { useState } from 'react'
 import { DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 import { Mutate } from '../../model/core/mutators'
@@ -62,23 +61,15 @@ export type StoneType = Stone<string> | Stone<number> | Stone<boolean> | Stone<n
 
 export type Riffle = List<StoneType>
 
-// setup valtio state
-const state = proxy({
-  riffleList: {
-    riffles: List<Riffle>([List<StoneType>([WELCOME_STONE] as StoneType[])] as Riffle[]),
-    activeRiffle: 0,
-  },
-})
-
 const rewindAndApply = (
+  state: RiverState,
   riffleIdx: number,
   stoneIdx: number,
   value: any,
   paddleAfter: boolean,
   floem: DataFloem,
-) => {
-  const riffleList = state.riffleList
-  const riffle = riffleList.riffles.get(riffleIdx)!
+): RiverState => {
+  const riffle = state.riffles.get(riffleIdx)!
   const stone = riffle.get(stoneIdx)!
   const updatedRiffle = riffle
     .set(stoneIdx, {
@@ -86,8 +77,8 @@ const rewindAndApply = (
       value,
     })
     .slice(0, stoneIdx + 1)
-  let updatedRiffles = riffleList.riffles.set(riffleIdx, updatedRiffle).slice(0, riffleIdx + 1)
-  let updatedActiveRiffle = riffleList.activeRiffle
+  let updatedRiffles = state.riffles.set(riffleIdx, updatedRiffle).slice(0, riffleIdx + 1)
+  let updatedActiveRiffle = state.activeRiffle
   const newStone = stoneAt(floem, stone.flowState(value))
   if (paddleAfter) {
     const newRiffle = List<StoneType>([newStone])
@@ -96,23 +87,25 @@ const rewindAndApply = (
   } else {
     updatedRiffles = updatedRiffles.set(riffleIdx, updatedRiffle.push(newStone))
   }
-  state.riffleList = {
+  return {
     riffles: updatedRiffles,
     activeRiffle: updatedActiveRiffle,
   }
-  console.log('rewindAndApply', snapshot(state))
 }
 
-export const River = ({ floem }: RiverProps) => {
-  const { riffles, activeRiffle } = useSnapshot(state.riffleList)
+const INITIAL_STATE = {
+  riffles: List<Riffle>([List<StoneType>([WELCOME_STONE])]),
+  activeRiffle: 0,
+}
 
-  useEffect(() => {
-    console.log('River useEffect', riffles, activeRiffle)
-  }, [riffles, activeRiffle])
+type RiverState = typeof INITIAL_STATE
+
+export const River = ({ floem }: RiverProps) => {
+  const [state, setState] = useState(INITIAL_STATE)
+  const { riffles, activeRiffle } = state
   return (
     <div>
       <p>{activeRiffle}</p>
-      {riffles.map((riffle, riffleIdx) => riffle.map(v => <p>{v.value}</p>))}
       {riffles.map((riffle, i) => (
         <div key={i}>
           {riffle.map((stone, j) => (
@@ -122,7 +115,7 @@ export const River = ({ floem }: RiverProps) => {
                 active: i === activeRiffle && j === riffle.size - 1,
                 value: stone.value,
                 onHop: value => {
-                  rewindAndApply(i, j, value, stone.paddleAfter, floem)
+                  setState(state => rewindAndApply(state, i, j, value, stone.paddleAfter, floem))
                 },
               }}
             />
