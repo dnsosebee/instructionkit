@@ -87,7 +87,7 @@ const rewindAndApply = (
   const riffle = state.riffles.get(riffleIdx)!
   const riverStone = riffle.get(riverStoneIdx)!
   const { vars, stone } = riverStone
-  const { flowFrom: flowTo, assignTo, newRiffle } = stone.consequences
+  const { flowFrom, assignTo, newRiffle } = stone.consequences
   const newVars = assignTo ? vars.set(assignTo, value) : vars
   const updatedRiverStone = {
     ...riverStone,
@@ -101,7 +101,7 @@ const rewindAndApply = (
   if (newRiffle) {
     updatedRiffles = updatedRiffles.push(List())
   }
-  const newRiverStone: RiverStone = riverStoneAt(floem, flowTo, newVars)
+  const newRiverStone: RiverStone = riverStoneAt(floem, flowFrom, newVars)
   updatedRiffles = updatedRiffles.set(-1, updatedRiffles.get(-1)!.push(newRiverStone))
   return {
     riffles: updatedRiffles,
