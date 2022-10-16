@@ -33,14 +33,14 @@ const helper = (data: {
   vars: VarMap
 }): RiverStone => {
   const { flows, darts, flocation, vars, flowNodes, fragment } = data
-  const doneWithNode = flocation.node >= flowNodes.length
-  if (doneWithNode) {
+  const doneWithFlow = flocation.node >= flowNodes.length
+  if (doneWithFlow) {
     const branches = darts.filter(v => v.from == flocation.flow)
     const noValidNextFlow = branches.length === 0
     if (noValidNextFlow) {
       return finishStone({ fragment, vars, flowFrom: flocation })
     }
-    const dart = branches[0] // TODO chooise a dart based on flogic
+    const dart = branches.find(v => v.case == vars.get('output')) || branches[0]
     const nextFlocation: Flocation = { flow: dart.to, node: 0 }
     const nextFlowNodes = refill(flows, nextFlocation.flow)
     return helper({
@@ -78,7 +78,7 @@ const helper = (data: {
     ))
   ) {
     const choices = match.groups!.choices.split(',').map(trim)
-    const assignTo = match.groups!.assignment
+    const assignTo = match.groups!.assignment || 'output'
     return choiceStone({
       fragment,
       vars,
