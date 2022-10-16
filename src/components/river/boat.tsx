@@ -77,7 +77,6 @@ const helper = (data: {
       /(?<=^|\n)(?:(?<assignment>[A-z_]+[A-z0-9_]*) *=)? *\[ *(?<choices>(?:(?:(?:(?:[A-z0-9_!?*'"()^$.]+[A-z0-9_!?*'"()^$ .]*)(?:(?:, *)|(?= *\])))){2,}))\](?=$|\n)/,
     ))
   ) {
-    console.log('Match: ', match)
     const choices = match.groups!.choices.split(',').map(trim)
     const assignTo = match.groups!.assignment
     return choiceStone({
