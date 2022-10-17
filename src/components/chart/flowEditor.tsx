@@ -10,11 +10,11 @@ export const ALLOW_TIPTAP_DEFAULT = false
 export interface FlowEditorProps {
   flow: DataFlow
   mutate: Mutate
-  isStart: boolean
-  isEnd: boolean
+  isTop: boolean
+  isBottom: boolean
 }
 
-export const FlowEditor = ({ flow, mutate, isStart, isEnd }: FlowEditorProps) => {
+export const FlowEditor = ({ flow, mutate, isTop: isStart, isBottom: isEnd }: FlowEditorProps) => {
   const flowRef = useRef(flow)
   // keep ref up to date with new props
   useEffect(() => {
