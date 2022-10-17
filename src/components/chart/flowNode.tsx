@@ -24,14 +24,14 @@ function FlowNode({ data: { mutate, flow, selected, floem } }: { data: FlowNodeP
           <TitleEditor
             mutate={mutate}
             floem={floem}
-            classNames='text-3xl font-bold tracking-tight text-gray-900 cursor-text nodrag p-2'
+            classNames='text-3xl font-bold tracking-tight text-gray-50 cursor-text nodrag p-2'
           />
         </div>
       ) : (
         <Handle type='target' position={Position.Top} className='p-1' />
       )}
       <div
-        className={`overflow-hidden bg-zinc-100 shadow rounded-lg ${
+        className={`overflow-hidden bg-slate-500 shadow rounded-lg ${
           selected && 'border-indigo-500 outline-none ring-1 ring-indigo-500'
         }`}
       >

@@ -54,5 +54,9 @@ hr.ProseMirror-selectednode {
 
 .chart-prose > hr {
   height: 20px;
-  @apply bg-zinc-100 border-0 my-5;
+  @apply bg-slate-500 border-0 my-5;
+}
+
+.react-flow {
+  @apply bg-slate-800;
 }

@@ -1,4 +1,5 @@
 import { List, Map } from 'immutable'
+import { flow } from 'lodash'
 import { useState } from 'react'
 import { DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
@@ -125,25 +126,30 @@ export const River = ({ floem }: RiverProps) => {
   })
   const { riffles, activeRiffle } = state
   return (
-    <div id='river' className=''>
-      {riffles.map((riffle, i) => (
-        <div
-          id={'riffle ' + i}
-          key={i}
-          className='riffle overflow-hidden rounded-lg bg-white shadow m-5 p-5 flex flex-col'
-        >
-          {riffle.map((riverStone, j) => {
-            const { ui, consequences, value } = riverStone.stone
-            const { assignTo, flowFrom: flowTo, newRiffle } = consequences
-            const active = i === activeRiffle && j === riffle.size - 1
-            const onHop = (value: any) => {
-              setState(rewindAndApply(state, floem, i, j, value))
-            }
-            const View = StoneView(ui)
-            return <View active={active} value={value} onHop={onHop} key={j} />
-          })}
+    <div id='river' className='bg-slate-800 grow flex flex-col items-center'>
+      <div className=''>
+        <div className='text-3xl text-white mt-4 font-bold tracking-tight text-gray-50'>
+          {floem.title}
         </div>
-      ))}
+        {riffles.map((riffle, i) => (
+          <div
+            id={'riffle ' + i}
+            key={i}
+            className='riffle overflow-hidden rounded-lg bg-white shadow my-5 p-5 flex flex-col'
+          >
+            {riffle.map((riverStone, j) => {
+              const { ui, consequences, value } = riverStone.stone
+              const { assignTo, flowFrom: flowTo, newRiffle } = consequences
+              const active = i === activeRiffle && j === riffle.size - 1
+              const onHop = (value: any) => {
+                setState(rewindAndApply(state, floem, i, j, value))
+              }
+              const View = StoneView(ui)
+              return <View active={active} value={value} onHop={onHop} key={j} />
+            })}
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
