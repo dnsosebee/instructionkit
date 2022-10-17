@@ -13,9 +13,12 @@ export interface FlowNodeProps {
 }
 
 function FlowNode({ data: { mutate, flow, selected, floem } }: { data: FlowNodeProps }) {
+  const isStart = flow.id === 'flow-start'
+  const isEnd = !floem.darts.find(v => v.from == flow.id)
+
   return (
     <div className=' w-96'>
-      {flow.id === 'flow-start' ? (
+      {isStart ? (
         <div className='pb-1 w-full'>
           <TitleEditor
             mutate={mutate}
@@ -27,11 +30,11 @@ function FlowNode({ data: { mutate, flow, selected, floem } }: { data: FlowNodeP
         <Handle type='target' position={Position.Top} className='p-1' />
       )}
       <div
-        className={`border overflow-hidden bg-zinc-50 shadow rounded-lg ${
+        className={`overflow-hidden bg-zinc-100 shadow rounded-lg ${
           selected && 'border-indigo-500 outline-none ring-1 ring-indigo-500'
         }`}
       >
-        <FlowEditor flow={flow} mutate={mutate} />
+        <FlowEditor flow={flow} mutate={mutate} isStart={isStart} isEnd={isEnd} />
         <Handle type='source' position={Position.Bottom} className='p-1' />
       </div>
     </div>

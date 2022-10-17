@@ -47,3 +47,12 @@ hr.ProseMirror-selectednode {
 .stone:not(:last-child) {
   @apply mb-3;
 }
+
+.chart-prose > *:not(hr) {
+  @apply mx-3;
+}
+
+.chart-prose > hr {
+  height: 20px;
+  @apply bg-zinc-100 border-0 my-5;
+}

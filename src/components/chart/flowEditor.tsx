@@ -10,9 +10,11 @@ export const ALLOW_TIPTAP_DEFAULT = false
 export interface FlowEditorProps {
   flow: DataFlow
   mutate: Mutate
+  isStart: boolean
+  isEnd: boolean
 }
 
-export const FlowEditor = ({ flow, mutate }: FlowEditorProps) => {
+export const FlowEditor = ({ flow, mutate, isStart, isEnd }: FlowEditorProps) => {
   const flowRef = useRef(flow)
   // keep ref up to date with new props
   useEffect(() => {
@@ -28,8 +30,9 @@ export const FlowEditor = ({ flow, mutate }: FlowEditorProps) => {
     },
     editorProps: {
       attributes: {
-        class:
-          'p-5 prose prose-hr:border-2 prose-hr:border-black cursor-text prose-hr:selected:border-blue-600',
+        class: `chart-prose py-5 prose prose-hr:border-2 prose-hr:border-black cursor-text prose-hr:selected:border-blue-600 ${
+          isStart ? 'mt-4' : ''
+        } ${isEnd ? 'mb-4' : ''}`,
       },
     },
   })
@@ -41,7 +44,11 @@ export const FlowEditor = ({ flow, mutate }: FlowEditorProps) => {
   }, [flow.flowtext])
 
   return (
-    <div className='list-disc flex-grow cursor-default nodrag bg-zinc-50 m-4'>
+    <div
+      className={`list-disc flex-grow cursor-default nodrag bg-zinc-50 mx-4 ${
+        isStart ? 'rounded-t' : ''
+      } ${isEnd ? 'rounded-b' : ''}`}
+    >
       <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
     </div>
   )
