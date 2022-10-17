@@ -31,7 +31,7 @@ export type NextButtonParams = {
 const NextButton = (params: NextButtonParams) => (props: AdvancerProps) => {
   const { active, onHop } = props
   return (
-    <button disabled={!active} onClick={() => onHop(null)}>
+    <button disabled={!active} className='tool-button' onClick={() => onHop(null)}>
       {params.text}
     </button>
   )
@@ -44,9 +44,9 @@ export type ChoiceParams = {
 const Choice = (params: ChoiceParams) => (props: AdvancerProps) => {
   const { active, value, onHop } = props
   return (
-    <div>
+    <div className='flex justify-center'>
       {params.choices.map(choice => (
-        <button disabled={!active} onClick={() => onHop(choice)}>
+        <button disabled={!active} className='tool-button m-1' onClick={() => onHop(choice)}>
           {choice}
         </button>
       ))}

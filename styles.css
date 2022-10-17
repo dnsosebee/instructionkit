@@ -15,6 +15,7 @@ body {
 #__next {
   display: flex;
   flex-grow: 1;
+  justify-content: center;
 }
 /* stylelint-enable selector-id-pattern */
 
