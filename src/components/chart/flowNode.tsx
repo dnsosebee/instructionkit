@@ -31,7 +31,7 @@ function FlowNode({ data: { mutate, flow, selected, floem } }: { data: FlowNodeP
         <Handle type='target' position={Position.Top} className='p-1' />
       )}
       <div
-        className={`overflow-hidden bg-slate-900 shadow rounded-lg ${
+        className={`overflow-hidden bg-slate-900 shadow rounded-lg cursor-move ${
           selected && 'border-indigo-500 outline-none ring-1 ring-indigo-500'
         }`}
       >
