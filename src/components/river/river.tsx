@@ -125,9 +125,13 @@ export const River = ({ floem }: RiverProps) => {
   })
   const { riffles, activeRiffle } = state
   return (
-    <div>
+    <div id='river' className=''>
       {riffles.map((riffle, i) => (
-        <div key={i} className='m-5 p-5 bg-gray-100'>
+        <div
+          id={'riffle ' + i}
+          key={i}
+          className='riffle overflow-hidden rounded-lg bg-white shadow m-5 p-5 flex flex-col'
+        >
           {riffle.map((riverStone, j) => {
             const { ui, consequences, value } = riverStone.stone
             const { assignTo, flowFrom: flowTo, newRiffle } = consequences
