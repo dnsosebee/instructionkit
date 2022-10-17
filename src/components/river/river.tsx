@@ -117,13 +117,17 @@ const INITIAL_STATE = {
 type RiverState = typeof INITIAL_STATE
 
 export const River = ({ floem }: RiverProps) => {
-  const [state, setState] = useState(INITIAL_STATE)
+  const [state, setState] = useState({
+    riffles: List<Riffle>([
+      List<RiverStone>([riverStoneAt(floem, { flow: 'flow-start', node: 0 }, Map())]),
+    ]),
+    activeRiffle: 0,
+  })
   const { riffles, activeRiffle } = state
   return (
     <div>
       {riffles.map((riffle, i) => (
         <div key={i} className='m-5 p-5 bg-gray-100'>
-          <p className='text-xl'>This is a Riffle</p>
           {riffle.map((riverStone, j) => {
             const { ui, consequences, value } = riverStone.stone
             const { assignTo, flowFrom: flowTo, newRiffle } = consequences
