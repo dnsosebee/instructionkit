@@ -18,7 +18,7 @@ export const StoneView = (uiConfig: StoneUIConfig) => (props: AdvancerProps) => 
   }
   return (
     <div className='stone'>
-      <div dangerouslySetInnerHTML={{ __html: fragment }} className='prose mb-3' />
+      <div dangerouslySetInnerHTML={{ __html: fragment }} className='prose' />
       <Advancer {...props} />
     </div>
   )
@@ -31,13 +31,15 @@ export type NextButtonParams = {
 const NextButton = (params: NextButtonParams) => (props: AdvancerProps) => {
   const { active, onHop } = props
   return (
-    <button
-      disabled={!active}
-      className='inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 self-center cursor-pointer'
-      onClick={() => onHop(null)}
-    >
-      {params.text}
-    </button>
+    active && (
+      <button
+        disabled={!active}
+        className='inline-flex items-center rounded-md border border-gray-300 bg-white mt-3 px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 self-center cursor-pointer'
+        onClick={() => onHop(null)}
+      >
+        {params.text}
+      </button>
+    )
   )
 }
 
@@ -53,7 +55,7 @@ const Choice = (params: ChoiceParams) => (props: AdvancerProps) => {
         <button
           disabled={!active}
           type='button'
-          className={`relative -ml-px inline-flex items-center border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer ${
+          className={`relative -ml-px inline-flex items-center border border-gray-300 bg-white mt-3 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer ${
             i == 0 ? 'rounded-l-md' : ''
           } ${i == params.choices.length - 1 ? 'rounded-r-md' : ''}`}
           onClick={() => onHop(choice)}
