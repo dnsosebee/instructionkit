@@ -1,4 +1,4 @@
-import { EditorContent, useEditor } from '@tiptap/react'
+import { Editor, EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useEffect, useRef } from 'react'
 import { DataFlow } from '../../model/core/flow'
@@ -14,7 +14,7 @@ export interface FlowEditorProps {
   isBottom: boolean
 }
 
-export const FlowEditor = ({ flow, mutate, isTop: isStart, isBottom: isEnd }: FlowEditorProps) => {
+export const FlowEditor = ({ flow, mutate, isTop: isTop, isBottom: isBottom }: FlowEditorProps) => {
   const flowRef = useRef(flow)
   // keep ref up to date with new props
   useEffect(() => {
@@ -30,9 +30,8 @@ export const FlowEditor = ({ flow, mutate, isTop: isStart, isBottom: isEnd }: Fl
     },
     editorProps: {
       attributes: {
-        class: `chart-prose py-5 prose prose-hr:border-2 prose-hr:border-black cursor-text prose-hr:selected:border-blue-600 ${
-          isStart ? 'mt-4' : ''
-        } ${isEnd ? 'mb-4' : ''}`,
+        class:
+          'chart-prose py-5 prose prose-hr:border-2 prose-hr:border-black cursor-text prose-hr:selected:border-blue-600',
       },
     },
   })
@@ -46,8 +45,8 @@ export const FlowEditor = ({ flow, mutate, isTop: isStart, isBottom: isEnd }: Fl
   return (
     <div
       className={`list-disc flex-grow cursor-default nodrag bg-zinc-50 mx-4 ${
-        isStart ? 'rounded-t' : ''
-      } ${isEnd ? 'rounded-b' : ''}`}
+        isTop ? 'rounded-t mt-4' : ''
+      } ${isBottom ? 'rounded-b mb-4' : ''}`}
     >
       <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
     </div>
