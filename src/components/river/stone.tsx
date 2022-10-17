@@ -70,5 +70,6 @@ const Choice = (params: ChoiceParams) => (props: AdvancerProps) => {
 }
 
 const FinishButton = () => () => {
-  return <p className='italic'>fin</p>
+  return <></>
+  // return <p className='italic'>fin</p>
 }
