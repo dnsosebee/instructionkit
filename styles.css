@@ -99,3 +99,8 @@ hr.ProseMirror-selectednode {
   /* -webkit-mask: var(--mask); */
   mask: var(--mask);
 }
+
+/* stylelint-disable-next-line selector-class-pattern */
+.react-flow__attribution {
+  display: none;
+}
