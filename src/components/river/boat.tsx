@@ -1,10 +1,15 @@
+import { Map } from 'immutable'
 import { trim } from 'lodash'
 import { HTMLElement, NodeType, parse } from 'node-html-parser'
 import { DataDart, DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 import { Flocation, RiverStone, VarMap } from './river'
 
-export function riverStoneAt(floem: DataFloem, flowFrom: Flocation, vars: VarMap): RiverStone {
+export async function riverStoneAt(
+  floem: DataFloem,
+  flowFrom: Flocation,
+  vars: VarMap,
+): Promise<RiverStone> {
   return helper({
     flows: floem.flows,
     darts: floem.darts,
@@ -24,15 +29,15 @@ const refill = (flows: DataFlow[], id: DataFlow['id']): HTMLElement[] => {
   return Array.from(childElements)
 }
 
-const helper = (data: {
+const helper = async (data: {
   flows: DataFlow[]
   darts: DataDart[]
   flocation: Flocation
   flowNodes: HTMLElement[] // nodes of the current flow
   fragment: HTMLElement[] // recursively builds up the fragment
   vars: VarMap
-}): RiverStone => {
-  const { flows, darts, flocation, vars, flowNodes, fragment } = data
+}): Promise<RiverStone> => {
+  const { flows, darts, flocation, flowNodes, fragment, vars } = data
   const doneWithFlow = flocation.node >= flowNodes.length
   if (doneWithFlow) {
     const branches = darts.filter(v => v.from == flocation.flow)
@@ -40,7 +45,7 @@ const helper = (data: {
     if (noValidNextFlow) {
       return finishStone({ fragment, vars, flowFrom: flocation })
     }
-    const dart = branches.find(v => v.case == vars.get('output')) || branches[0]
+    const dart = branches.find(v => v.case === vars.get('output')) || branches[0]
     const nextFlocation: Flocation = { flow: dart.to, node: 0 }
     const nextFlowNodes = refill(flows, nextFlocation.flow)
     return helper({
@@ -85,6 +90,31 @@ const helper = (data: {
       flowFrom,
       choices,
       assignTo,
+    })
+  } else if (el.tagName === 'PRE') {
+    const flogram = el.innerText.slice('<code>'.length, -'</code>'.length)
+    const worker = new Worker('/flogram.js')
+    const varsObject = Object.fromEntries(vars)
+    worker.postMessage({ varsObject, flogram })
+    const updatedVars = await (async () => {
+      return new Promise<VarMap>(resolve => {
+        worker.onmessage = e => {
+          worker.terminate()
+          let updatedVars: VarMap = Map<string, any>()
+          e.data.forEach(([k, v]: [k: string, v: any]) => {
+            updatedVars = updatedVars.set(k, v)
+          })
+          resolve(updatedVars)
+        }
+      })
+    })()
+    return helper({
+      flows,
+      darts,
+      flocation: flowFrom,
+      flowNodes,
+      fragment,
+      vars: updatedVars,
     })
   }
 

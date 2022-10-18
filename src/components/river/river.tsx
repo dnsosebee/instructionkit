@@ -1,6 +1,5 @@
 import { List, Map } from 'immutable'
-import { flow } from 'lodash'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 import { Mutate } from '../../model/core/mutators'
@@ -78,13 +77,13 @@ const WELCOME_STONE: RiverStone = {
 
 export type Riffle = List<RiverStone>
 
-const rewindAndApply = (
+const rewindAndApply = async (
   state: RiverState,
   floem: DataFloem,
   riffleIdx: number,
   riverStoneIdx: number,
   value: any,
-): RiverState => {
+): Promise<RiverState> => {
   const riffle = state.riffles.get(riffleIdx)!
   const riverStone = riffle.get(riverStoneIdx)!
   const { vars, stone } = riverStone
@@ -102,7 +101,7 @@ const rewindAndApply = (
   if (newRiffle) {
     updatedRiffles = updatedRiffles.push(List())
   }
-  const newRiverStone: RiverStone = riverStoneAt(floem, flowFrom, newVars)
+  const newRiverStone: RiverStone = await riverStoneAt(floem, flowFrom, newVars)
   updatedRiffles = updatedRiffles.set(-1, updatedRiffles.get(-1)!.push(newRiverStone))
   return {
     riffles: updatedRiffles,
@@ -119,12 +118,20 @@ type RiverState = typeof INITIAL_STATE
 
 export const River = ({ floem }: RiverProps) => {
   const [state, setState] = useState({
-    riffles: List<Riffle>([
-      List<RiverStone>([riverStoneAt(floem, { flow: 'flow-start', node: 0 }, Map())]),
-    ]),
+    riffles: List<Riffle>([List<RiverStone>([])]),
     activeRiffle: 0,
   })
+  useEffect(() => {
+    const getFirst = async () => {
+      setState({
+        activeRiffle: 0,
+        riffles: List([List([await riverStoneAt(floem, { flow: 'flow-start', node: 0 }, Map())])]),
+      })
+    }
+    getFirst()
+  }, [])
   const { riffles, activeRiffle } = state
+
   return (
     <div id='river' className='bg-slate-900 grow flex flex-col items-center'>
       <div className=''>
@@ -138,11 +145,10 @@ export const River = ({ floem }: RiverProps) => {
             className='riffle overflow-hidden rounded-lg bg-white shadow my-5 p-5 flex flex-col'
           >
             {riffle.map((riverStone, j) => {
-              const { ui, consequences, value } = riverStone.stone
-              const { assignTo, flowFrom: flowTo, newRiffle } = consequences
+              const { ui, value } = riverStone.stone
               const active = i === activeRiffle && j === riffle.size - 1
-              const onHop = (value: any) => {
-                setState(rewindAndApply(state, floem, i, j, value))
+              const onHop = async (value: any) => {
+                setState(await rewindAndApply(state, floem, i, j, value))
               }
               const View = StoneView(ui)
               return <View active={active} value={value} onHop={onHop} key={j} />
