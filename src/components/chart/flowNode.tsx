@@ -19,6 +19,11 @@ function FlowNode({ data: { mutate, flow, selected, floem } }: { data: FlowNodeP
 
   return (
     <div className=' w-96'>
+      {isTop || (
+        <div className='fringe-top mx-4'>
+          <div className='bg-zinc-50' />
+        </div>
+      )}
       {isStart ? (
         <div className='pb-1 w-full'>
           <TitleEditor
@@ -28,7 +33,7 @@ function FlowNode({ data: { mutate, flow, selected, floem } }: { data: FlowNodeP
           />
         </div>
       ) : (
-        <Handle type='target' position={Position.Top} className='p-1' />
+        <Handle type='target' position={Position.Top} className='p-1 z-10' />
       )}
       <div
         className={`overflow-hidden bg-slate-900 shadow rounded-lg cursor-move ${
@@ -36,8 +41,13 @@ function FlowNode({ data: { mutate, flow, selected, floem } }: { data: FlowNodeP
         }`}
       >
         <FlowEditor flow={flow} mutate={mutate} isTop={isTop} isBottom={isBottom} />
-        <Handle type='source' position={Position.Bottom} className='p-1' />
+        <Handle type='source' position={Position.Bottom} className='p-1 z-10' />
       </div>
+      {isBottom || (
+        <div className='fringe-bottom mx-4'>
+          <div className='bg-zinc-50' />
+        </div>
+      )}
     </div>
   )
 }

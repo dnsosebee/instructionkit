@@ -60,3 +60,42 @@ hr.ProseMirror-selectednode {
 .react-flow {
   @apply bg-slate-700;
 }
+
+.fringe-top,
+.fringe-bottom,
+.fringe-top-bottom {
+  height: 0;
+  overflow: visible;
+  position: relative;
+  transform: scale(1, 0.5);
+}
+
+.fringe-bottom div {
+  position: absolute;
+  height: 16px;
+  left: 0;
+  right: 0;
+  top: -1px;
+
+  --mask: radial-gradient(22.36px at 50% calc(100% - 30px), #000 99%, #0000 101%) calc(50% - 0px) 0/40px
+      100%,
+    radial-gradient(22.36px at 50% calc(100% + 20px), #0000 99%, #000 101%) calc(50% - 20px)
+      calc(100% - 10px) / 40px 100% repeat-x;
+
+  /* -webkit-mask: var(--mask); */
+  mask: var(--mask);
+}
+
+.fringe-top div {
+  position: absolute;
+  height: 16px;
+  left: 0;
+  right: 0;
+  top: -15px;
+
+  --mask: radial-gradient(22.36px at 50% 30px, #000 99%, #0000 101%) calc(50% - 20px) 0/40px 100%,
+    radial-gradient(22.36px at 50% -20px, #0000 99%, #000 101%) 50% 10px/40px 100% repeat-x;
+
+  /* -webkit-mask: var(--mask); */
+  mask: var(--mask);
+}
