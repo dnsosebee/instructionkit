@@ -31,7 +31,7 @@ export const FlowEditor = ({ flow, mutate, isTop: isTop, isBottom: isBottom }: F
     editorProps: {
       attributes: {
         class:
-          'chart-prose py-5 prose prose-hr:border-2 prose-hr:border-black cursor-text prose-hr:selected:border-blue-600',
+          'chart-prose py-3 prose prose-hr:border-2 prose-hr:border-black cursor-text prose-hr:selected:border-blue-600',
       },
     },
   })
