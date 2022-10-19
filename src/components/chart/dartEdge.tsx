@@ -3,7 +3,7 @@ import Paragraph from '@tiptap/extension-paragraph'
 import Placeholder from '@tiptap/extension-placeholder'
 import Text from '@tiptap/extension-text'
 import { EditorContent, useEditor } from '@tiptap/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { getBezierPath, Position } from 'reactflow'
 import { DataDart } from '../../model/core/floem'
 import { Mutate } from '../../model/core/mutators'
@@ -76,6 +76,12 @@ export default function Dart({
       },
     },
   })
+
+  useEffect(() => {
+    if (editor && dart.case !== editor.getText() && !editor.isFocused) {
+      editor.commands.setContent(`${dart.case}`)
+    }
+  }, [dart.case])
 
   return (
     <>
