@@ -24,7 +24,7 @@ export interface AdvancerProps {
   onHop: (value: any) => void
 }
 
-export type AdvancerType = 'pause' | 'choice' | 'finish'
+export type AdvancerType = 'pause' | 'choice' | 'finish' | 'string' | 'int' | 'float'
 
 export interface StoneUIConfig {
   fragment: string
