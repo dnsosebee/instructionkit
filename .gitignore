@@ -10,6 +10,6 @@ cgit sgils
 next-env.d.ts
 .next/*
 
-*.env
+*.env*
 
 .npmrc

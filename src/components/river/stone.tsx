@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import AlertModal from '../alertModal'
 import { AdvancerProps, StoneUIConfig } from './river'
 
 export const StoneView = (uiConfig: StoneUIConfig) => (props: AdvancerProps) => {
@@ -51,21 +53,52 @@ export type ChoiceParams = {
 
 const Choice = (params: ChoiceParams) => (props: AdvancerProps) => {
   const { active, value, onHop } = props
+  const [state, setState] = useState<{ isOpen: boolean; onProceed: () => void }>({
+    isOpen: false,
+    onProceed: () => {
+      throw new Error('onProceed not set')
+    },
+  })
+
   return (
-    <span className={'isolate inline-flex rounded-md shadow-sm self-center'}>
-      {params.choices.map((choice, i) => (
-        <button
-          disabled={!active}
-          type='button'
-          className={`relative -ml-px inline-flex items-center border border-gray-300 bg-white mt-5 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer ${
-            i == 0 ? 'rounded-l-md' : ''
-          } ${i == params.choices.length - 1 ? 'rounded-r-md' : ''}`}
-          onClick={() => onHop(choice)}
-        >
-          {choice}
-        </button>
-      ))}
-    </span>
+    <>
+      <AlertModal
+        open={state.isOpen}
+        titleText='Changing paths...'
+        descriptionText='This will rewind history and put you on a new path. Are you sure?'
+        buttonText='Yes, Rewind'
+        onProceed={state.onProceed}
+        onCancel={() => {
+          setState({ ...state, isOpen: false })
+        }}
+      />
+      <span className={'isolate inline-flex rounded-md shadow-sm self-center'}>
+        {params.choices.map((choice, i) => (
+          <button
+            key={i}
+            type='button'
+            className={`relative -ml-px inline-flex items-center border border-gray-300 bg-white mt-5 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer ${
+              i == 0 ? 'rounded-l-md' : ''
+            } ${i == params.choices.length - 1 ? 'rounded-r-md' : ''}
+            ${value == choice ? 'bg-indigo-50 text-indigo-700' : ''}`}
+            onClick={() => {
+              if (!active) {
+                setState({
+                  isOpen: true,
+                  onProceed: () => {
+                    onHop(choice)
+                  },
+                })
+              } else {
+                onHop(choice)
+              }
+            }}
+          >
+            {choice}
+          </button>
+        ))}
+      </span>
+    </>
   )
 }
 
