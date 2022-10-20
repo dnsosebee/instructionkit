@@ -79,7 +79,7 @@ export const Chart = ({ floem, mutate }: ChartProps) => {
   }
 
   return (
-    <div className='grow'>
+    <div className='absolute top-0 bottom-0 left-0 right-0'>
       <div className='absolute z-50'>
         <Breadcrumbs floem={floem} mutate={mutate} />
       </div>
