@@ -81,10 +81,10 @@ const helper = async (data: {
   } else if (
     el.tagName === 'P' &&
     (match = el.rawText?.match(
-      /(?<=^|\n)(?:(?<assignment>[A-z_]+[A-z0-9_]*) *=)? *&lt;(?<defaultString>[^<>\n]*)&gt; *$/,
+      /(?:^|\n)(?:(?<assignTo>[A-z_]+[A-z0-9_]*) *=)? *&lt;(?<defaultString>[^<>\n]*)&gt; *$/,
     ))
   ) {
-    const assignTo = match.groups!.assignment || 'output'
+    const assignTo = match.groups!.assignTo || 'output'
     const defaultString = match.groups!.defaultString || ''
     return stringStone({
       fragment,
@@ -96,11 +96,11 @@ const helper = async (data: {
   } else if (
     el.tagName === 'P' &&
     (match = el.rawText?.match(
-      /(?<=^|\n)(?:(?<assignment>[A-z_]+[A-z0-9_]*) *=)? *\[ *(?<choices>(?:(?:(?:(?:[A-z0-9_!?*'"()^$.]+[A-z0-9_!?*'"()^$ .]*)(?:(?:, *)|(?= *\])))){2,}))\](?=$|\n)/,
+      /(?:^|\n)(?:(?<assignTo>[A-z_]+[A-z0-9_]*) *=)? *\[ *(?<choices>(?:(?:[A-z0-9_!?*'"()^$.]+[A-z0-9_!?*'"()^$ .]*)(?:(?:, *)|(?= *\]))){2,})\](?=$|\n)/,
     ))
   ) {
+    const assignTo = match.groups!.assignTo || 'output'
     const choices = match.groups!.choices.split(',').map(trim)
-    const assignTo = match.groups!.assignment || 'output'
     return choiceStone({
       fragment,
       vars,
