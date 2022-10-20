@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import { trim } from 'lodash'
+import { isArray, trim } from 'lodash'
 import { HTMLElement, NodeType, parse } from 'node-html-parser'
 import { DataDart, DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
@@ -62,7 +62,18 @@ const helper = async (data: {
   const el = flowNodes[flocation.node]
   let match
 
-  console.log(el.rawText)
+  // booty injections
+  if (el.tagName !== 'PRE') {
+    el.innerHTML = el.innerHTML.replace(/{ *([A-z_]+[A-z_0-9]*) *}/, (match, bootyName) => {
+      const bootyValue = vars.get(bootyName)
+
+      if (bootyValue === undefined) return 'UNDEFINED'
+
+      if (isArray(bootyValue)) return bootyValue.map(v => v.toString()).join(', ')
+
+      return bootyValue.toString()
+    })
+  }
 
   if (el.tagName === 'HR') {
     return pauseStone({
@@ -125,6 +136,7 @@ const helper = async (data: {
         }
       })
     })()
+
     return helper({
       flows,
       darts,
