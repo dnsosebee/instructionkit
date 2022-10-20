@@ -150,8 +150,13 @@ export const River = ({ floem }: RiverProps) => {
               const onHop = async (value: any) => {
                 setState(await rewindAndApply(state, floem, i, j, value))
               }
-              const View = StoneView(ui)
-              return <View active={active} value={value} onHop={onHop} key={j} />
+              return (
+                <StoneView
+                  uiConfig={ui}
+                  advancerProps={{ active, value, onHop }}
+                  key={`r ${i} s ${j}`}
+                />
+              )
             })}
           </div>
         ))}

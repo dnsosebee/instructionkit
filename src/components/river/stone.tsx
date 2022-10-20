@@ -1,19 +1,30 @@
 import { useState } from 'react'
 import AlertModal from '../alertModal'
+import { TextInput } from '../../tiptap/textInput'
 import { AdvancerProps, StoneUIConfig } from './river'
+import { EditorContent, useEditor } from '@tiptap/react'
 
-export const StoneView = (uiConfig: StoneUIConfig) => (props: AdvancerProps) => {
+export const StoneView = ({
+  uiConfig,
+  advancerProps,
+}: {
+  uiConfig: StoneUIConfig
+  advancerProps: AdvancerProps
+}) => {
   const { fragment, advancer } = uiConfig
-  let Advancer: (props: AdvancerProps) => JSX.Element
+  let Advancer: React.FC<{ props: AdvancerProps; params: any }>
   switch (advancer.type) {
     case 'pause':
-      Advancer = NextButton(advancer.params)
+      Advancer = NextButton
       break
     case 'choice':
-      Advancer = Choice(advancer.params)
+      Advancer = Choice
+      break
+    case 'string':
+      Advancer = StringInput
       break
     case 'finish':
-      Advancer = FinishButton()
+      Advancer = FinishButton
       break
     default:
       throw new Error(`Unknown advancer type: ${advancer.type}`)
@@ -21,7 +32,7 @@ export const StoneView = (uiConfig: StoneUIConfig) => (props: AdvancerProps) => 
   return (
     <div className='stone'>
       <div dangerouslySetInnerHTML={{ __html: fragment }} className='prose' />
-      <Advancer {...props} />
+      <Advancer props={advancerProps} params={advancer.params} />
     </div>
   )
 }
@@ -30,7 +41,7 @@ export type NextButtonParams = {
   text: string
 }
 
-const NextButton = (params: NextButtonParams) => (props: AdvancerProps) => {
+const NextButton = ({ params, props }: { params: NextButtonParams; props: AdvancerProps }) => {
   const { active, onHop } = props
   return (
     <>
@@ -47,11 +58,43 @@ const NextButton = (params: NextButtonParams) => (props: AdvancerProps) => {
   )
 }
 
+export type StringInputParams = {
+  defaultString: string
+  text: string
+}
+
+const StringInput = ({ params, props }: { params: StringInputParams; props: AdvancerProps }) => {
+  const { onHop, value, active } = props
+
+  const editor = useEditor({
+    extensions: [TextInput],
+    content: params.defaultString,
+    editorProps: {
+      attributes: {
+        class: 'grow flex items-center px-1',
+      },
+    },
+  })
+
+  return (
+    <div className='flex border'>
+      <EditorContent editor={editor} className='grow flex' />
+      <button
+        disabled={!active && editor?.getText() == value}
+        className='inline-flex items-center rounded-md border border-gray-300 bg-white px-2 py-1 m-1 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 self-center cursor-pointer'
+        onClick={() => onHop(editor?.getText())}
+      >
+        ✔️
+      </button>
+    </div>
+  )
+}
+
 export type ChoiceParams = {
   choices: string[]
 }
 
-const Choice = (params: ChoiceParams) => (props: AdvancerProps) => {
+const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps }) => {
   const { active, value, onHop } = props
   const [state, setState] = useState<{ isOpen: boolean; onProceed: () => void }>({
     isOpen: false,
@@ -102,7 +145,7 @@ const Choice = (params: ChoiceParams) => (props: AdvancerProps) => {
   )
 }
 
-const FinishButton = () => () => {
+const FinishButton = () => {
   return <></>
   // return <p className='italic'>fin</p>
 }

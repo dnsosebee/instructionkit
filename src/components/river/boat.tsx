@@ -62,6 +62,8 @@ const helper = async (data: {
   const el = flowNodes[flocation.node]
   let match
 
+  console.log(el.rawText)
+
   if (el.tagName === 'HR') {
     return pauseStone({
       fragment,
@@ -75,6 +77,21 @@ const helper = async (data: {
       vars,
       flowFrom,
       newRiffle: false,
+    })
+  } else if (
+    el.tagName === 'P' &&
+    (match = el.rawText?.match(
+      /(?<=^|\n)(?:(?<assignment>[A-z_]+[A-z0-9_]*) *=)? *&lt;(?<defaultString>[^<>\n]*)&gt; *$/,
+    ))
+  ) {
+    const assignTo = match.groups!.assignment || 'output'
+    const defaultString = match.groups!.defaultString || ''
+    return stringStone({
+      fragment,
+      vars,
+      flowFrom,
+      assignTo,
+      defaultString,
     })
   } else if (
     el.tagName === 'P' &&
@@ -213,6 +230,37 @@ const choiceStone = ({
         params: {
           choices,
         },
+      },
+    },
+    consequences: {
+      assignTo,
+      flowFrom,
+      newRiffle: false,
+    },
+    value: null,
+  },
+})
+
+const stringStone = ({
+  fragment,
+  vars,
+  flowFrom,
+  assignTo,
+  defaultString,
+}: {
+  fragment: HTMLElement[]
+  vars: VarMap
+  flowFrom: Flocation
+  assignTo: string
+  defaultString: string
+}): RiverStone => ({
+  vars,
+  stone: {
+    ui: {
+      fragment: fragmentString(fragment),
+      advancer: {
+        type: 'string',
+        params: { defaultString },
       },
     },
     consequences: {
