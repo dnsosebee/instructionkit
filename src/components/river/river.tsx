@@ -133,9 +133,9 @@ export const River = ({ floem }: RiverProps) => {
   const { riffles, activeRiffle } = state
 
   return (
-    <div id='river' className='bg-slate-900 grow flex flex-col items-center'>
+    <div id='river' className='bg-slate-900 grow flex flex-col items-center p-2'>
       <div className=''>
-        <div className='text-3xl text-white mt-4 font-bold tracking-tight text-gray-50'>
+        <div className='text-3xl text-white mt-3 font-bold tracking-tight text-gray-50'>
           {floem.title}
         </div>
         {riffles.map((riffle, i) => (
