@@ -30,10 +30,12 @@ export const getServerSideProps: GetServerSideProps = async context => {
   }
 }
 
-export default ({ spaceId, floemId }: { spaceId: string; floemId: string }) => {
+const PageChart = ({ spaceId, floemId }: { spaceId: string; floemId: string }) => {
   const rep = useReplicache({ name: spaceId, mutators: floemMutators })
   if (!rep) {
     return null
   }
   return <FloemInjector rep={rep} id={floemId} view={Chart} />
 }
+
+export default PageChart
