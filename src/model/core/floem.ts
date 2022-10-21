@@ -92,25 +92,16 @@ export const toFloemFlows = (
 
 export const toFloemDarts = (
   edges: DartEdge[],
+  floem: string,
 ): { darts: DataFloem['darts']; selections: boolean[] } => {
   return {
     darts: edges.map(edge => ({
       id: edge.id,
-      floem: edge.data.dart.floem,
+      floem: edge.data && edge.data.dart ? edge.data.dart.floem : floem,
       from: edge.source,
       to: edge.target,
-      case: edge.data.dart.case,
+      case: edge.data && edge.data.dart ? edge.data.dart.case : '',
     })),
     selections: edges.map(edge => (edge.selected ? true : false)),
   }
-}
-
-export const toNewFloemDarts = (edges: DartEdge[], floem: string): DataFloem['darts'] => {
-  return edges.map(edge => ({
-    id: edge.id,
-    floem,
-    from: edge.source,
-    to: edge.target,
-    case: '',
-  }))
 }
