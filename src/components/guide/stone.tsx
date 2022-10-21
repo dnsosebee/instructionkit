@@ -2,13 +2,13 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import { useState } from 'react'
 import { TextInput } from '../../tiptap/textInput'
 import AlertModal from '../alertModal'
-import { AdvancerProps, StoneUIConfig } from './river'
+import { AdvancerProps, StepUIConfig } from './guide'
 
 export const StoneView = ({
   uiConfig,
   advancerProps,
 }: {
-  uiConfig: StoneUIConfig
+  uiConfig: StepUIConfig
   advancerProps: AdvancerProps
 }) => {
   const { fragment, advancer } = uiConfig

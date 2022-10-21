@@ -5,15 +5,15 @@ import { FlogramWorker } from '../../flogram'
 import { logger as parentLogger } from '../../logger'
 import { DataDart, DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
-import { Flocation, RiverStone, VarMap } from './river'
+import { Booty, Flocation, GuideStep } from './guide'
 
 const logger = parentLogger.child({ file: 'boat.tsx' })
 
 export async function riverStoneAt(
   floem: DataFloem,
   flowFrom: Flocation,
-  vars: VarMap,
-): Promise<RiverStone> {
+  vars: Booty,
+): Promise<GuideStep> {
   return helper({
     flows: floem.flows,
     darts: floem.darts,
@@ -39,8 +39,8 @@ const helper = async (data: {
   flocation: Flocation
   flowNodes: HTMLElement[] // nodes of the current flow
   fragment: HTMLElement[] // recursively builds up the fragment
-  vars: VarMap
-}): Promise<RiverStone> => {
+  vars: Booty
+}): Promise<GuideStep> => {
   const { flows, darts, flocation, flowNodes, fragment, vars } = data
   const doneWithFlow = flocation.node >= flowNodes.length
   if (doneWithFlow) {
@@ -131,11 +131,11 @@ const helper = async (data: {
     worker.postMessage(message)
     const updatedVars = await (async () => {
       logger.debug('waiting for flogram')
-      return new Promise<VarMap>(resolve => {
+      return new Promise<Booty>(resolve => {
         worker.onmessage = e => {
           logger.debug('flogram result', e.data)
           worker.terminate()
-          let updatedVars: VarMap = Map<string, any>()
+          let updatedVars: Booty = Map<string, any>()
           e.data.forEach(([k, v]: [k: string, v: any]) => {
             updatedVars = updatedVars.set(k, v)
           })
@@ -175,11 +175,11 @@ const finishStone = ({
   flowFrom,
 }: {
   fragment: HTMLElement[]
-  vars: VarMap
+  vars: Booty
   flowFrom: Flocation
-}): RiverStone => ({
-  vars,
-  stone: {
+}): GuideStep => ({
+  booty: vars,
+  step: {
     ui: {
       fragment: fragmentString(fragment),
       advancer: {
@@ -190,7 +190,7 @@ const finishStone = ({
     consequences: {
       assignTo: null,
       flowFrom,
-      newRiffle: true,
+      newPage: true,
     },
     value: null,
   },
@@ -203,12 +203,12 @@ const pauseStone = ({
   newRiffle,
 }: {
   fragment: HTMLElement[]
-  vars: VarMap
+  vars: Booty
   flowFrom: Flocation
   newRiffle?: boolean
-}): RiverStone => ({
-  vars,
-  stone: {
+}): GuideStep => ({
+  booty: vars,
+  step: {
     ui: {
       fragment: fragmentString(fragment),
       advancer: {
@@ -221,7 +221,7 @@ const pauseStone = ({
     consequences: {
       assignTo: null,
       flowFrom,
-      newRiffle: newRiffle || false,
+      newPage: newRiffle || false,
     },
     value: null,
   },
@@ -235,13 +235,13 @@ const choiceStone = ({
   assignTo,
 }: {
   fragment: HTMLElement[]
-  vars: VarMap
+  vars: Booty
   flowFrom: Flocation
   choices: string[]
   assignTo: string
-}): RiverStone => ({
-  vars,
-  stone: {
+}): GuideStep => ({
+  booty: vars,
+  step: {
     ui: {
       fragment: fragmentString(fragment),
       advancer: {
@@ -254,7 +254,7 @@ const choiceStone = ({
     consequences: {
       assignTo,
       flowFrom,
-      newRiffle: false,
+      newPage: false,
     },
     value: null,
   },
@@ -268,13 +268,13 @@ const stringStone = ({
   defaultString,
 }: {
   fragment: HTMLElement[]
-  vars: VarMap
+  vars: Booty
   flowFrom: Flocation
   assignTo: string
   defaultString: string
-}): RiverStone => ({
-  vars,
-  stone: {
+}): GuideStep => ({
+  booty: vars,
+  step: {
     ui: {
       fragment: fragmentString(fragment),
       advancer: {
@@ -285,7 +285,7 @@ const stringStone = ({
     consequences: {
       assignTo,
       flowFrom,
-      newRiffle: false,
+      newPage: false,
     },
     value: null,
   },

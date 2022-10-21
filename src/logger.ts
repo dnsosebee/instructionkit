@@ -6,3 +6,5 @@ export const logger = pino({
     asObject: false,
   },
 })
+
+export const { debug, info, warn, error } = logger

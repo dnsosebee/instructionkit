@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next'
 import { spaceExists } from 'replicache-nextjs/lib/backend'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { FloemInjector } from '../../../../src/components/floem'
-import { River } from '../../../../src/components/river/river'
+import { Guide } from '../../../../src/components/guide/guide'
 import { floemMutators } from '../../../../src/model/core/mutators'
 
 export const getServerSideProps: GetServerSideProps = async context => {
@@ -35,7 +35,7 @@ const PageRiver = ({ spaceId, floemId }: { spaceId: string; floemId: string }) =
   if (!rep) {
     return null
   }
-  return <FloemInjector rep={rep} id={floemId} view={River} />
+  return <FloemInjector rep={rep} id={floemId} view={Guide} />
 }
 
 export default PageRiver
