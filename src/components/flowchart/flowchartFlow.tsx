@@ -1,18 +1,19 @@
-import { Handle, Position } from 'reactflow'
+import { Handle, Node, NodeProps, Position } from 'reactflow'
 import { DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 import { Mutate } from '../../model/core/mutators'
 import { TitleEditor } from '../titleEditor'
-import { FlowEditor } from './flowEditor'
+import { FlowtextEditor } from './flowtextEditor.tsx'
 
-export interface FlowNodeProps {
+type Data = {
   mutate: Mutate
   flow: DataFlow
-  selected: boolean
   floem: DataFloem
 }
+export type FlowchartNode = Node<Data>
+export type FlowchartFlowProps = NodeProps<Data>
 
-function FlowNode({ data: { mutate, flow, selected, floem } }: { data: FlowNodeProps }) {
+function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlowProps) {
   const isStart = flow.id == 'flow-start'
   const isTop = !floem.darts.find(v => v.to == flow.id)
   const isBottom = !floem.darts.find(v => v.from == flow.id)
@@ -40,7 +41,7 @@ function FlowNode({ data: { mutate, flow, selected, floem } }: { data: FlowNodeP
           selected && 'border-indigo-500 outline-none ring-1 ring-indigo-500'
         }`}
       >
-        <FlowEditor flow={flow} mutate={mutate} isTop={isTop} isBottom={isBottom} />
+        <FlowtextEditor flow={flow} mutate={mutate} isTop={isTop} isBottom={isBottom} />
         <Handle type='source' position={Position.Bottom} className='p-1 z-10' />
       </div>
       {isBottom || (
@@ -52,4 +53,4 @@ function FlowNode({ data: { mutate, flow, selected, floem } }: { data: FlowNodeP
   )
 }
 
-export default FlowNode
+export default FlowchartFlow

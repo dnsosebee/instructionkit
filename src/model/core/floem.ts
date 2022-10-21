@@ -2,9 +2,10 @@
 // function to get all Docs. You'd typically have one of these files for each
 // domain object in your application.
 
-import { Edge, Node } from 'reactflow'
+import { Edge } from 'reactflow'
 import { ReadTransaction } from 'replicache'
-import { FlowNodeProps } from '../../components/chart/flowNode'
+import { FlowchartEdge } from '../../components/flowchart/flowchartDart'
+import { FlowchartNode } from '../../components/flowchart/flowchartFlow'
 import { DataFlow } from './flow'
 import { Mutate } from './mutators'
 
@@ -34,13 +35,11 @@ export async function listFloems(tx: ReadTransaction) {
 
 // adapters from Floem to React Flow nodes and edges
 
-export type DartEdge = Edge & { data: { dart: DataDart; mutate: Mutate; selected: boolean } }
-
-export const toReactFlowNodes = (
+export const toFlowchartNodes = (
   mutate: Mutate,
   floem: DataFloem,
   selections: boolean[],
-): Node<FlowNodeProps>[] => {
+): FlowchartNode[] => {
   return floem.flows.map((flow, i) => ({
     id: flow.id,
     type: 'flow',
@@ -56,11 +55,11 @@ export const toReactFlowNodes = (
   }))
 }
 
-export const toReactFlowEdges = (
+export const toFlowchartEdges = (
   mutate: Mutate,
   floem: DataFloem,
   selections: boolean[],
-): DartEdge[] => {
+): FlowchartEdge[] => {
   return floem.darts.map((dart, i) => ({
     id: dart.id,
     source: dart.from,
@@ -75,9 +74,9 @@ export const toReactFlowEdges = (
 
 // adapters from React Flow nodes and edges to Floem
 
-export const toFloemFlows = (
-  nodes: Node<FlowNodeProps>[],
-): { flows: DataFloem['flows']; selections: boolean[] } => {
+export const toDataFlows = (
+  nodes: FlowchartNode[],
+): { flows: DataFlow[]; selections: boolean[] } => {
   return {
     flows: nodes.map(node => ({
       id: node.id,
@@ -90,10 +89,10 @@ export const toFloemFlows = (
   }
 }
 
-export const toFloemDarts = (
-  edges: DartEdge[],
+export const toDataDarts = (
+  edges: (FlowchartEdge | Edge)[],
   floem: string,
-): { darts: DataFloem['darts']; selections: boolean[] } => {
+): { darts: DataDart[]; selections: boolean[] } => {
   return {
     darts: edges.map(edge => ({
       id: edge.id,

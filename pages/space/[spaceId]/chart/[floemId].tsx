@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next'
 import { spaceExists } from 'replicache-nextjs/lib/backend'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
-import { Chart } from '../../../../src/components/chart/chart'
 import { FloemInjector } from '../../../../src/components/floem'
+import { Flowchart } from '../../../../src/components/flowchart/flowchart'
 import { floemMutators } from '../../../../src/model/core/mutators'
 
 export const getServerSideProps: GetServerSideProps = async context => {
@@ -35,7 +35,7 @@ const PageChart = ({ spaceId, floemId }: { spaceId: string; floemId: string }) =
   if (!rep) {
     return null
   }
-  return <FloemInjector rep={rep} id={floemId} view={Chart} />
+  return <FloemInjector rep={rep} id={floemId} view={Flowchart} />
 }
 
 export default PageChart

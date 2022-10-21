@@ -1,7 +1,7 @@
 // This is a tiptap block that can be dragged around the page.
 
 import { mergeAttributes, Node, ReactNodeViewRenderer } from '@tiptap/react'
-import CodeStanzaView from '../components/chart/tiptap/codeStanzaView'
+import CodeStanzaView from '../components/flowchart/tiptap/codeStanzaView'
 
 export interface CodeStanzaOptions {
   HTMLAttributes: Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any

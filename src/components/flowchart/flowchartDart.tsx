@@ -3,26 +3,16 @@ import Paragraph from '@tiptap/extension-paragraph'
 import Placeholder from '@tiptap/extension-placeholder'
 import Text from '@tiptap/extension-text'
 import { EditorContent, useEditor } from '@tiptap/react'
-import React, { useEffect } from 'react'
-import { getBezierPath, Position } from 'reactflow'
+import { useEffect } from 'react'
+import { Edge, EdgeProps, getBezierPath } from 'reactflow'
 import { DataDart } from '../../model/core/floem'
 import { Mutate } from '../../model/core/mutators'
 
-export interface DartProps {
-  id: string
-  sourceX: number
-  sourceY: number
-  targetX: number
-  targetY: number
-  sourcePosition: Position
-  targetPosition: Position
-  style?: React.CSSProperties
-  data?: { dart: DataDart; mutate: Mutate }
-  markerEnd?: string | undefined
-  interactionWidth?: number
-}
+type Data = { dart: DataDart; mutate: Mutate }
+export type FlowchartEdge = Edge<Data>
+export type FlowchartDartProps = EdgeProps<Data>
 
-export default function Dart({
+export default function FlowchartDart({
   id,
   sourceX,
   sourceY,
@@ -34,7 +24,7 @@ export default function Dart({
   data,
   markerEnd = 'arrow',
   interactionWidth = 5,
-}: DartProps) {
+}: FlowchartDartProps) {
   const [path] = getBezierPath({
     sourceX,
     sourceY,

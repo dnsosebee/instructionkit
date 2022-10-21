@@ -5,15 +5,14 @@ import ReactFlow, {
   applyNodeChanges,
   Background,
   Controls,
-  Node,
+  Edge,
 } from 'reactflow'
 import {
-  DartEdge,
   DataFloem,
-  toFloemDarts,
-  toFloemFlows,
-  toReactFlowEdges,
-  toReactFlowNodes,
+  toDataDarts,
+  toDataFlows,
+  toFlowchartEdges,
+  toFlowchartNodes,
 } from '../../model/core/floem'
 
 import React from 'react'
@@ -21,31 +20,31 @@ import 'reactflow/dist/style.css'
 import { Mutate } from '../../model/core/mutators'
 import Breadcrumbs from '../breadcrumbs'
 import { Toolbar, ToolbarProps } from '../toolbar'
-import Dart from './dartEdge'
-import FlowNode, { FlowNodeProps } from './flowNode'
+import FlowchartDart, { FlowchartEdge } from './flowchartDart'
+import FlowchartFlow, { FlowchartNode } from './flowchartFlow'
 
-const nodeTypes = { flow: FlowNode }
-const edgeTypes = { dart: Dart }
+const nodeTypes = { flow: FlowchartFlow }
+const edgeTypes = { dart: FlowchartDart }
 
-interface ChartProps {
+interface FlowchartProps {
   mutate: Mutate
   floem: DataFloem
 }
 
-export const Chart = ({ floem, mutate }: ChartProps) => {
+export const Flowchart = ({ floem, mutate }: FlowchartProps) => {
   const [nodeSelections, setNodeSelections] = React.useState<boolean[]>(
     Array(floem.flows.length).fill(false),
   )
   const [edgeSelections, setEdgeSelections] = React.useState<boolean[]>(
     Array(floem.darts.length).fill(false),
   )
-  const nodes: Node<FlowNodeProps>[] = toReactFlowNodes(mutate, floem, nodeSelections)
-  const edges: DartEdge[] = toReactFlowEdges(mutate, floem, edgeSelections)
+  const nodes: FlowchartNode[] = toFlowchartNodes(mutate, floem, nodeSelections)
+  const edges: FlowchartEdge[] = toFlowchartEdges(mutate, floem, edgeSelections)
 
   const onNodesChange = useCallback(
     changes => {
       const newNodes = applyNodeChanges(changes, nodes)
-      const { flows, selections } = toFloemFlows(newNodes)
+      const { flows, selections } = toDataFlows(newNodes)
       mutate.updateFloem({ id: floem.id, flows }) // this might be race condition with below
       setNodeSelections(selections)
     },
@@ -54,8 +53,8 @@ export const Chart = ({ floem, mutate }: ChartProps) => {
 
   const onEdgesChange = useCallback(
     changes => {
-      const newEdges = applyEdgeChanges(changes, edges) as DartEdge[]
-      const { darts, selections } = toFloemDarts(newEdges, floem.id)
+      const newEdges = applyEdgeChanges(changes, edges) as FlowchartEdge[]
+      const { darts, selections } = toDataDarts(newEdges, floem.id)
       mutate.updateFloem({ id: floem.id, darts })
       setEdgeSelections(selections)
     },
@@ -64,8 +63,8 @@ export const Chart = ({ floem, mutate }: ChartProps) => {
 
   const onConnect = useCallback(
     params => {
-      const newEdges = addEdge(params, edges) as DartEdge[]
-      const { darts, selections } = toFloemDarts(newEdges, floem.id)
+      const newEdges = addEdge(params, edges) as (FlowchartEdge | Edge)[]
+      const { darts, selections } = toDataDarts(newEdges, floem.id)
       mutate.updateFloem({ id: floem.id, darts })
       setEdgeSelections(selections)
     },

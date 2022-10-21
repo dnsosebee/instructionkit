@@ -1,32 +1,28 @@
-import { Editor, EditorContent, useEditor } from '@tiptap/react'
+import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { DataFlow } from '../../model/core/flow'
 import { Mutate } from '../../model/core/mutators'
 
-export const PREVENT_TIPTAP_DEFAULT = true
-export const ALLOW_TIPTAP_DEFAULT = false
-
-export interface FlowEditorProps {
+export interface FlowtextEditorProps {
   flow: DataFlow
   mutate: Mutate
   isTop: boolean
   isBottom: boolean
 }
 
-export const FlowEditor = ({ flow, mutate, isTop: isTop, isBottom: isBottom }: FlowEditorProps) => {
-  const flowRef = useRef(flow)
-  // keep ref up to date with new props
-  useEffect(() => {
-    flowRef.current = flow
-  }, [flow])
-
+export const FlowtextEditor = ({
+  flow,
+  mutate,
+  isTop: isTop,
+  isBottom: isBottom,
+}: FlowtextEditorProps) => {
   // Content stuff
   const contentEditor = useEditor({
-    extensions: [StarterKit.configure({ dropcursor: false })], //.configure({ horizontalRule: { HTMLAttributes: { class: 'h-5' } } })],
-    content: `${flowRef.current.flowtext}`,
+    extensions: [StarterKit.configure({ dropcursor: false })], // TODO follow up with reactflow on fixing dropcursor rendering
+    content: `${flow.flowtext}`,
     onUpdate: ({ editor }) => {
-      mutate.updateFlow({ ...flowRef.current, flowtext: editor.getHTML() })
+      mutate.updateFlow({ id: flow.id, floem: flow.floem, flowtext: editor.getHTML() })
     },
     editorProps: {
       attributes: {
