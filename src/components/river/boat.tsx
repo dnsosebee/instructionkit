@@ -1,9 +1,13 @@
 import { Map } from 'immutable'
 import { isArray, trim } from 'lodash'
 import { HTMLElement, NodeType, parse } from 'node-html-parser'
+import { FlogramWorker } from '../../flogram'
+import { logger as parentLogger } from '../../logger'
 import { DataDart, DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 import { Flocation, RiverStone, VarMap } from './river'
+
+const logger = parentLogger.child({ file: 'boat.tsx' })
 
 export async function riverStoneAt(
   floem: DataFloem,
@@ -121,12 +125,15 @@ const helper = async (data: {
     })
   } else if (el.tagName === 'PRE') {
     const flogram = el.innerText.slice('<code>'.length, -'</code>'.length)
-    const worker = new Worker('/flogram.js')
-    const varsObject = Object.fromEntries(vars)
-    worker.postMessage({ varsObject, flogram })
+    const varsObject = vars.toObject()
+    const message = { flogram, vars: varsObject }
+    const worker: FlogramWorker = new Worker(new URL('src/flogram.ts', import.meta.url))
+    worker.postMessage(message)
     const updatedVars = await (async () => {
+      logger.debug('waiting for flogram')
       return new Promise<VarMap>(resolve => {
         worker.onmessage = e => {
+          logger.debug('flogram result', e.data)
           worker.terminate()
           let updatedVars: VarMap = Map<string, any>()
           e.data.forEach(([k, v]: [k: string, v: any]) => {

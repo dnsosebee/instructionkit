@@ -30,6 +30,7 @@
     "lodash": "^4.17.21",
     "next": "^12.1.6",
     "node-html-parser": "^6.1.1",
+    "pino": "^8.7.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "reactflow": "^11.0.0",
@@ -39,7 +40,6 @@
     "valtio": "^1.7.0"
   },
   "devDependencies": {
-    "dotenv": "^16.0.2",
     "@tailwindcss/typography": "^0.5.7",
     "@types/lodash": "^4.14.186",
     "@types/node": "^14.14.37",
@@ -47,6 +47,7 @@
     "@typescript-eslint/eslint-plugin": "^5.39.0",
     "@typescript-eslint/parser": "^5.39.0",
     "autoprefixer": "^10.4.11",
+    "dotenv": "^16.0.2",
     "eslint": "^8.24.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-valtio": "^0.6.1",

@@ -1,5 +1,6 @@
 import { List, Map } from 'immutable'
 import { useEffect, useState } from 'react'
+import { logger } from '../../logger'
 import { DataFloem } from '../../model/core/floem'
 import { DataFlow } from '../../model/core/flow'
 import { Mutate } from '../../model/core/mutators'
@@ -51,30 +52,6 @@ export interface RiverStone {
   stone: Stone
 }
 
-const WELCOME_STONE: RiverStone = {
-  vars: Map(),
-  stone: {
-    ui: {
-      fragment: 'Welcome to the river',
-      advancer: {
-        type: 'pause',
-        params: {
-          text: 'Begin',
-        },
-      },
-    },
-    consequences: {
-      assignTo: null,
-      flowFrom: {
-        flow: 'flow-start',
-        node: 0,
-      },
-      newRiffle: true,
-    },
-    value: null,
-  },
-}
-
 export type Riffle = List<RiverStone>
 
 const rewindAndApply = async (
@@ -84,6 +61,7 @@ const rewindAndApply = async (
   riverStoneIdx: number,
   value: any,
 ): Promise<RiverState> => {
+  logger.debug('rewindAndApply', { riffleIdx, riverStoneIdx, value })
   const riffle = state.riffles.get(riffleIdx)!
   const riverStone = riffle.get(riverStoneIdx)!
   const { vars, stone } = riverStone
@@ -109,14 +87,14 @@ const rewindAndApply = async (
   }
 }
 
-const INITIAL_STATE = {
-  riffles: List<Riffle>([List<RiverStone>([WELCOME_STONE])]),
-  activeRiffle: 0,
+type RiverState = {
+  riffles: List<Riffle>
+  activeRiffle: number
 }
 
-type RiverState = typeof INITIAL_STATE
-
 export const River = ({ floem }: RiverProps) => {
+  logger.debug('River', { floem })
+  console.log('floem', floem)
   const [state, setState] = useState({
     riffles: List<Riffle>([List<RiverStone>([])]),
     activeRiffle: 0,
@@ -125,7 +103,11 @@ export const River = ({ floem }: RiverProps) => {
     const getFirst = async () => {
       setState({
         activeRiffle: 0,
-        riffles: List([List([await riverStoneAt(floem, { flow: 'flow-start', node: 0 }, Map())])]),
+        riffles: List([
+          List([
+            await riverStoneAt(floem, { flow: 'flow-start', node: 0 }, Map([[`output`, null]])),
+          ]),
+        ]),
       })
     }
     getFirst()
