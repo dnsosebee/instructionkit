@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import AlertModal from '../alertModal'
-import { TextInput } from '../../tiptap/textInput'
-import { AdvancerProps, StoneUIConfig } from './river'
 import { EditorContent, useEditor } from '@tiptap/react'
+import { useState } from 'react'
+import { TextInput } from '../../tiptap/textInput'
+import AlertModal from '../alertModal'
+import { AdvancerProps, StoneUIConfig } from './river'
 
 export const StoneView = ({
   uiConfig,
@@ -96,11 +96,9 @@ export type ChoiceParams = {
 
 const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps }) => {
   const { active, value, onHop } = props
-  const [state, setState] = useState<{ isOpen: boolean; onProceed: () => void }>({
+  const [state, setState] = useState<{ isOpen: boolean; choice: any }>({
     isOpen: false,
-    onProceed: () => {
-      throw new Error('onProceed not set')
-    },
+    choice: null,
   })
 
   return (
@@ -110,7 +108,10 @@ const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps 
         titleText='Changing paths...'
         descriptionText='This will rewind history and put you on a new path. Are you sure?'
         buttonText='Yes, Rewind'
-        onProceed={state.onProceed}
+        onProceed={() => {
+          setState({ ...state, isOpen: false })
+          onHop(state.choice)
+        }}
         onCancel={() => {
           setState({ ...state, isOpen: false })
         }}
@@ -128,9 +129,7 @@ const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps 
               if (!active) {
                 setState({
                   isOpen: true,
-                  onProceed: () => {
-                    onHop(choice)
-                  },
+                  choice,
                 })
               } else {
                 onHop(choice)
