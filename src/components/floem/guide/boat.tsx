@@ -1,10 +1,10 @@
 import { Map } from 'immutable'
 import { isArray, trim } from 'lodash'
 import { HTMLElement, NodeType, parse } from 'node-html-parser'
-import { FlogramWorker } from '../../flogram'
-import { logger as parentLogger } from '../../logger'
-import { DataDart, DataFloem } from '../../model/core/floem'
-import { DataFlow } from '../../model/core/flow'
+import { FlogramWorker } from '../../../flogram'
+import { logger as parentLogger } from '../../../logger'
+import { DataDart, DataFloem } from '../../../model/core/floem'
+import { DataFlow } from '../../../model/core/flow'
 import { Booty, Flocation, GuideStep } from './guide'
 
 const logger = parentLogger.child({ file: 'boat.tsx' })

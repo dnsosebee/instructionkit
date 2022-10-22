@@ -1,7 +1,7 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useState } from 'react'
-import { TextInput } from '../../tiptap/textInput'
-import AlertModal from '../alertModal'
+import { TextInput } from '../../../model/tiptap/textInput'
+import AlertModal from './alertModal'
 import { AdvancerProps, StepUIConfig } from './guide'
 
 export const StoneView = ({

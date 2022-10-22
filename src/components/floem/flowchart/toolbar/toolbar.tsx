@@ -1,6 +1,6 @@
 import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon } from '@heroicons/react/20/solid'
-import { DataFloem } from '../model/core/floem'
-import { Mutate } from '../model/core/mutators'
+import { DataFloem } from '../../../../model/core/floem'
+import { Mutate } from '../../../../model/core/mutators'
 import { IconButton } from './iconButton'
 
 export interface ToolbarProps {

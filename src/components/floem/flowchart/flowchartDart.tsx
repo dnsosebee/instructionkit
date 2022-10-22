@@ -5,8 +5,8 @@ import Text from '@tiptap/extension-text'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useEffect } from 'react'
 import { Edge, EdgeProps, getBezierPath } from 'reactflow'
-import { DataDart } from '../../model/core/floem'
-import { Mutate } from '../../model/core/mutators'
+import { DataDart } from '../../../model/core/floem'
+import { Mutate } from '../../../model/core/mutators'
 
 type Data = { dart: DataDart; mutate: Mutate }
 export type FlowchartEdge = Edge<Data>

@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next'
 import { spaceExists } from 'replicache-nextjs/lib/backend'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
-import { FloemInjector } from '../../../../src/components/floem'
-import { Guide } from '../../../../src/components/guide/guide'
+import { FloemInjector } from '../../../../src/components/floem/floem'
+import { Guide } from '../../../../src/components/floem/guide/guide'
 import { floemMutators } from '../../../../src/model/core/mutators'
 
 export const getServerSideProps: GetServerSideProps = async context => {

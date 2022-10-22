@@ -1,10 +1,10 @@
 import { PlusCircleIcon, PlusIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
-import { genFloemId, starterFloem } from '../model/core/data/dummyFloem'
-import { listFloems } from '../model/core/floem'
-import { Rep } from '../model/core/mutators'
-import { spaceRelativeUrl } from './floem'
+import { genFloemId, starterFloem } from '../../model/core/data/dummyFloem'
+import { listFloems } from '../../model/core/floem'
+import { Rep } from '../../model/core/mutators'
+import { spaceRelativeUrl } from '../floem/floem'
 import { FloemCard } from './floemCard'
 
 export const Dashboard = ({ rep }: { rep: Rep }) => {

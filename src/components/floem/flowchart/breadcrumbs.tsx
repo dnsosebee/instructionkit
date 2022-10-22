@@ -1,7 +1,7 @@
 import { HomeIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
-import { DataFloem } from '../model/core/floem'
-import { Mutate } from '../model/core/mutators'
+import { DataFloem } from '../../../model/core/floem'
+import { Mutate } from '../../../model/core/mutators'
 import { TitleEditor } from './titleEditor'
 
 export interface BreadcrumbsProps {

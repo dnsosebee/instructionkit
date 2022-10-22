@@ -13,15 +13,15 @@ import {
   toDataFlows,
   toFlowchartEdges,
   toFlowchartNodes,
-} from '../../model/core/floem'
+} from '../../../model/core/floem'
 
 import React from 'react'
 import 'reactflow/dist/style.css'
-import { Mutate } from '../../model/core/mutators'
-import Breadcrumbs from '../breadcrumbs'
-import { Toolbar, ToolbarProps } from '../toolbar'
+import { Mutate } from '../../../model/core/mutators'
+import Breadcrumbs from './breadcrumbs'
 import FlowchartDart, { FlowchartEdge } from './flowchartDart'
 import FlowchartFlow, { FlowchartNode } from './flowchartFlow'
+import { Toolbar, ToolbarProps } from './toolbar/toolbar'
 
 const nodeTypes = { flow: FlowchartFlow }
 const edgeTypes = { dart: FlowchartDart }

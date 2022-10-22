@@ -1,8 +1,8 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { useEffect } from 'react'
-import { DataFlow } from '../../model/core/flow'
-import { Mutate } from '../../model/core/mutators'
+import { DataFlow } from '../../../model/core/flow'
+import { Mutate } from '../../../model/core/mutators'
 
 export interface FlowtextEditorProps {
   flow: DataFlow

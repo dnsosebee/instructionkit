@@ -4,8 +4,8 @@
 
 import { Edge } from 'reactflow'
 import { ReadTransaction } from 'replicache'
-import { FlowchartEdge } from '../../components/flowchart/flowchartDart'
-import { FlowchartNode } from '../../components/flowchart/flowchartFlow'
+import { FlowchartEdge } from '../../components/floem/flowchart/flowchartDart'
+import { FlowchartNode } from '../../components/floem/flowchart/flowchartFlow'
 import { DataFlow } from './flow'
 import { Mutate } from './mutators'
 

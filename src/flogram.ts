@@ -3,7 +3,7 @@
 /*global self*/
 import { logger as parentLogger } from './logger'
 
-const logger = parentLogger.child({ file: 'flogram.ts' })
+const { debug } = parentLogger.child({ file: 'flogram.ts' })
 
 export interface ToWorker {
   vars: { [key: string]: any }
@@ -15,17 +15,17 @@ export interface FlogramWorker extends Worker {
 }
 
 onmessage = function (e: MessageEvent<ToWorker>) {
-  logger.debug('onmessage', e.data)
+  debug('onmessage', e.data)
   const { vars, flogram } = e.data
   const selfy = self as { [key: string]: any }
-  logger.debug('setting global vars...')
+  debug('setting global vars...')
   Object.entries(vars).forEach(([key, value]) => {
     selfy[key] = value
-    logger.debug('set', key, value)
+    debug('set', key, value)
   })
-  logger.debug('done setting global vars.')
-  logger.debug(`Worker: flogram = ${flogram}`)
-  logger.debug('selfy', selfy)
+  debug('done setting global vars.')
+  debug(`Worker: flogram = ${flogram}`)
+  debug('selfy', selfy)
 
   eval(flogram)
 
@@ -38,6 +38,6 @@ onmessage = function (e: MessageEvent<ToWorker>) {
         e => ['value', 'writable', 'enumerable', 'configurable'].includes(e[0]) && e[1],
       ).length === 4,
   )
-  logger.debug('validEntries', validEntries)
+  debug('validEntries', validEntries)
   self.postMessage(validEntries)
 }
