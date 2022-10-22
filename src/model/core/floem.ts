@@ -22,12 +22,12 @@ export const floemSchema = z
   .refine(
     floem =>
       floem.darts.every(dart => floem.flows.some(flow => flow.id === dart.from)) &&
-      floem.darts.every(dart => floem.flows.some(flow => flow.id === dart.to)), // test this
+      floem.darts.every(dart => floem.flows.some(flow => flow.id === dart.to)),
   )
   .refine(
     floem =>
       floem.flows.every(flow => flow.floem === floem.id) &&
-      floem.darts.every(dart => dart.floem === floem.id), // test this
+      floem.darts.every(dart => dart.floem === floem.id),
   )
 
 export type DataFloem = z.infer<typeof floemSchema>

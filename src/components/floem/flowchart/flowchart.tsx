@@ -10,6 +10,7 @@ import {
 
 import React from 'react'
 import 'reactflow/dist/style.css'
+import { genDartId } from '../../../model/core/dart'
 import { Mutate } from '../../../model/core/mutators'
 import Breadcrumbs from './breadcrumbs'
 import FlowchartDart, { FlowchartEdge } from './flowchartDart'
@@ -57,6 +58,7 @@ export const Flowchart = ({ floem, mutate }: FlowchartProps) => {
   const onConnect = useCallback(
     params => {
       mutate.addDart({
+        id: genDartId(),
         floem: floem.id,
         from: params.source,
         to: params.target,

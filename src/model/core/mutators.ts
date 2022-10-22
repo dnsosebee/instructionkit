@@ -35,13 +35,14 @@ export const floemMutators = {
   },
 
   // Flow
-  async addFlow(tx: WriteTransaction, floemId: string) {
+  async addFlow(tx: WriteTransaction, ids: { flowId: string; floemId: string }) {
+    const { flowId, floemId } = ids
     const prev: DataFloem = (await tx.get(floemId)) as DataFloem
     if (!prev) {
       throw new Error(`No floem with id ${floemId}`)
     }
     // make sure the ID is new
-    let id = genFlowId()
+    let id = flowId
     while (prev.flows.some(flow => flow.id === id)) {
       id = genFlowId()
     }
@@ -66,12 +67,12 @@ export const floemMutators = {
   },
 
   // Dart
-  async addDart(tx: WriteTransaction, dart: Omit<DataDart, 'id' | 'case'>) {
+  async addDart(tx: WriteTransaction, dart: Omit<DataDart, 'case'>) {
     const prev: DataFloem = (await tx.get(dart.floem)) as DataFloem
     if (!prev) {
       throw new Error(`No floem with id ${dart.floem}`)
     }
-    let id = genDartId()
+    let id = dart.id
     while (prev.darts.some(d => d.id === id)) {
       id = genDartId()
     }
