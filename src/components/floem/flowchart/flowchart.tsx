@@ -1,19 +1,12 @@
 import { useCallback } from 'react'
-import ReactFlow, {
-  addEdge,
-  applyEdgeChanges,
-  applyNodeChanges,
-  Background,
-  Controls,
-  Edge,
-} from 'reactflow'
+import ReactFlow, { applyEdgeChanges, applyNodeChanges, Background, Controls } from 'reactflow'
+import { DataFloem } from '../../../model/core/floem'
 import {
-  DataFloem,
   toDataDarts,
   toDataFlows,
   toFlowchartEdges,
   toFlowchartNodes,
-} from '../../../model/core/floem'
+} from '../../../model/core/reactflowAdapters'
 
 import React from 'react'
 import 'reactflow/dist/style.css'
@@ -54,7 +47,7 @@ export const Flowchart = ({ floem, mutate }: FlowchartProps) => {
   const onEdgesChange = useCallback(
     changes => {
       const newEdges = applyEdgeChanges(changes, edges) as FlowchartEdge[]
-      const { darts, selections } = toDataDarts(newEdges, floem.id)
+      const { darts, selections } = toDataDarts(newEdges)
       mutate.updateFloem({ id: floem.id, darts })
       setEdgeSelections(selections)
     },
@@ -63,10 +56,11 @@ export const Flowchart = ({ floem, mutate }: FlowchartProps) => {
 
   const onConnect = useCallback(
     params => {
-      const newEdges = addEdge(params, edges) as (FlowchartEdge | Edge)[]
-      const { darts, selections } = toDataDarts(newEdges, floem.id)
-      mutate.updateFloem({ id: floem.id, darts })
-      setEdgeSelections(selections)
+      mutate.addDart({
+        floem: floem.id,
+        from: params.source,
+        to: params.target,
+      })
     },
     [floem],
   )

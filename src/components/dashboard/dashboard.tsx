@@ -1,8 +1,7 @@
 import { PlusCircleIcon, PlusIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
-import { genFloemId, starterFloem } from '../../model/core/data/dummyFloem'
-import { listFloems } from '../../model/core/floem'
+import { genFloemId, listFloems, STARTER_FLOEM } from '../../model/core/floem'
 import { Rep } from '../../model/core/mutators'
 import { spaceRelativeUrl } from '../floem/floem'
 import { FloemCard } from './floemCard'
@@ -17,7 +16,7 @@ export const Dashboard = ({ rep }: { rep: Rep }) => {
   const onClickNewFloemButton = () => {
     const id = genFloemId()
     setCreatingNew(true)
-    rep.mutate.createFloem(starterFloem(id))
+    rep.mutate.createFloem(STARTER_FLOEM(id))
     window.location.href = relativeUrl(`/chart/${id}`)
   }
 

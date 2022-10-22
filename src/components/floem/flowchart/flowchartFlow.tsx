@@ -1,6 +1,6 @@
 import { Handle, Node, NodeProps, Position } from 'reactflow'
 import { DataFloem } from '../../../model/core/floem'
-import { DataFlow } from '../../../model/core/flow'
+import { DataFlow, FLOW_START_ID } from '../../../model/core/flow'
 import { Mutate } from '../../../model/core/mutators'
 import { FlowtextEditor } from './flowtextEditor.tsx'
 import { TitleEditor } from './titleEditor'
@@ -14,7 +14,7 @@ export type FlowchartNode = Node<Data>
 export type FlowchartFlowProps = NodeProps<Data>
 
 function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlowProps) {
-  const isStart = flow.id == 'flow-start'
+  const isStart = flow.id === FLOW_START_ID
   const isTop = !floem.darts.find(v => v.to == flow.id)
   const isBottom = !floem.darts.find(v => v.from == flow.id)
 

@@ -5,11 +5,11 @@ import Text from '@tiptap/extension-text'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useEffect } from 'react'
 import { Edge, EdgeProps, getBezierPath } from 'reactflow'
-import { DataDart } from '../../../model/core/floem'
+import { DataDart } from '../../../model/core/dart'
 import { Mutate } from '../../../model/core/mutators'
 
 type Data = { dart: DataDart; mutate: Mutate }
-export type FlowchartEdge = Edge<Data>
+export type FlowchartEdge = Edge<Data> & { data: Data }
 export type FlowchartDartProps = EdgeProps<Data>
 
 export default function FlowchartDart({
@@ -50,7 +50,7 @@ export default function FlowchartDart({
       Paragraph,
       Text,
       Placeholder.configure({
-        placeholder: '↓',
+        placeholder: 'condition',
         emptyNodeClass:
           'first:before:text-gray-400 first:before:float-left first:before:content-[attr(data-placeholder)] first:before:pointer-events-none first:before:h-0',
       }),

@@ -1,5 +1,6 @@
 import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon } from '@heroicons/react/20/solid'
 import { DataFloem } from '../../../../model/core/floem'
+import { FLOW_START_ID } from '../../../../model/core/flow'
 import { Mutate } from '../../../../model/core/mutators'
 import { IconButton } from './iconButton'
 
@@ -13,7 +14,7 @@ export interface ToolbarProps {
 export const Toolbar = ({ mutate, floem, nodeSelections, edgeSelections }: ToolbarProps) => {
   const disableDelete =
     (nodeSelections.every(v => !v) && edgeSelections.every(v => !v)) ||
-    nodeSelections[floem.flows.findIndex(flow => flow.id === 'flow-start')]
+    nodeSelections[floem.flows.findIndex(flow => flow.id === FLOW_START_ID)]
 
   return (
     <div className='static'>

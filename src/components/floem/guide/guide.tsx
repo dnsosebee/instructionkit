@@ -1,8 +1,8 @@
 import { List, Map } from 'immutable'
 import { useEffect, useState } from 'react'
-import { debug } from '../../../logger'
+import { logger } from '../../../logger'
 import { DataFloem } from '../../../model/core/floem'
-import { DataFlow } from '../../../model/core/flow'
+import { DataFlow, FLOW_START_ID } from '../../../model/core/flow'
 import { Mutate } from '../../../model/core/mutators'
 import { riverStoneAt as guideStepAt } from './boat'
 import { StoneView as StepView } from './stone'
@@ -61,7 +61,7 @@ const rewindAndApply = async (
   stepNumber: number,
   value: any,
 ): Promise<GuideState> => {
-  debug('rewindAndApply', { pageNumber, stepNumber, value })
+  logger.debug('rewindAndApply', { pageNumber, stepNumber, value })
   const guidePage = state.pages.get(pageNumber)!
   const guideStep = guidePage.get(stepNumber)!
   const { booty, step } = guideStep
@@ -103,7 +103,7 @@ export const Guide = ({ floem }: GuideProps) => {
         activePage: 0,
         pages: List([
           List([
-            await guideStepAt(floem, { flow: 'flow-start', node: 0 }, Map([[`output`, null]])),
+            await guideStepAt(floem, { flow: FLOW_START_ID, node: 0 }, Map([[`output`, null]])),
           ]),
         ]),
       })
@@ -117,7 +117,7 @@ export const Guide = ({ floem }: GuideProps) => {
       id='guide'
       className='absolute bg-slate-900 grow flex flex-col items-center p-2 min-h-full min-w-full'
     >
-      <div className=''>
+      <div>
         <div className='text-3xl text-white mt-3 font-bold tracking-tight text-gray-50'>
           {floem.title}
         </div>
