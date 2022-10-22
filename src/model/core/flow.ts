@@ -1,14 +1,9 @@
-import { nanoid } from 'nanoid'
 import { z } from 'zod'
-import { FLOEM_ID_PREFIX, FLOW_ID_PREFIX } from './idPrefixes'
-
-export const FLOW_START_ID = 'flow-start'
-
-export const genFlowId = () => FLOW_ID_PREFIX + nanoid(5)
+import { FLOEM_ID_LENGTH, FLOEM_ID_PREFIX, FLOW_ID_LENGTH, FLOW_ID_PREFIX } from './ids'
 
 export const flowSchema = z.object({
-  id: z.string().startsWith(FLOW_ID_PREFIX).length(10),
-  floem: z.string().startsWith(FLOEM_ID_PREFIX),
+  id: z.string().startsWith(FLOW_ID_PREFIX).length(FLOW_ID_LENGTH),
+  floem: z.string().startsWith(FLOEM_ID_PREFIX).length(FLOEM_ID_LENGTH),
   flowtext: z.string(),
   createdAt: z.number(),
   position: z.object({

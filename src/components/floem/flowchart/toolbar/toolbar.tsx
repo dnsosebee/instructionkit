@@ -1,6 +1,6 @@
 import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon } from '@heroicons/react/20/solid'
 import { DataFloem } from '../../../../model/core/floem'
-import { FLOW_START_ID, genFlowId } from '../../../../model/core/flow'
+import { FLOW_START_ID, genFlowId } from '../../../../model/core/ids'
 import { Mutate } from '../../../../model/core/mutators'
 import { IconButton } from './iconButton'
 

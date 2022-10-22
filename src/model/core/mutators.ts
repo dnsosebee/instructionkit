@@ -1,8 +1,10 @@
+import {} from 'nanoid'
 import { Replicache, WriteTransaction } from 'replicache'
 import { logger as parentLogger } from '../../logger'
-import { DartUpdate, DataDart, DEFAULT_DART_CASE, genDartId } from './dart'
+import { DartUpdate, DataDart, DEFAULT_DART_CASE } from './dart'
 import { DataFloem, floemSchema, FloemUpdate } from './floem'
-import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate, genFlowId } from './flow'
+import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate } from './flow'
+import { DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './ids'
 
 const logger = parentLogger.child({ module: 'mutators' })
 
@@ -44,7 +46,7 @@ export const floemMutators = {
     // make sure the ID is new
     let id = flowId
     while (prev.flows.some(flow => flow.id === id)) {
-      id = genFlowId()
+      id = nextId(id, FLOW_UUID_LENGTH)
     }
     const newFlow: DataFlow = {
       id,
@@ -74,7 +76,7 @@ export const floemMutators = {
     }
     let id = dart.id
     while (prev.darts.some(d => d.id === id)) {
-      id = genDartId()
+      id = nextId(id, DART_UUID_LENGTH)
     }
     const newDart: DataDart = { ...dart, id, case: DEFAULT_DART_CASE }
     const darts = [...prev.darts, newDart]

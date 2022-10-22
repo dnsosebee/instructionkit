@@ -2,32 +2,43 @@
 // function to get all Docs. You'd typically have one of these files for each
 // domain object in your application.
 
-import { nanoid } from 'nanoid'
 import { ReadTransaction } from 'replicache'
 import { z } from 'zod'
-import { dartSchema, DEFAULT_DART_CASE, genDartId } from './dart'
-import { DEFAULT_FLOWTEXT, flowSchema, FLOW_START_ID, genFlowId } from './flow'
-import { FLOEM_ID_PREFIX } from './idPrefixes'
-
-export const genFloemId = () => FLOEM_ID_PREFIX + nanoid()
+import { dartSchema, DEFAULT_DART_CASE } from './dart'
+import { DEFAULT_FLOWTEXT, flowSchema } from './flow'
+import {
+  FLOEM_ID_LENGTH,
+  FLOEM_ID_PREFIX,
+  FLOW_START_ID,
+  genDartId,
+  genFloemId,
+  genFlowId,
+} from './ids'
 
 export const floemSchema = z
   .object({
-    id: z.string().startsWith(FLOEM_ID_PREFIX).length(27),
+    id: z.string().startsWith(FLOEM_ID_PREFIX).length(FLOEM_ID_LENGTH),
     title: z.string(),
     createdAt: z.number(),
-    flows: z.array(flowSchema).refine(flows => flows.some(flow => flow.id === FLOW_START_ID)),
+    flows: z
+      .array(flowSchema)
+      .refine(
+        flows => flows.reduce((acc, flow) => (flow.id === FLOW_START_ID ? acc + 1 : acc), 0) === 1,
+        'must have exactly one flow-start',
+      ),
     darts: z.array(dartSchema),
   })
   .refine(
     floem =>
       floem.darts.every(dart => floem.flows.some(flow => flow.id === dart.from)) &&
       floem.darts.every(dart => floem.flows.some(flow => flow.id === dart.to)),
+    'all darts must have to and from flow ids that exist in the floem',
   )
   .refine(
     floem =>
       floem.flows.every(flow => flow.floem === floem.id) &&
       floem.darts.every(dart => dart.floem === floem.id),
+    'all flows and darts must have correct floem id',
   )
 
 export type DataFloem = z.infer<typeof floemSchema>

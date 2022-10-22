@@ -10,7 +10,7 @@ import {
 
 import React from 'react'
 import 'reactflow/dist/style.css'
-import { genDartId } from '../../../model/core/dart'
+import { genDartId } from '../../../model/core/ids'
 import { Mutate } from '../../../model/core/mutators'
 import Breadcrumbs from './breadcrumbs'
 import FlowchartDart, { FlowchartEdge } from './flowchartDart'

@@ -1,6 +1,7 @@
 import { Handle, Node, NodeProps, Position } from 'reactflow'
 import { DataFloem } from '../../../model/core/floem'
-import { DataFlow, FLOW_START_ID } from '../../../model/core/flow'
+import { DataFlow } from '../../../model/core/flow'
+import { FLOW_START_ID } from '../../../model/core/ids'
 import { Mutate } from '../../../model/core/mutators'
 import { FlowtextEditor } from './flowtextEditor.tsx'
 import { TitleEditor } from './titleEditor'
