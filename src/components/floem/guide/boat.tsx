@@ -1,7 +1,6 @@
 import { Map } from 'immutable'
 import { isArray, trim } from 'lodash'
 import { HTMLElement, NodeType, parse } from 'node-html-parser'
-import { FlogramWorker } from '../../../flogram'
 import { logger as parentLogger } from '../../../logger'
 import { DataDart } from '../../../model/core/dart'
 import { DataFloem } from '../../../model/core/floem'
@@ -125,21 +124,24 @@ const helper = async (data: {
       assignTo,
     })
   } else if (el.tagName === 'PRE') {
-    const flogram = el.innerText.slice('<code>'.length, -'</code>'.length)
+    const flogram = el.innerText
+      .slice('<code>'.length, -'</code>'.length)
+      .replaceAll(/&lt;/g, '<')
+      .replaceAll(/&gt;/g, '>')
     const varsObject = vars.toObject()
     const message = { flogram, vars: varsObject }
-    const worker: FlogramWorker = new Worker(new URL('src/flogram.ts', import.meta.url))
+    const worker = new Worker('/flogram.js')
     worker.postMessage(message)
     const updatedVars = await (async () => {
       logger.debug('waiting for flogram')
       return new Promise<Booty>(resolve => {
         worker.onmessage = e => {
-          logger.debug('flogram result', e.data)
           worker.terminate()
           let updatedVars: Booty = Map<string, any>()
           e.data.forEach(([k, v]: [k: string, v: any]) => {
             updatedVars = updatedVars.set(k, v)
           })
+          logger.debug('flogram done, ', e.data)
           resolve(updatedVars)
         }
       })
