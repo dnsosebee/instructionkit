@@ -1,8 +1,8 @@
 import { EditorContent, useEditor } from '@tiptap/react'
-import StarterKit from '@tiptap/starter-kit'
 import { useEffect } from 'react'
 import { DataFlow } from '../../../model/core/flow'
 import { Mutate } from '../../../model/core/mutators'
+import FlowtextExtension from '../../../model/tiptap/flowtextExtension'
 
 export interface FlowtextEditorProps {
   flow: DataFlow
@@ -19,7 +19,7 @@ export const FlowtextEditor = ({
 }: FlowtextEditorProps) => {
   // Content stuff
   const contentEditor = useEditor({
-    extensions: [StarterKit.configure({ dropcursor: false })], // TODO follow up with reactflow on fixing dropcursor rendering
+    extensions: [FlowtextExtension],
     content: `${flow.flowtext}`,
     onUpdate: ({ editor }) => {
       mutate.updateFlow({ id: flow.id, floem: flow.floem, flowtext: editor.getHTML() })

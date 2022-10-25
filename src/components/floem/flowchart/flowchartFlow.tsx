@@ -3,7 +3,7 @@ import { DataFloem } from '../../../model/core/floem'
 import { DataFlow } from '../../../model/core/flow'
 import { FLOW_START_ID } from '../../../model/core/ids'
 import { Mutate } from '../../../model/core/mutators'
-import { FlowtextEditor } from './flowtextEditor.tsx'
+import { FlowtextEditor } from './flowtextEditor'
 import { TitleEditor } from './titleEditor'
 
 type Data = {
