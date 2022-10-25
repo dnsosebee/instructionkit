@@ -4,7 +4,7 @@ import Placeholder from '@tiptap/extension-placeholder'
 import Text from '@tiptap/extension-text'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useEffect } from 'react'
-import { Edge, EdgeProps, getBezierPath } from 'reactflow'
+import { Edge, EdgeProps, getSmoothStepPath } from 'reactflow'
 import { DataDart } from '../../../model/core/dart'
 import { Mutate } from '../../../model/core/mutators'
 
@@ -25,7 +25,7 @@ export default function FlowchartDart({
   markerEnd = 'arrow',
   interactionWidth = 5,
 }: FlowchartDartProps) {
-  const [path] = getBezierPath({
+  const [path] = getSmoothStepPath({
     sourceX,
     sourceY,
     sourcePosition,
