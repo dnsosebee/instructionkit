@@ -2,7 +2,7 @@
 // also, make sure not to generate IDs from the mutator: could lead to de-sync'ed client views. We want mutators to be deterministic.
 import { customAlphabet } from 'nanoid'
 
-const ALPHABET = '346789ABCDEFGHJKLMNPQRTUVWXYabcdefghijkmnpqrtwxyz_'
+const ALPHABET = '346789ABCDEFGHJKLMNPQRTUVWXYabcdefghijkmnpqrtwxyz'
 
 // floem
 export const FLOEM_ID_PREFIX = 'floem-'
@@ -18,6 +18,14 @@ export const FLOW_START_ID = FLOW_ID_PREFIX + 'start'
 export const FLOW_ID_LENGTH = FLOW_ID_PREFIX.length + FLOW_UUID_LENGTH
 const genFlowUuid = customAlphabet(ALPHABET, FLOW_UUID_LENGTH)
 export const genFlowId = () => FLOW_ID_PREFIX + genFlowUuid()
+
+// case
+export const CASE_ID_PREFIX = 'case-'
+export const CASE_UUID_LENGTH = 5
+export const CASE_DEFAULT_ID = CASE_ID_PREFIX + 'default'
+export const CASE_ID_LENGTH = CASE_ID_PREFIX.length + CASE_UUID_LENGTH
+const genCaseUuid = customAlphabet(ALPHABET, CASE_UUID_LENGTH)
+export const genCaseId = () => CASE_ID_PREFIX + genCaseUuid()
 
 // dart
 export const DART_ID_PREFIX = 'dart-'
