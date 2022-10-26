@@ -131,8 +131,9 @@ const helper = async (data: {
       return new Promise<Booty>(resolve => {
         worker.onmessage = e => {
           worker.terminate()
-          let updatedVars: Booty = Map<string, any>()
+          let updatedVars: Booty = Map<string, any>(varsObject)
           e.data.forEach(([k, v]: [k: string, v: any]) => {
+            console.log('Assigning old var: ', k, v)
             updatedVars = updatedVars.set(k, v)
           })
           logger.debug('flogram done, ', e.data)
