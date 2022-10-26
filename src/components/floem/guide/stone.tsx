@@ -81,10 +81,10 @@ const StringInput = ({ params, props }: { params: StringInputParams; props: Adva
       <EditorContent editor={editor} className='grow flex' />
       <button
         disabled={!active && editor?.getText() == value}
-        className='inline-flex items-center rounded-md border border-gray-300 bg-white px-2 py-1 m-1 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 self-center cursor-pointer'
+        className='standard-button'
         onClick={() => onHop(editor?.getText())}
       >
-        ✔️
+        ✓
       </button>
     </div>
   )

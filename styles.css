@@ -103,3 +103,7 @@ hr.ProseMirror-selectednode {
 .node-case {
   @apply not-last:mr-2 items-center flex flex-col;
 }
+
+.standard-button {
+  @apply inline-flex items-center rounded-md border border-sky-500 bg-white px-2 py-1 m-1 text-sm font-medium text-sky-500 shadow-sm hover:bg-sky-500 hover:text-zinc-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 self-center cursor-pointer duration-150;
+}
