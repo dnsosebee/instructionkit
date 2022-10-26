@@ -73,13 +73,13 @@ const StringInput = ({ params, props }: { params: StringInputParams; props: Adva
     content: params.defaultString,
     editorProps: {
       attributes: {
-        class: 'grow flex items-center px-1',
+        class: 'grow flex items-center px-2',
       },
     },
   })
 
   return (
-    <div className='flex border'>
+    <div className='flex border mt-5 w-min'>
       <EditorContent editor={editor} className='grow flex' />
       <button
         disabled={!active && editor?.getText() == value}
@@ -135,7 +135,7 @@ const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps 
             setState({ ...state, isOpen: false })
           }}
         />
-        <EditorContent editor={editor} />
+        <EditorContent editor={editor} className='mt-5' />
       </>
     </FlowtextProvider>
   )
