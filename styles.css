@@ -101,5 +101,5 @@ hr.ProseMirror-selectednode {
 }
 
 .node-case {
-  @apply not-last:mr-2 items-center;
+  @apply not-last:mr-2 items-center flex flex-col;
 }
