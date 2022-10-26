@@ -1,6 +1,8 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useState } from 'react'
+import FlowtextExtension from '../../../model/tiptap/flowtextExtension'
 import { TextInput } from '../../../model/tiptap/textInput'
+import FlowtextProvider, { FlowtextContext, View } from '../flowtextProvider'
 import AlertModal from './alertModal'
 import { AdvancerProps, StepUIConfig } from './guide'
 
@@ -91,7 +93,7 @@ const StringInput = ({ params, props }: { params: StringInputParams; props: Adva
 }
 
 export type ChoiceParams = {
-  choices: string[]
+  content: string
 }
 
 const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps }) => {
@@ -101,46 +103,40 @@ const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps 
     choice: null,
   })
 
+  const editor = useEditor({
+    extensions: [FlowtextExtension],
+    content: params.content,
+    editable: false,
+  })
+
+  const onHopInactive = (value: any) => {
+    setState({ isOpen: true, choice: value })
+  }
+
+  const context: FlowtextContext<View.Guide> = {
+    view: View.Guide,
+    onHop: active ? onHop : onHopInactive,
+  }
+
   return (
-    <>
-      <AlertModal
-        open={state.isOpen}
-        titleText='Changing paths...'
-        descriptionText='This will rewind history and put you on a new path. Are you sure?'
-        buttonText='Yes, Rewind'
-        onProceed={() => {
-          setState({ ...state, isOpen: false })
-          onHop(state.choice)
-        }}
-        onCancel={() => {
-          setState({ ...state, isOpen: false })
-        }}
-      />
-      <span className={'isolate inline-flex rounded-md shadow-sm self-center'}>
-        {params.choices.map((choice, i) => (
-          <button
-            key={i}
-            type='button'
-            className={`relative -ml-px inline-flex items-center border border-gray-300 bg-white mt-5 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 cursor-pointer ${
-              i == 0 ? 'rounded-l-md' : ''
-            } ${i == params.choices.length - 1 ? 'rounded-r-md' : ''}
-            ${value == choice ? 'bg-indigo-50 text-indigo-700' : ''}`}
-            onClick={() => {
-              if (!active) {
-                setState({
-                  isOpen: true,
-                  choice,
-                })
-              } else {
-                onHop(choice)
-              }
-            }}
-          >
-            {choice}
-          </button>
-        ))}
-      </span>
-    </>
+    <FlowtextProvider context={context}>
+      <>
+        <AlertModal
+          open={state.isOpen}
+          titleText='Changing paths...'
+          descriptionText='This will rewind history and put you on a new path. Are you sure?'
+          buttonText='Yes, Rewind'
+          onProceed={() => {
+            setState({ ...state, isOpen: false })
+            onHop(state.choice)
+          }}
+          onCancel={() => {
+            setState({ ...state, isOpen: false })
+          }}
+        />
+        <EditorContent editor={editor} />
+      </>
+    </FlowtextProvider>
   )
 }
 
