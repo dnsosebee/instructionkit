@@ -35,9 +35,8 @@ export const toFlowchartEdges = (
   return floem.darts.map((dart, i) => ({
     id: dart.id,
     source: dart.from,
+    sourceHandle: dart.case,
     target: dart.to,
-    label: dart.case,
-    data: { mutate, dart },
     type: 'dart',
     selected: selections[i],
     interactionWidth: 30,
@@ -46,17 +45,16 @@ export const toFlowchartEdges = (
 // adapters from React Flow nodes and edges to Floem
 
 export const toDataFlows = (
-  nodes: FlowchartNode[],
+  flowchartNodes: FlowchartNode[],
 ): { flows: DataFlow[]; selections: boolean[] } => {
   return {
-    flows: nodes.map(node => ({
+    flows: flowchartNodes.map(node => ({
       id: node.id,
-      floem: node.data.flow.floem,
       flowtext: node.data.flow.flowtext,
-      createdAt: Date.now(),
+      createdAt: node.data?.flow?.createdAt ?? Date.now(),
       position: node.position,
     })),
-    selections: nodes.map(node => (node.selected ? true : false)),
+    selections: flowchartNodes.map(node => (node.selected ? true : false)),
   }
 }
 
@@ -66,10 +64,9 @@ export const toDataDarts = (
   return {
     darts: edges.map(edge => ({
       id: edge.id,
-      floem: edge.data.dart.floem,
       from: edge.source,
+      case: edge.sourceHandle,
       to: edge.target,
-      case: edge.data.dart.case,
     })),
     selections: edges.map(edge => (edge.selected ? true : false)),
   }

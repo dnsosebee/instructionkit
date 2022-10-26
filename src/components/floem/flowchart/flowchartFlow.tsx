@@ -42,7 +42,13 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
           selected && 'border-indigo-500 outline-none ring-1 ring-indigo-500'
         }`}
       >
-        <FlowtextEditor flow={flow} mutate={mutate} isTop={isTop} isBottom={isBottom} />
+        <FlowtextEditor
+          flow={flow}
+          mutate={mutate}
+          isTop={isTop}
+          isBottom={isBottom}
+          floem={floem.id}
+        />
         <Handle type='source' position={Position.Bottom} className='p-1 z-10' />
       </div>
       {isBottom || (

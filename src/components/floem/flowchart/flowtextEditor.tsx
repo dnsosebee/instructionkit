@@ -6,6 +6,7 @@ import FlowtextExtension from '../../../model/tiptap/flowtextExtension'
 
 export interface FlowtextEditorProps {
   flow: DataFlow
+  floem: string
   mutate: Mutate
   isTop: boolean
   isBottom: boolean
@@ -13,6 +14,7 @@ export interface FlowtextEditorProps {
 
 export const FlowtextEditor = ({
   flow,
+  floem,
   mutate,
   isTop: isTop,
   isBottom: isBottom,
@@ -22,10 +24,11 @@ export const FlowtextEditor = ({
     extensions: [FlowtextExtension],
     content: `${flow.flowtext}`,
     onUpdate: ({ editor }) => {
-      mutate.updateFlow({ id: flow.id, floem: flow.floem, flowtext: editor.getHTML() })
+      mutate.updateFlow({ id: flow.id, floem, flowtext: editor.getHTML() })
     },
     editorProps: {
       attributes: {
+        flow: flow.id,
         class:
           'chart-prose py-3 prose prose-hr:border-2 prose-hr:border-black cursor-text prose-hr:selected:border-blue-600',
       },

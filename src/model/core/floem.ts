@@ -4,16 +4,9 @@
 
 import { ReadTransaction } from 'replicache'
 import { z } from 'zod'
-import { dartSchema, DEFAULT_DART_CASE } from './dart'
+import { dartSchema } from './dart'
 import { DEFAULT_FLOWTEXT, flowSchema } from './flow'
-import {
-  FLOEM_ID_LENGTH,
-  FLOEM_ID_PREFIX,
-  FLOW_START_ID,
-  genDartId,
-  genFloemId,
-  genFlowId,
-} from './ids'
+import { FLOEM_ID_LENGTH, FLOEM_ID_PREFIX, FLOW_START_ID, genFloemId } from './ids'
 
 export const floemSchema = z
   .object({
@@ -33,13 +26,7 @@ export const floemSchema = z
       floem.darts.every(dart => floem.flows.some(flow => flow.id === dart.from)) &&
       floem.darts.every(dart => floem.flows.some(flow => flow.id === dart.to)),
     'all darts must have to and from flow ids that exist in the floem',
-  )
-  .refine(
-    floem =>
-      floem.flows.every(flow => flow.floem === floem.id) &&
-      floem.darts.every(dart => dart.floem === floem.id),
-    'all flows and darts must have correct floem id',
-  )
+  ) // TODO add more refinements that parse TipTap output for case IDs
 
 export type DataFloem = z.infer<typeof floemSchema>
 
@@ -50,8 +37,6 @@ export async function listFloems(tx: ReadTransaction) {
 }
 
 export const STARTER_FLOEM = (id: string = genFloemId()): DataFloem => {
-  const flow2Id = genFlowId()
-  const dartId = genDartId()
   return {
     id,
     title: 'My New Floem',
@@ -59,27 +44,11 @@ export const STARTER_FLOEM = (id: string = genFloemId()): DataFloem => {
     flows: [
       {
         id: FLOW_START_ID,
-        floem: id,
         flowtext: DEFAULT_FLOWTEXT,
         createdAt: Date.now(),
         position: { x: 20, y: 50 },
       },
-      {
-        id: flow2Id,
-        floem: id,
-        flowtext: DEFAULT_FLOWTEXT,
-        createdAt: Date.now(),
-        position: { x: 200, y: 600 },
-      },
     ],
-    darts: [
-      {
-        id: dartId,
-        floem: id,
-        from: FLOW_START_ID,
-        to: flow2Id,
-        case: DEFAULT_DART_CASE,
-      },
-    ],
+    darts: [],
   }
 }

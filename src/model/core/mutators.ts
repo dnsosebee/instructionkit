@@ -1,7 +1,7 @@
 import {} from 'nanoid'
 import { Replicache, WriteTransaction } from 'replicache'
 import { logger as parentLogger } from '../../logger'
-import { DartUpdate, DataDart, DEFAULT_DART_CASE } from './dart'
+import { DartUpdate, DataDart } from './dart'
 import { DataFloem, floemSchema, FloemUpdate } from './floem'
 import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate } from './flow'
 import { DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './ids'
@@ -50,7 +50,6 @@ export const floemMutators = {
     }
     const newFlow: DataFlow = {
       id,
-      floem: floemId,
       createdAt: Date.now(),
       position: { x: 0, y: 0 },
       flowtext: DEFAULT_FLOWTEXT,
@@ -59,35 +58,35 @@ export const floemMutators = {
     await tx.put(floemId, parseOrSkip(floemSchema, { ...prev, flows }))
   },
 
-  async updateFlow(tx: WriteTransaction, flow: FlowUpdate) {
-    const prev: DataFloem = (await tx.get(flow.floem)) as DataFloem
+  async updateFlow(tx: WriteTransaction, flowUpdate: FlowUpdate) {
+    const prev: DataFloem = (await tx.get(flowUpdate.floem)) as DataFloem
     if (!prev) {
-      throw new Error(`No floem with id ${flow.floem}`)
+      throw new Error(`No floem with id ${flowUpdate.floem}`)
     }
-    const flows = prev.flows.map(f => (f.id === flow.id ? { ...f, ...flow } : f))
-    await tx.put(flow.floem, parseOrSkip(floemSchema, { ...prev, flows }))
+    const flows = prev.flows.map(f => (f.id === flowUpdate.id ? { ...f, ...flowUpdate } : f))
+    await tx.put(prev.id, parseOrSkip(floemSchema, { ...prev, flows }))
   },
 
   // Dart
-  async addDart(tx: WriteTransaction, dart: Omit<DataDart, 'case'>) {
-    const prev: DataFloem = (await tx.get(dart.floem)) as DataFloem
+  async addDart(tx: WriteTransaction, data: { dart: DataDart; floem: string }) {
+    const { dart, floem } = data
+    const prev: DataFloem = (await tx.get(floem)) as DataFloem
     if (!prev) {
-      throw new Error(`No floem with id ${dart.floem}`)
+      throw new Error(`No floem with id ${floem}`)
     }
     let id = dart.id
     while (prev.darts.some(d => d.id === id)) {
       id = nextId(id, DART_UUID_LENGTH)
     }
-    const newDart: DataDart = { ...dart, id, case: DEFAULT_DART_CASE }
-    const darts = [...prev.darts, newDart]
-    await tx.put(dart.floem, parseOrSkip(floemSchema, { ...prev, darts }))
+    const darts = [...prev.darts, { ...dart, id }]
+    await tx.put(floem, parseOrSkip(floemSchema, { ...prev, darts }))
   },
-  async updateDart(tx: WriteTransaction, dart: DartUpdate) {
-    const prev: DataFloem = (await tx.get(dart.floem)) as DataFloem
+  async updateDart(tx: WriteTransaction, dartUpdate: DartUpdate) {
+    const prev: DataFloem = (await tx.get(dartUpdate.floem)) as DataFloem
     if (!prev) {
-      throw new Error(`No floem with id ${dart.floem}`)
+      throw new Error(`No floem with id ${dartUpdate.floem}`)
     }
-    const darts = prev.darts.map(d => (d.id === dart.id ? { ...d, ...dart } : d))
-    await tx.put(dart.floem, parseOrSkip(floemSchema, { ...prev, darts }))
+    const darts = prev.darts.map(d => (d.id === dartUpdate.id ? { ...d, ...dartUpdate } : d))
+    await tx.put(dartUpdate.floem, parseOrSkip(floemSchema, { ...prev, darts }))
   },
 }
