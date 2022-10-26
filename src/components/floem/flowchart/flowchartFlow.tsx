@@ -43,7 +43,6 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
         }`}
       >
         <FlowtextEditor flow={flow} mutate={mutate} isTop={isTop} isBottom={isBottom} />
-        <Handle type='source' position={Position.Bottom} className='p-1 z-10' />
       </div>
       {isBottom || (
         <div className='fringe-bottom mx-4'>
