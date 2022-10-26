@@ -1,4 +1,5 @@
 import { EditorContent, useEditor } from '@tiptap/react'
+import { applyDevTools } from 'prosemirror-dev-toolkit'
 import { useEffect } from 'react'
 import { DataFlow } from '../../../model/core/flow'
 import { Mutate } from '../../../model/core/mutators'
@@ -23,6 +24,11 @@ export const FlowtextEditor = ({
   const contentEditor = useEditor({
     extensions: [FlowtextExtension],
     content: `${flow.flowtext}`,
+    onCreate({ editor }) {
+      if (process.env.NODE_ENV !== 'production') {
+        applyDevTools(editor.view)
+      }
+    },
     onUpdate: ({ editor }) => {
       mutate.updateFlow({ id: flow.id, floem, flowtext: editor.getHTML() })
     },
