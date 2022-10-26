@@ -14,6 +14,7 @@ export async function riverStoneAt(
   flowFrom: Flocation,
   vars: Booty,
 ): Promise<GuideStep> {
+  logger.debug('riverStoneAt: ', floem, flowFrom, vars)
   return helper({
     flows: floem.flows,
     darts: floem.darts,
@@ -69,7 +70,7 @@ const helper = async (data: {
 
   // booty injections
   if (el.tagName !== 'PRE') {
-    el.innerHTML = el.innerHTML.replace(/{ *([A-z_]+[A-z_0-9]*) *}/, (match, bootyName) => {
+    el.innerHTML = el.innerHTML.replaceAll(/{ *([A-z_]+[A-z_0-9]*) *}/g, (match, bootyName) => {
       const bootyValue = vars.get(bootyName)
 
       if (bootyValue === undefined) return 'UNDEFINED'
