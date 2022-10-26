@@ -131,9 +131,9 @@ const helper = async (data: {
       return new Promise<Booty>(resolve => {
         worker.onmessage = e => {
           worker.terminate()
+          // let updatedVars: Booty = Map<string, any>() TODO: Figure out why this line doesn't work. Old booty variables are not getting passed back in the vars object from the webworker.
           let updatedVars: Booty = Map<string, any>(varsObject)
           e.data.forEach(([k, v]: [k: string, v: any]) => {
-            console.log('Assigning old var: ', k, v)
             updatedVars = updatedVars.set(k, v)
           })
           logger.debug('flogram done, ', e.data)
