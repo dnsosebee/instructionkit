@@ -58,10 +58,13 @@ export const Flowchart = ({ floem, mutate }: FlowchartProps) => {
   const onConnect = useCallback(
     params => {
       mutate.addDart({
-        id: genDartId(),
         floem: floem.id,
-        from: params.source,
-        to: params.target,
+        dart: {
+          id: genDartId(),
+          from: params.source,
+          case: params.sourceHandle,
+          to: params.target,
+        },
       })
     },
     [floem],

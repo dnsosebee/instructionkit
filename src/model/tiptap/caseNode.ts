@@ -1,6 +1,5 @@
 import { mergeAttributes, Node, nodeInputRule, ReactNodeViewRenderer } from '@tiptap/react'
 import Case from '../../components/floem/tiptap/case'
-import { genCaseId } from '../core/ids'
 
 const CASE_INPUT_REGEX = /^\|$/
 
@@ -10,14 +9,6 @@ const CaseNode = Node.create({
   content: 'text*',
 
   inline: true,
-
-  addAttributes() {
-    return {
-      id: {
-        default: genCaseId(),
-      },
-    }
-  },
 
   parseHTML() {
     return [

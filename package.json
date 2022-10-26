@@ -19,6 +19,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.3",
     "@heroicons/react": "^2.0.12",
+    "@tiptap-pro/extension-unique-id": "^2.0.0-beta.14",
     "@tiptap/extension-document": "^2.0.0-beta.196",
     "@tiptap/extension-paragraph": "^2.0.0-beta.196",
     "@tiptap/extension-placeholder": "^2.0.0-beta.199",
