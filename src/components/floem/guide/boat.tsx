@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import { isArray, trim } from 'lodash'
+import { isArray } from 'lodash'
 import { HTMLElement, NodeType, parse } from 'node-html-parser'
 import { logger as parentLogger } from '../../../logger'
 import { DataDart } from '../../../model/core/dart'
@@ -7,7 +7,7 @@ import { DataFloem } from '../../../model/core/floem'
 import { DataFlow } from '../../../model/core/flow'
 import { Booty, Flocation, GuideStep } from './guide'
 
-const logger = parentLogger.child({ file: 'boat.tsx' })
+const logger = parentLogger.child({ module: 'boat' })
 
 export async function riverStoneAt(
   floem: DataFloem,
@@ -65,6 +65,7 @@ const helper = async (data: {
   const flowFrom: Flocation = { flow: flocation.flow, node: flocation.node + 1 }
   const el = flowNodes[flocation.node]
   let match
+  logger.debug(el)
 
   // booty injections
   if (el.tagName !== 'PRE') {
@@ -108,20 +109,12 @@ const helper = async (data: {
       assignTo,
       defaultString,
     })
-  } else if (
-    el.tagName === 'P' &&
-    (match = el.rawText?.match(
-      /(?:^|\n)(?:(?<assignTo>[A-z_]+[A-z0-9_]*) *=)? *\[ *(?<choices>(?:(?:[A-z0-9_!?*'"()^$.]+[A-z0-9_!?*'"()^$ .]*)(?:(?:, *)|(?= *\]))){2,})\](?=$|\n)/,
-    ))
-  ) {
-    const assignTo = match.groups!.assignTo || 'output'
-    const choices = match.groups!.choices.split(',').map(trim)
+  } else if (el.rawTagName === 'switch') {
     return choiceStone({
       fragment,
       vars,
       flowFrom,
-      choices,
-      assignTo,
+      content: el.innerHTML,
     })
   } else if (el.tagName === 'PRE') {
     const flogram = el.innerText
@@ -234,14 +227,12 @@ const choiceStone = ({
   fragment,
   vars,
   flowFrom,
-  choices,
-  assignTo,
+  content,
 }: {
   fragment: HTMLElement[]
   vars: Booty
   flowFrom: Flocation
-  choices: string[]
-  assignTo: string
+  content: string
 }): GuideStep => ({
   booty: vars,
   step: {
@@ -250,12 +241,12 @@ const choiceStone = ({
       advancer: {
         type: 'choice',
         params: {
-          choices,
+          content,
         },
       },
     },
     consequences: {
-      assignTo,
+      assignTo: 'output',
       flowFrom,
       newPage: false,
     },

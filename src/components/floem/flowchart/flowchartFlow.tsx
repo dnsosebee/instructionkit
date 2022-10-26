@@ -47,7 +47,7 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
           mutate={mutate}
           isTop={isTop}
           isBottom={isBottom}
-          floem={floem.id}
+          floem={floem}
         />
       </div>
       {isBottom || (

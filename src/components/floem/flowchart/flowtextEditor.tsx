@@ -1,12 +1,15 @@
 import { EditorContent, useEditor } from '@tiptap/react'
+import { applyDevTools } from 'prosemirror-dev-toolkit'
 import { useEffect } from 'react'
+import { DataFloem } from '../../../model/core/floem'
 import { DataFlow } from '../../../model/core/flow'
 import { Mutate } from '../../../model/core/mutators'
 import FlowtextExtension from '../../../model/tiptap/flowtextExtension'
+import FlowtextProvider, { View } from '../flowtextProvider'
 
 export interface FlowtextEditorProps {
   flow: DataFlow
-  floem: string
+  floem: DataFloem
   mutate: Mutate
   isTop: boolean
   isBottom: boolean
@@ -23,8 +26,13 @@ export const FlowtextEditor = ({
   const contentEditor = useEditor({
     extensions: [FlowtextExtension],
     content: `${flow.flowtext}`,
+    onCreate({ editor }) {
+      if (process.env.NODE_ENV !== 'production') {
+        applyDevTools(editor.view)
+      }
+    },
     onUpdate: ({ editor }) => {
-      mutate.updateFlow({ id: flow.id, floem, flowtext: editor.getHTML() })
+      mutate.updateFlow({ id: flow.id, floem: floem.id, flowtext: editor.getHTML() })
     },
     editorProps: {
       attributes: {
@@ -41,13 +49,17 @@ export const FlowtextEditor = ({
     }
   }, [flow.flowtext])
 
+  const dartCases = floem.darts.filter(v => v.from === flow.id).map(v => v.case)
+
   return (
     <div
       className={`list-disc flex-grow cursor-default nodrag bg-zinc-50 mx-4 ${
         isTop ? 'rounded-t mt-4' : ''
       } ${isBottom ? 'rounded-b mb-4' : ''}`}
     >
-      <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
+      <FlowtextProvider context={{ view: View.Flowchart, dartCases }}>
+        <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
+      </FlowtextProvider>
     </div>
   )
 }

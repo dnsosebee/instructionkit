@@ -1,4 +1,5 @@
-import { mergeAttributes, Node, textblockTypeInputRule } from '@tiptap/react'
+import { InputRule, mergeAttributes, Node } from '@tiptap/react'
+import { TextSelection } from 'prosemirror-state'
 
 const SWITCH_INPUT_REGEX = /^(?: *(?<assignment>[A-z_]+[A-z0-9_]*) *=)? *\[$/
 
@@ -34,12 +35,17 @@ const SwitchNode = Node.create({
 
   addInputRules() {
     return [
-      textblockTypeInputRule({
+      new InputRule({
         find: SWITCH_INPUT_REGEX,
-        type: this.type,
-        getAttributes: match => ({
-          language: match[1],
-        }),
+        handler: ({ state, range }) => {
+          const $start = state.doc.resolve(range.from)
+          const tr = state.tr
+            .delete(range.from, range.to)
+            .setBlockType(range.from, range.from, this.type)
+            .replaceSelectionWith(state.schema.nodes.case.create())
+            .setSelection(TextSelection.near(state.tr.doc.resolve(range.from + 1)))
+            .insertText(' ')
+        },
       }),
     ]
   },
