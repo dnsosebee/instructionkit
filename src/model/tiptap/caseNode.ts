@@ -19,7 +19,13 @@ const CaseNode = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['case', mergeAttributes(HTMLAttributes), 0]
+    return [
+      'case',
+      mergeAttributes(HTMLAttributes, {
+        class: '',
+      }),
+      0,
+    ]
   },
 
   addNodeView() {

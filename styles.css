@@ -95,3 +95,11 @@ hr.ProseMirror-selectednode {
 .react-flow__attribution {
   display: none;
 }
+
+.node-switch {
+  @apply bg-transparent;
+}
+
+.node-case {
+  @apply not-last:mr-2 items-center;
+}

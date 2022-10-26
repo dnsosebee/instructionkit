@@ -21,7 +21,7 @@ const SwitchNode = Node.create({
     return [
       'switch',
       mergeAttributes(HTMLAttributes, {
-        class: 'bg-blue-500 font-bold flex',
+        class: 'font-bold flex',
         'data-type': this.name,
       }),
       0,
