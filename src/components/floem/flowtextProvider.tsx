@@ -9,6 +9,7 @@ export enum View {
 export type FlowtextContext<T extends View> = { view: T } & (T extends View.Guide
   ? {
       onHop: AdvancerProps['onHop']
+      chosenCaseId: string | undefined
     }
   : T extends View.Flowchart
   ? {

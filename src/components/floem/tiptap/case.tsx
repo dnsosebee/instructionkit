@@ -15,14 +15,20 @@ export const Case = (props: NodeViewProps) => {
     }, [props.node.content])
   }
 
-  const isGuide = context.view === View.Guide
-  const isChart = context.view === View.Flowchart
-
-  const TagName = context.view === View.Flowchart ? 'div' : 'button'
   const caseId: string = props.node.attrs.id
 
+  const isGuide = context.view === View.Guide
+  const isChart = context.view === View.Flowchart
+  const isChosen = isGuide ? context.chosenCaseId === caseId : false
+
+  const TagName = context.view === View.Flowchart ? 'div' : 'button'
+
   const buttonClasses = isGuide
-    ? 'duration-150 bg-white hover:bg-sky-500 hover:text-zinc-50 text-sky-500 cursor-pointer select-none'
+    ? `duration-150 select-none ${
+        isChosen
+          ? 'bg-sky-500 text-zinc-50'
+          : 'bg-white hover:bg-sky-500 hover:text-zinc-50 text-sky-500 cursor-pointer'
+      }`
     : 'bg-sky-500 text-zinc-50'
 
   return (
@@ -59,7 +65,7 @@ export const Case = (props: NodeViewProps) => {
           </div>
         )}
       </NodeViewWrapper>
-      {context.view === View.Flowchart && context.dartCases.includes(caseId) && (
+      {isChart && context.dartCases.includes(caseId) && (
         <div className='self-center relative w-0 h-0 z-40' contentEditable={false}>
           <div className='absolute w-0 -left-[0.5px] h-5 -bottom-3 border-l select-none pointer-events-none' />
         </div>

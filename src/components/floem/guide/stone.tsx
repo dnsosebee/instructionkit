@@ -116,6 +116,7 @@ const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps 
   const context: FlowtextContext<View.Guide> = {
     view: View.Guide,
     onHop: active ? onHop : onHopInactive,
+    chosenCaseId: value as string,
   }
 
   return (
