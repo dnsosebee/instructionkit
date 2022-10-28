@@ -1,4 +1,4 @@
-import { mergeAttributes, Node, nodeInputRule, ReactNodeViewRenderer } from '@tiptap/react'
+import { mergeAttributes, Node, ReactNodeViewRenderer } from '@tiptap/react'
 import Case from '../../components/floem/tiptap/case'
 
 const CASE_INPUT_REGEX = /^\|$/
@@ -32,14 +32,14 @@ const CaseNode = Node.create({
     return ReactNodeViewRenderer(Case)
   },
 
-  addInputRules() {
-    return [
-      nodeInputRule({
-        find: CASE_INPUT_REGEX,
-        type: this.type,
-      }),
-    ]
-  },
+  // addInputRules() {
+  //   return [
+  //     nodeInputRule({
+  //       find: CASE_INPUT_REGEX,
+  //       type: this.type,
+  //     }),
+  //   ]
+  // },
 })
 
 export default CaseNode

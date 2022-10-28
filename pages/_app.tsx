@@ -1,4 +1,4 @@
-import 'highlight.js/styles/atom-one-dark.css'
+import 'highlight.js/styles/night-owl.css'
 import { AppProps } from 'next/app'
 import '../styles.css'
 
