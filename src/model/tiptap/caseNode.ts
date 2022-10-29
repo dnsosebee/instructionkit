@@ -7,7 +7,7 @@ const CaseNode = Node.create({
 
   content: 'text*',
 
-  defining: false,
+  marks: '',
 
   parseHTML() {
     return [

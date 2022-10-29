@@ -108,7 +108,9 @@ hr.ProseMirror-selectednode {
   @apply inline-flex items-center justify-center rounded-md border border-sky-500 bg-white px-2 py-1 m-1 text-sm font-medium text-sky-500 shadow-sm hover:bg-sky-500 hover:text-zinc-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 self-center cursor-pointer duration-150;
 }
 
-/* TODO move this styling to react logic for switch/case */
-switch[data-switchtype='condition'] .node-case > div {
-  @apply bg-gray-700 border-gray-700;
+/* .switch-content > div {
+  @apply flex;
+} */
+.text-l33t {
+  @apply bg-slate-900 border-slate-900 text-green-300;
 }

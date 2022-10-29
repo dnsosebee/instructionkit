@@ -1,12 +1,14 @@
 import { InputRule, mergeAttributes, Node } from '@tiptap/react'
+import { Fragment } from 'prosemirror-model'
 import { TextSelection } from 'prosemirror-state'
 import { findParentNodeOfType } from 'prosemirror-utils'
+import { logger } from '../../logger'
 import { initialCase } from './caseNode'
 
-const BUTTON_SWITCH_INPUT_REGEX = /^(?: *(?<assignment>[A-z_]+[A-z0-9_]*) *= *)?\? $/
-const CONDITION_SWITCH_INPUT_REGEX = /^(?: *(?<assignment>[A-z_]+[A-z0-9_]*) *= *)?\?\? $/
+const BUTTON_SWITCH_INPUT_REGEX = /^(?: *(?<assignee>[A-z_]+[A-z0-9_]*) *= *)?\? $/
+const CONDITION_SWITCH_INPUT_REGEX = /^(?: *(?<assignee>[A-z_]+[A-z0-9_]*) *= *)?\?\? $/
 
-enum SwitchType {
+export enum SwitchType {
   Condition = 'condition',
   Button = 'button',
 }
@@ -16,7 +18,7 @@ const SwitchNode = Node.create({
 
   group: 'block',
 
-  content: '(case)+',
+  content: 'assignee? (case)+',
 
   defining: true,
 
@@ -28,7 +30,7 @@ const SwitchNode = Node.create({
         default: 'button',
         parseHTML: element => element.getAttribute('data-switchtype'),
         renderHTML: attributes => ({
-          'data-switchtype': attributes.type,
+          'data-switchtype': attributes.switchtype,
         }),
       },
     }
@@ -51,6 +53,11 @@ const SwitchNode = Node.create({
       0,
     ]
   },
+
+  // addNodeView() {
+  //   return ReactNodeViewRenderer(Switch)
+  // },
+
   addInputRules() {
     return [
       switchInputRule(BUTTON_SWITCH_INPUT_REGEX, SwitchType.Button),
@@ -59,17 +66,33 @@ const SwitchNode = Node.create({
   },
 })
 
-const switchInputRule = (regex: RegExp, type: string): InputRule => {
+const switchInputRule = (regex: RegExp, switchtype: string): InputRule => {
   return new InputRule({
     find: regex,
-    handler: ({ state, range }) => {
+    handler: ({ state, range, match }) => {
+      logger.debug('SwitchNode.addInputRules.handler', { state, range, match })
+
       // make sure we're in a top level paragraph
       const rangeAsSelection = TextSelection.create(state.doc, range.from, range.to)
       const parentParagraph = findParentNodeOfType(state.schema.nodes.paragraph)(rangeAsSelection)
       if (!parentParagraph || parentParagraph.depth !== 1) {
         return
       }
-      const initialSwitch = state.schema.nodes.switch.create({ type }, initialCase(state))
+
+      // create the switch's fragment
+      const children = [initialCase(state)]
+      if (switchtype === SwitchType.Button) {
+        const assignee = match.groups?.assignee || 'choice'
+        const assigneeText = state.schema.text(assignee)
+        const assigneeNode = state.schema.nodes.assignee.create({ name: assignee }, assigneeText)
+        children.unshift(assigneeNode)
+      }
+      const fragment = Fragment.fromArray(children)
+
+      // create the switch
+      const initialSwitch = state.schema.nodes.switch.create({ switchtype: switchtype }, fragment)
+
+      // replace the paragraph with the switch
       state.tr
         .replaceRangeWith(range.from, range.to, initialSwitch)
         .setSelection(TextSelection.near(state.tr.doc.resolve(range.from + 1)))

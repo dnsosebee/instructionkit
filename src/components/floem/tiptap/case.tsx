@@ -1,6 +1,8 @@
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from '@tiptap/react'
 import { useEffect } from 'react'
 import { Handle, Position, useUpdateNodeInternals } from 'reactflow'
+import { SwitchType } from '../../../model/tiptap/switchNode'
+import { parentAttrs } from '../../../model/tiptap/utils'
 import { useFlowtextContext, View } from '../flowtextProvider'
 
 export const Case = (props: NodeViewProps) => {
@@ -16,7 +18,7 @@ export const Case = (props: NodeViewProps) => {
   }
 
   const caseId: string = props.node.attrs.id
-
+  const isCondition = parentAttrs(props).switchtype === SwitchType.Condition
   const isGuide = context.view === View.Guide
   const isChart = context.view === View.Flowchart
   const isChosen = isGuide ? context.chosenCaseId === caseId : false
@@ -38,7 +40,7 @@ export const Case = (props: NodeViewProps) => {
         as='div'
       >
         <NodeViewContent
-          className='px-2 text-center'
+          className={`px-2 text-center ${isCondition && 'text-l33t'}`}
           as={tagName}
           {...(context.view === View.Guide ? { onClick: () => context.onHop(caseId) } : {})}
         />

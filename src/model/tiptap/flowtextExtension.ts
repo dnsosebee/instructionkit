@@ -4,6 +4,7 @@ import { Extension } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { lowlight } from 'lowlight'
 import { genCaseId } from '../core/ids'
+import AssigneeNode from './assigneeNode'
 import CaseNode from './caseNode'
 import SwitchNode from './switchNode'
 
@@ -15,6 +16,7 @@ const FlowtextExtension = Extension.create({
       UniqueID.configure({ types: ['case'], generateID: genCaseId }),
       SwitchNode,
       CaseNode,
+      AssigneeNode,
     ] // TODO follow up with reactflow on fixing dropcursor rendering
   },
 })
