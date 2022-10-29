@@ -111,12 +111,14 @@ const helper = async (data: {
       defaultString,
     })
   } else if (el.rawTagName === 'switch') {
-    return choiceStone({
-      fragment,
-      vars,
-      flowFrom,
-      content: el.innerHTML,
-    })
+    if (el.attributes['type'])
+      // TODO
+      return choiceStone({
+        fragment,
+        vars,
+        flowFrom,
+        content: el.innerHTML,
+      })
   } else if (el.tagName === 'PRE') {
     const flogram = el.innerText
       .slice('<code>'.length, -'</code>'.length)

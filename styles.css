@@ -109,6 +109,6 @@ hr.ProseMirror-selectednode {
 }
 
 /* TODO move this styling to react logic for switch/case */
-switch[data-type='condition'] .node-case > div {
+switch[data-switchtype='condition'] .node-case > div {
   @apply bg-gray-700 border-gray-700;
 }

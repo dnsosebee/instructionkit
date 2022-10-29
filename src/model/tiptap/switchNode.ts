@@ -3,8 +3,13 @@ import { TextSelection } from 'prosemirror-state'
 import { findParentNodeOfType } from 'prosemirror-utils'
 import { initialCase } from './caseNode'
 
-const SWITCH_INPUT_REGEX = /^(?: *(?<assignment>[A-z_]+[A-z0-9_]*) *= *)?\? $/
+const BUTTON_SWITCH_INPUT_REGEX = /^(?: *(?<assignment>[A-z_]+[A-z0-9_]*) *= *)?\? $/
 const CONDITION_SWITCH_INPUT_REGEX = /^(?: *(?<assignment>[A-z_]+[A-z0-9_]*) *= *)?\?\? $/
+
+enum SwitchType {
+  Condition = 'condition',
+  Button = 'button',
+}
 
 const SwitchNode = Node.create({
   name: 'switch',
@@ -19,11 +24,11 @@ const SwitchNode = Node.create({
 
   addAttributes() {
     return {
-      type: {
+      switchtype: {
         default: 'button',
-        parseHTML: element => element.getAttribute('data-type'),
+        parseHTML: element => element.getAttribute('data-switchtype'),
         renderHTML: attributes => ({
-          'data-type': attributes.type,
+          'data-switchtype': attributes.type,
         }),
       },
     }
@@ -32,7 +37,7 @@ const SwitchNode = Node.create({
   parseHTML() {
     return [
       {
-        tag: `switch`,
+        tag: 'switch',
       },
     ]
   },
@@ -48,8 +53,8 @@ const SwitchNode = Node.create({
   },
   addInputRules() {
     return [
-      switchInputRule(SWITCH_INPUT_REGEX, 'button'),
-      switchInputRule(CONDITION_SWITCH_INPUT_REGEX, 'condition'),
+      switchInputRule(BUTTON_SWITCH_INPUT_REGEX, SwitchType.Button),
+      switchInputRule(CONDITION_SWITCH_INPUT_REGEX, SwitchType.Condition),
     ]
   },
 })

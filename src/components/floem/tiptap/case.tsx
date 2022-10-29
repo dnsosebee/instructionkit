@@ -21,7 +21,7 @@ export const Case = (props: NodeViewProps) => {
   const isChart = context.view === View.Flowchart
   const isChosen = isGuide ? context.chosenCaseId === caseId : false
 
-  const TagName = context.view === View.Flowchart ? 'div' : 'button'
+  const tagName = context.view === View.Flowchart ? 'div' : 'button'
 
   const buttonClasses = isGuide
     ? `duration-150 select-none ${
@@ -35,13 +35,13 @@ export const Case = (props: NodeViewProps) => {
     <>
       <NodeViewWrapper
         className={`flex flex-col relative border border-sky-500 rounded-md overflow-hidden ${buttonClasses}`}
+        as='div'
       >
-        <TagName
-          className='px-2 justify-center'
+        <NodeViewContent
+          className='px-2 text-center'
+          as={tagName}
           {...(context.view === View.Guide ? { onClick: () => context.onHop(caseId) } : {})}
-        >
-          <NodeViewContent className='text-center' />
-        </TagName>
+        />
         {isChart && (
           <div
             className='flex relative bg-zinc-50 hover:bg-sky-500 text-sky-500 hover:text-zinc-50 self-stretch justify-center duration-150'
