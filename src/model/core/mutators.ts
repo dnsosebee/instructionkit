@@ -37,22 +37,25 @@ export const floemMutators = {
   },
 
   // Flow
-  async addFlow(tx: WriteTransaction, ids: { flowId: string; floemId: string }) {
-    const { flowId, floemId } = ids
+  async addFlow(
+    tx: WriteTransaction,
+    data: { flow: Omit<DataFlow, 'createdAt'>; floemId: string },
+  ) {
+    const { flow, floemId } = data
     const prev: DataFloem = (await tx.get(floemId)) as DataFloem
     if (!prev) {
       throw new Error(`No floem with id ${floemId}`)
     }
     // make sure the ID is new
-    let id = flowId
+    let id = flow.id
     while (prev.flows.some(flow => flow.id === id)) {
       id = nextId(id, FLOW_UUID_LENGTH)
     }
     const newFlow: DataFlow = {
       id,
       createdAt: Date.now(),
-      position: { x: 0, y: 0 },
-      flowtext: DEFAULT_FLOWTEXT,
+      position: flow.position ?? { x: 0, y: 0 },
+      flowtext: flow.flowtext ?? DEFAULT_FLOWTEXT,
     }
     const flows = [...prev.flows, newFlow]
     await tx.put(floemId, parseOrSkip(floemSchema, { ...prev, flows }))

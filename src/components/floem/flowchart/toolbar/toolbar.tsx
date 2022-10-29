@@ -1,5 +1,6 @@
 import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon } from '@heroicons/react/20/solid'
 import { DataFloem } from '../../../../model/core/floem'
+import { DEFAULT_FLOWTEXT } from '../../../../model/core/flow'
 import { FLOW_START_ID, genFlowId } from '../../../../model/core/ids'
 import { Mutate } from '../../../../model/core/mutators'
 import { IconButton } from './iconButton'
@@ -21,7 +22,12 @@ export const Toolbar = ({ mutate, floem, nodeSelections, edgeSelections }: Toolb
       <span className='isolate shadow bg-white rounded-bl-lg inline-flex overflow-hidden'>
         <IconButton
           Icon={DocumentPlusIcon}
-          onClick={() => mutate.addFlow({ flowId: genFlowId(), floemId: floem.id })}
+          onClick={() =>
+            mutate.addFlow({
+              flow: { id: genFlowId(), position: { x: 0, y: 0 }, flowtext: DEFAULT_FLOWTEXT },
+              floemId: floem.id,
+            })
+          }
           title='Add Flow'
         />
         <IconButton

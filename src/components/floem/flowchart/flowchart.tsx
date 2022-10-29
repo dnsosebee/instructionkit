@@ -15,6 +15,7 @@ import { Mutate } from '../../../model/core/mutators'
 import Breadcrumbs from './breadcrumbs'
 import FlowchartDart, { FlowchartEdge } from './flowchartDart'
 import FlowchartFlow, { FlowchartNode } from './flowchartFlow'
+import FlowchartProvider from './flowchartProvider'
 import { Toolbar, ToolbarProps } from './toolbar/toolbar'
 
 const nodeTypes = { flow: FlowchartFlow }
@@ -78,27 +79,29 @@ export const Flowchart = ({ floem, mutate }: FlowchartProps) => {
   }
 
   return (
-    <div className='absolute top-0 bottom-0 left-0 right-0'>
-      <div className='absolute z-50'>
-        <Breadcrumbs floem={floem} mutate={mutate} />
+    <FlowchartProvider>
+      <div className='absolute top-0 bottom-0 left-0 right-0'>
+        <div className='absolute z-50'>
+          <Breadcrumbs floem={floem} mutate={mutate} />
+        </div>
+        <div className='absolute z-50 right-0'>
+          <Toolbar {...toolbarProps} />
+        </div>
+        <ReactFlow
+          nodes={nodes}
+          onNodesChange={onNodesChange}
+          edges={edges}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          minZoom={0.2}
+          onSelectionChange={e => console.log(e)}
+        >
+          <Background />
+          <Controls />
+        </ReactFlow>
       </div>
-      <div className='absolute z-50 right-0'>
-        <Toolbar {...toolbarProps} />
-      </div>
-      <ReactFlow
-        nodes={nodes}
-        onNodesChange={onNodesChange}
-        edges={edges}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        nodeTypes={nodeTypes}
-        edgeTypes={edgeTypes}
-        minZoom={0.2}
-        onSelectionChange={e => console.log(e)}
-      >
-        <Background />
-        <Controls />
-      </ReactFlow>
-    </div>
+    </FlowchartProvider>
   )
 }
