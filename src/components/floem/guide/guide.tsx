@@ -118,32 +118,35 @@ export const Guide = ({ floem }: GuideProps) => {
       id='guide'
       className='absolute bg-slate-900 grow flex flex-col items-center p-2 min-h-full min-w-full'
     >
-      <div>
+      {/* reversed so that new elements transition in smoothly at the bottom (at least, sometimes they do) */}
+      <div className='flex flex-col-reverse overflow-auto'>
+        <div className='flex flex-col'>
+          {pages.map((page, i) => (
+            <div
+              id={'page ' + i}
+              key={i}
+              className='guide-page overflow-hidden rounded-lg bg-white shadow my-5 p-5 flex flex-col'
+            >
+              {page.map((step, j) => {
+                const { ui, value } = step.step
+                const active = i === activePage && j === page.size - 1
+                const onHop = async (value: any) => {
+                  setState(await rewindAndApply(state, floem, i, j, value))
+                }
+                return (
+                  <StepView
+                    uiConfig={ui}
+                    advancerProps={{ active, value, onHop }}
+                    key={`r ${i} s ${j}`}
+                  />
+                )
+              })}
+            </div>
+          ))}
+        </div>
         <div className='text-3xl text-white mt-3 font-bold tracking-tight text-gray-50'>
           {floem.title}
         </div>
-        {pages.map((page, i) => (
-          <div
-            id={'page ' + i}
-            key={i}
-            className='guide-page overflow-hidden rounded-lg bg-white shadow my-5 p-5 flex flex-col'
-          >
-            {page.map((step, j) => {
-              const { ui, value } = step.step
-              const active = i === activePage && j === page.size - 1
-              const onHop = async (value: any) => {
-                setState(await rewindAndApply(state, floem, i, j, value))
-              }
-              return (
-                <StepView
-                  uiConfig={ui}
-                  advancerProps={{ active, value, onHop }}
-                  key={`r ${i} s ${j}`}
-                />
-              )
-            })}
-          </div>
-        ))}
       </div>
     </div>
   )
