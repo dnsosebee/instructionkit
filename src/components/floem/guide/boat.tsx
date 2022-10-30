@@ -67,7 +67,7 @@ const helper = async (data: {
   const flowFrom: Flocation = { flow: flocation.flow, node: flocation.node + 1 }
   const el = flowNodes[flocation.node]
   let match
-  logger.debug(el)
+  logger.debug('boating element: ', el)
 
   // booty injections
   if (el.tagName !== 'PRE') {
@@ -130,7 +130,7 @@ const helper = async (data: {
 
         const conditionResult = Function(
           'vars',
-          `Object.entries(vars).forEach(([k, v]) => { this[k] = v }); return !!(${conditionText})`,
+          `vars.entrySeq().forEach(([k, v]) => { this[k] = v }); return !!(${conditionText})`,
         )(vars)
         if (conditionResult) {
           caseId = conditionId
