@@ -1,6 +1,7 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import { applyDevTools } from 'prosemirror-dev-toolkit'
 import { useEffect, useRef } from 'react'
+import { Handle, Position } from 'reactflow'
 import { logger } from '../../../logger'
 import { DataFloem } from '../../../model/core/floem'
 import { DataFlow, DEFAULT_FLOWTEXT } from '../../../model/core/flow'
@@ -108,14 +109,32 @@ export const FlowtextEditor = (props: FlowtextEditorProps) => {
   const dartCases = floem.darts.filter(v => v.from === flow.id).map(v => v.case)
 
   return (
-    <div
-      className={`list-disc flex-grow cursor-default nodrag bg-zinc-50 mx-4 ${
-        isTop ? 'rounded-t mt-4' : ''
-      } ${isBottom ? 'rounded-b mb-4' : ''}`}
-    >
+    <div className={`list-disc flex-grow cursor-default nodrag bg-zinc-50`}>
+      {isTop || (
+        <div className='fringe-top'>
+          <div className='bg-zinc-50' />
+        </div>
+      )}
       <FlowtextProvider context={{ view: View.Flowchart, dartCases }}>
         <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
       </FlowtextProvider>
+      <div className='flex flex-col bg-transparent bg-inherit relative justify-center text-sky-500 hover:bg-sky-500 hover:text-zinc-50 duration-150'>
+        <div className='my-1 text-xs font-bold self-center select-none relative z-50 pointer-events-none'>
+          +
+        </div>
+        <Handle
+          id='default!!!'
+          type='source'
+          position={Position.Bottom}
+          className='z-20 opacity-0'
+          style={{ top: 0, width: '100%', height: '100%' }}
+        />
+        {isBottom || (
+          <div className='fringe-bottom z-10 width-full bg-inherit'>
+            <div className='bg-inherit' />
+          </div>
+        )}
+      </div>
     </div>
   )
 }

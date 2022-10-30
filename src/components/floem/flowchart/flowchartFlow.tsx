@@ -20,12 +20,7 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
   const isBottom = !floem.darts.find(v => v.from == flow.id)
 
   return (
-    <div className=' w-96'>
-      {isTop || (
-        <div className='fringe-top mx-4'>
-          <div className='bg-zinc-50' />
-        </div>
-      )}
+    <div className='w-96'>
       {isStart ? (
         <div className='pb-1 w-full'>
           <TitleEditor
@@ -38,7 +33,9 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
         <Handle type='target' position={Position.Top} className='p-1 z-10' />
       )}
       <div
-        className={`overflow-hidden bg-slate-900 shadow rounded-lg cursor-move ${
+        className={`px-4 ${isTop ? 'pt-4' : ''} ${
+          isBottom ? 'pb-4' : ''
+        } bg-slate-900 shadow rounded-lg cursor-move ${
           selected && 'border-indigo-500 outline-none ring-1 ring-indigo-500'
         }`}
       >
@@ -49,13 +46,12 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
           isBottom={isBottom}
           floem={floem}
         />
-        <Handle id='default!!!' type='source' position={Position.Bottom} className='p-1 z-10' />
       </div>
-      {isBottom || (
-        <div className='fringe-bottom mx-4'>
+      {/* {isBottom || (
+        <div className='fringe-bottom mx-4 z-10'>
           <div className='bg-zinc-50' />
         </div>
-      )}
+      )} */}
     </div>
   )
 }
