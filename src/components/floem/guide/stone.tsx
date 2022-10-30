@@ -5,6 +5,7 @@ import { TextInput } from '../../../model/tiptap/textInput'
 import FlowtextProvider, { FlowtextContext, View } from '../flowtextProvider'
 import AlertModal from './alertModal'
 import { AdvancerProps, StepUIConfig } from './guide'
+import { motion } from 'framer-motion'
 
 export const StoneView = ({
   uiConfig,
@@ -32,10 +33,10 @@ export const StoneView = ({
       throw new Error(`Unknown advancer type: ${advancer.type}`)
   }
   return (
-    <div className='stone'>
+    <motion.div className='stone relative h-0 opacity-0' animate={{ height: 'auto', opacity: 1 }}>
       <div dangerouslySetInnerHTML={{ __html: fragment }} className='prose' />
       <Advancer props={advancerProps} params={advancer.params} />
-    </div>
+    </motion.div>
   )
 }
 
