@@ -67,11 +67,6 @@ export const Case = (props: NodeViewProps) => {
           </div>
         )}
       </NodeViewWrapper>
-      {isChart && context.dartCases.includes(caseId) && (
-        <div className='self-center relative w-0 h-0 z-40' contentEditable={false}>
-          <div className='absolute w-0 -left-[0.5px] h-5 -bottom-3 border-l select-none pointer-events-none' />
-        </div>
-      )}
     </>
   )
 }

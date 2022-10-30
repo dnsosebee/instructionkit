@@ -48,11 +48,6 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
           floem={floem}
         />
       </div>
-      {/* {isBottom || (
-        <div className='fringe-bottom mx-4 z-10'>
-          <div className='bg-zinc-50' />
-        </div>
-      )} */}
     </div>
   )
 }
