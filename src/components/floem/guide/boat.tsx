@@ -5,6 +5,7 @@ import { logger as parentLogger } from '../../../logger'
 import { DataDart } from '../../../model/core/dart'
 import { DataFloem } from '../../../model/core/floem'
 import { DataFlow } from '../../../model/core/flow'
+import { SwitchType } from '../../../model/tiptap/switchNode'
 import { Booty, Flocation, GuideStep } from './guide'
 
 const logger = parentLogger.child({ module: 'boat' })
@@ -111,7 +112,7 @@ const helper = async (data: {
       defaultString,
     })
   } else if (el.rawTagName === 'switch') {
-    if (el.attributes['type'])
+    if (el.attributes['data-switchtype'] === SwitchType.Button) {
       // TODO
       return choiceStone({
         fragment,
@@ -119,6 +120,32 @@ const helper = async (data: {
         flowFrom,
         content: el.innerHTML,
       })
+    } else {
+      const conditions = el.childNodes as HTMLElement[]
+      let caseId = conditions[conditions.length - 1].attributes['data-id']
+      for (let i = 0; i < conditions.length; i++) {
+        const condition = conditions[i]
+        const conditionId = condition.attributes['data-id']
+        const conditionText = condition.innerHTML
+
+        const conditionResult = Function(
+          'vars',
+          `Object.entries(vars).forEach(([k, v]) => { this[k] = v }); return !!(${conditionText})`,
+        )(vars)
+        if (conditionResult) {
+          caseId = conditionId
+          break
+        }
+      }
+      return helper({
+        flows,
+        darts,
+        flocation: flowFrom,
+        flowNodes,
+        fragment,
+        vars: vars.set('output', caseId),
+      })
+    }
   } else if (el.tagName === 'PRE') {
     const flogram = el.innerText
       .slice('<code>'.length, -'</code>'.length)
