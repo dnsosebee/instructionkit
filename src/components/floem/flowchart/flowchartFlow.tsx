@@ -49,6 +49,7 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
           isBottom={isBottom}
           floem={floem}
         />
+        <Handle id='default!!!' type='source' position={Position.Bottom} className='p-1 z-10' />
       </div>
       {isBottom || (
         <div className='fringe-bottom mx-4'>
