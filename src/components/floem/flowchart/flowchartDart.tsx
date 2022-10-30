@@ -22,13 +22,14 @@ export default function FlowchartDart({
     targetX,
     targetY,
     targetPosition,
+    borderRadius: 20,
   })
 
   return (
     <>
       <path
         id={id}
-        style={style}
+        style={{ ...style, strokeWidth: 6 }}
         className='react-flow__edge-path'
         d={path}
         markerEnd={markerEnd}

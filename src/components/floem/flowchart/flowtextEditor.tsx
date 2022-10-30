@@ -17,10 +17,11 @@ export interface FlowtextEditorProps {
   mutate: Mutate
   isTop: boolean
   isBottom: boolean
+  isStart: boolean
 }
 
 export const FlowtextEditor = (props: FlowtextEditorProps) => {
-  const { flow, floem, mutate, isTop: isTop, isBottom: isBottom } = props
+  const { flow, floem, mutate, isTop, isBottom, isStart } = props
   const { flocus, setFlocus } = useFlowchartContext()
   const propsRef = useRef(props) // TODO might need to ref even more
 
@@ -110,9 +111,23 @@ export const FlowtextEditor = (props: FlowtextEditorProps) => {
 
   return (
     <div className={`list-disc flex-grow cursor-default nodrag bg-zinc-50`}>
-      {isTop || (
-        <div className='fringe-top'>
-          <div className='bg-zinc-50' />
+      {isStart || (
+        <div className='flex flex-col bg-transparent bg-inherit relative justify-center text-sky-500 hover:bg-sky-500 hover:text-zinc-50 duration-150'>
+          {isTop || (
+            <div className='fringe-top z-10 width-full bg-inherit'>
+              <div className='bg-inherit' />
+            </div>
+          )}
+          <div className='my-1 text-xs font-bold self-center select-none relative z-50 pointer-events-none'>
+            +
+          </div>
+          <Handle
+            // id='default!!!'
+            type='target'
+            position={Position.Top}
+            className='z-20 opacity-0'
+            style={{ top: 0, width: '100%', height: '100%' }}
+          />
         </div>
       )}
       <FlowtextProvider context={{ view: View.Flowchart, dartCases }}>

@@ -21,17 +21,17 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
 
   return (
     <div className='w-96'>
-      {isStart ? (
-        <div className='pb-1 w-full'>
-          <TitleEditor
-            mutate={mutate}
-            floem={floem}
-            classNames='text-3xl font-bold tracking-tight text-gray-50 cursor-text nodrag p-2'
-          />
-        </div>
-      ) : (
-        <Handle type='target' position={Position.Top} className='p-1 z-10' />
-      )}
+      {
+        isStart ? (
+          <div className='pb-1 w-full'>
+            <TitleEditor
+              mutate={mutate}
+              floem={floem}
+              classNames='text-3xl font-bold tracking-tight text-gray-50 cursor-text nodrag p-2'
+            />
+          </div>
+        ) : null // <Handle type='target' position={Position.Top} className='p-1 z-10' />
+      }
       <div
         className={`px-4 ${isTop ? 'pt-4' : ''} ${
           isBottom ? 'pb-4' : ''
@@ -44,6 +44,7 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
           mutate={mutate}
           isTop={isTop}
           isBottom={isBottom}
+          isStart={isStart}
           floem={floem}
         />
       </div>

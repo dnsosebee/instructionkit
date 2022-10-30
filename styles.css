@@ -114,3 +114,8 @@ hr.ProseMirror-selectednode {
 .text-l33t {
   @apply bg-slate-900 border-slate-900 text-green-300;
 }
+
+/* stylelint-disable-next-line selector-class-pattern */
+.react-flow__edges {
+  z-index: 100 !important;
+}
