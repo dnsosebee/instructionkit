@@ -1,7 +1,6 @@
-import { Map } from 'immutable'
 import { isArray } from 'lodash'
 import { HTMLElement, NodeType, parse } from 'node-html-parser'
-import { evalCondition } from '../../../lib/flogramming/flogramming'
+import { evalAssignments, evalCondition } from '../../../lib/flogramming/flogramming'
 import { logger as parentLogger } from '../../../logger'
 import { DataDart } from '../../../model/core/dart'
 import { DataFloem } from '../../../model/core/floem'
@@ -68,7 +67,7 @@ const helper = async (data: {
   const flowFrom: Flocation = { flow: flocation.flow, node: flocation.node + 1 }
   const el = flowNodes[flocation.node]
   let match
-  logger.debug('boating element: ', el)
+  logger.debug('helper, element', el)
 
   // booty injections
   if (el.tagName !== 'PRE') {
@@ -146,30 +145,8 @@ const helper = async (data: {
       })
     }
   } else if (el.tagName === 'PRE') {
-    const flogram = el.innerText
-      .slice('<code>'.length, -'</code>'.length)
-      .replaceAll(/&lt;/g, '<')
-      .replaceAll(/&gt;/g, '>')
-    const varsObject = vars.toObject()
-    const message = { flogram, vars: varsObject }
-    const worker = new Worker('/flogram.js')
-    worker.postMessage(message)
-    const updatedVars = await (async () => {
-      logger.debug('waiting for flogram')
-      return new Promise<Booty>(resolve => {
-        worker.onmessage = e => {
-          worker.terminate()
-          // let updatedVars: Booty = Map<string, any>() TODO: Figure out why this line doesn't work. Old booty variables are not getting passed back in the vars object from the webworker.
-          let updatedVars: Booty = Map<string, any>(varsObject)
-          e.data.forEach(([k, v]: [k: string, v: any]) => {
-            updatedVars = updatedVars.set(k, v)
-          })
-          logger.debug('flogram done, ', e.data)
-          resolve(updatedVars)
-        }
-      })
-    })()
-
+    const flogram = el.innerText.slice('<code>'.length, -'</code>'.length)
+    const updatedVars = await evalAssignments(flogram, vars)
     return helper({
       flows,
       darts,

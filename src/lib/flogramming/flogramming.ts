@@ -1,11 +1,18 @@
 import { Map } from 'immutable'
 import { logger as parentLogger } from '../../logger'
-import { MessageFromWorker, MessageToWorker } from './flogramWorker'
+import { GenericMessageToWorker, MessageFromWorker, MessageToWorker } from './flogram.worker'
+import { getDeclaredIdentifiers } from './parse'
 
 const logger = parentLogger.child({ module: 'flogramming' })
 
+export enum MessageTypes {
+  expression = 'expression',
+  assign = 'assign',
+}
+
 const getWorkerResponse = async (messageToWorker: MessageToWorker) => {
-  const worker = new Worker(new URL('./flogramWorker.ts', import.meta.url), {
+  logger.debug('getWorkerResponse', { messageToWorker })
+  const worker = new Worker(new URL('./flogram.worker.ts', import.meta.url), {
     type: 'module',
   })
   const messageFromWorker = await new Promise<MessageFromWorker>(resolve => {
@@ -23,10 +30,11 @@ const getWorkerResponse = async (messageToWorker: MessageToWorker) => {
 const evalExpression = async (toEval: string, context: Map<string, unknown>): Promise<unknown> => {
   // module import from flogram.ts
 
-  const messageToWorker: MessageToWorker = {
+  const messageToWorker: GenericMessageToWorker<MessageTypes.expression> = {
     toEval,
     context: context.toJS(),
-    type: 'expression',
+    type: MessageTypes.expression,
+    declaredIdentifiers: undefined,
   }
   return await getWorkerResponse(messageToWorker)
 }
@@ -43,12 +51,15 @@ export const evalAssignments = async (
   toEval: string,
   context: Map<string, unknown>,
 ): Promise<Map<string, unknown>> => {
-  const messageToWorker: MessageToWorker = {
+  logger.debug('evalAssignments', { toEval, context })
+  const messageToWorker: GenericMessageToWorker<MessageTypes.assign> = {
+    type: MessageTypes.assign,
     toEval,
     context: context.toJS(),
-    type: 'assign',
+    declaredIdentifiers: getDeclaredIdentifiers(toEval),
   }
-  const result = await getWorkerResponse(messageToWorker)
+  logger.debug('evalAssignments messageToWorker', messageToWorker)
+  const result = (await getWorkerResponse(messageToWorker)) as { [key: string]: unknown }
   if (!(result instanceof Object)) {
     throw new Error(`Expected result to be an object, got ${result}`)
   }
