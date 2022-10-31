@@ -5,7 +5,7 @@ import { Handle, Position } from 'reactflow'
 import { logger } from '../../../logger'
 import { DataFloem } from '../../../model/core/floem'
 import { DataFlow, DEFAULT_FLOWTEXT } from '../../../model/core/flow'
-import { genDartId, genFlowId } from '../../../model/core/ids'
+import { CASE_DEFAULT_ID, genDartId, genFlowId } from '../../../model/core/ids'
 import { Mutate } from '../../../model/core/mutators'
 import FlowtextExtension from '../../../model/tiptap/flowtextExtension'
 import FlowtextProvider, { View } from '../flowtextProvider'
@@ -122,7 +122,6 @@ export const FlowtextEditor = (props: FlowtextEditorProps) => {
             +
           </div>
           <Handle
-            // id='default!!!'
             type='target'
             position={Position.Top}
             className='z-20 opacity-0'
@@ -138,7 +137,7 @@ export const FlowtextEditor = (props: FlowtextEditorProps) => {
           +
         </div>
         <Handle
-          id='default!!!'
+          id={CASE_DEFAULT_ID}
           type='source'
           position={Position.Bottom}
           className='z-20 opacity-0'

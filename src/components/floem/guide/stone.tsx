@@ -1,11 +1,11 @@
 import { EditorContent, useEditor } from '@tiptap/react'
+import { motion } from 'framer-motion'
 import { useState } from 'react'
 import FlowtextExtension from '../../../model/tiptap/flowtextExtension'
 import { TextInput } from '../../../model/tiptap/textInput'
 import FlowtextProvider, { FlowtextContext, View } from '../flowtextProvider'
 import AlertModal from './alertModal'
 import { AdvancerProps, StepUIConfig } from './guide'
-import { motion } from 'framer-motion'
 
 export const StoneView = ({
   uiConfig,
@@ -99,9 +99,14 @@ export type ChoiceParams = {
 
 const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps }) => {
   const { active, value, onHop } = props
-  const [state, setState] = useState<{ isOpen: boolean; choice: any }>({
+  const [state, setState] = useState<{
+    isOpen: boolean
+    chosenValue: any
+    chosenCaseId: string | undefined
+  }>({
     isOpen: false,
-    choice: null,
+    chosenValue: undefined,
+    chosenCaseId: undefined,
   })
 
   const editor = useEditor({
@@ -110,8 +115,8 @@ const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps 
     editable: false,
   })
 
-  const onHopInactive = (value: any) => {
-    setState({ isOpen: true, choice: value })
+  const onHopInactive = (value: any, chosenCaseId?: string) => {
+    setState({ isOpen: true, chosenValue: value, chosenCaseId: chosenCaseId })
   }
 
   const context: FlowtextContext<View.Guide> = {
@@ -130,7 +135,7 @@ const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps 
           buttonText='Yes, Rewind'
           onProceed={() => {
             setState({ ...state, isOpen: false })
-            onHop(state.choice)
+            onHop(state.chosenValue, state.chosenCaseId)
           }}
           onCancel={() => {
             setState({ ...state, isOpen: false })

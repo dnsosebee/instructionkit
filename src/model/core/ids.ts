@@ -22,7 +22,7 @@ export const genFlowId = () => FLOW_ID_PREFIX + genFlowUuid()
 // case
 export const CASE_ID_PREFIX = 'case-'
 export const CASE_UUID_LENGTH = 5
-export const CASE_DEFAULT_ID = CASE_ID_PREFIX + 'default'
+export const CASE_DEFAULT_ID = CASE_ID_PREFIX + 'dfalt'
 export const CASE_ID_LENGTH = CASE_ID_PREFIX.length + CASE_UUID_LENGTH
 const genCaseUuid = customAlphabet(ALPHABET, CASE_UUID_LENGTH)
 export const genCaseId = () => CASE_ID_PREFIX + genCaseUuid()

@@ -42,7 +42,9 @@ export const Case = (props: NodeViewProps) => {
         <NodeViewContent
           className={`px-2 text-center ${isCondition && 'text-l33t'}`}
           as={tagName}
-          {...(context.view === View.Guide ? { onClick: () => context.onHop(caseId) } : {})}
+          {...(context.view === View.Guide
+            ? { onClick: () => context.onHop(props.node.textContent, caseId) }
+            : {})}
         />
         {isChart && (
           <div

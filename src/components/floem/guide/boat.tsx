@@ -5,6 +5,7 @@ import { logger as parentLogger } from '../../../logger'
 import { DataDart } from '../../../model/core/dart'
 import { DataFloem } from '../../../model/core/floem'
 import { DataFlow } from '../../../model/core/flow'
+import { CASE_DEFAULT_ID } from '../../../model/core/ids'
 import { SwitchType } from '../../../model/tiptap/switchNode'
 import { Booty, Flocation, GuideStep } from './guide'
 
@@ -14,6 +15,7 @@ export async function riverStoneAt(
   floem: DataFloem,
   flowFrom: Flocation,
   vars: Booty,
+  chosenCaseId: string = CASE_DEFAULT_ID,
 ): Promise<GuideStep> {
   logger.debug('riverStoneAt: ', floem, flowFrom, vars)
   return helper({
@@ -23,6 +25,7 @@ export async function riverStoneAt(
     flowNodes: refill(floem.flows, flowFrom.flow),
     fragment: [],
     vars,
+    chosenCaseId,
   })
 }
 
@@ -42,8 +45,9 @@ const helper = async (data: {
   flowNodes: HTMLElement[] // nodes of the current flow
   fragment: HTMLElement[] // recursively builds up the fragment
   vars: Booty
+  chosenCaseId: string // caseId
 }): Promise<GuideStep> => {
-  const { flows, darts, flocation, flowNodes, fragment, vars } = data
+  const { flows, darts, flocation, flowNodes, fragment, vars, chosenCaseId } = data
   const doneWithFlow = flocation.node >= flowNodes.length
   if (doneWithFlow) {
     const branches = darts.filter(v => v.from == flocation.flow)
@@ -51,7 +55,7 @@ const helper = async (data: {
     if (noValidNextFlow) {
       return finishStone({ fragment, vars, flowFrom: flocation })
     }
-    const dart = branches.find(v => v.case === vars.get('output')) || branches[0]
+    const dart = branches.find(v => v.case === chosenCaseId) || branches[0]
     const nextFlocation: Flocation = { flow: dart.to, node: 0 }
     const nextFlowNodes = refill(flows, nextFlocation.flow)
     return helper({
@@ -61,6 +65,7 @@ const helper = async (data: {
       flowNodes: nextFlowNodes,
       fragment: data.fragment,
       vars,
+      chosenCaseId,
     })
   }
 
@@ -102,7 +107,7 @@ const helper = async (data: {
       /(?:^|\n)(?:(?<assignTo>[A-z_]+[A-z0-9_]*) *=)? *&lt;(?<defaultString>[^<>\n]*)&gt; *$/,
     ))
   ) {
-    const assignTo = match.groups!.assignTo || 'output'
+    const assignTo = match.groups!.assignTo || 'input'
     const defaultString = match.groups!.defaultString || ''
     return stringStone({
       fragment,
@@ -113,12 +118,14 @@ const helper = async (data: {
     })
   } else if (el.rawTagName === 'switch') {
     if (el.attributes['data-switchtype'] === SwitchType.Button) {
-      // TODO
+      const assignee = (el.childNodes as HTMLElement[]).find(v => v.rawTagName === 'assignee')
+      const assignTo = assignee?.rawText || 'choice'
       return choiceStone({
         fragment,
         vars,
         flowFrom,
         content: el.innerHTML,
+        assignTo,
       })
     } else {
       const conditions = el.childNodes as HTMLElement[]
@@ -129,7 +136,6 @@ const helper = async (data: {
         const conditionText = condition.innerHTML
 
         const conditionResult = await evalCondition(conditionText, vars)
-        logger.debug('condition result: ', conditionResult)
         if (conditionResult) {
           caseId = conditionId
           break
@@ -141,7 +147,8 @@ const helper = async (data: {
         flocation: flowFrom,
         flowNodes,
         fragment,
-        vars: vars.set('output', caseId),
+        vars,
+        chosenCaseId: caseId,
       })
     }
   } else if (el.tagName === 'PRE') {
@@ -154,6 +161,7 @@ const helper = async (data: {
       flowNodes,
       fragment,
       vars: updatedVars,
+      chosenCaseId,
     })
   }
 
@@ -165,6 +173,7 @@ const helper = async (data: {
     flowNodes,
     fragment,
     vars,
+    chosenCaseId,
   })
 }
 
@@ -235,11 +244,13 @@ const choiceStone = ({
   vars,
   flowFrom,
   content,
+  assignTo,
 }: {
   fragment: HTMLElement[]
   vars: Booty
   flowFrom: Flocation
   content: string
+  assignTo: string
 }): GuideStep => ({
   booty: vars,
   step: {
@@ -253,7 +264,7 @@ const choiceStone = ({
       },
     },
     consequences: {
-      assignTo: 'output',
+      assignTo,
       flowFrom,
       newPage: false,
     },
