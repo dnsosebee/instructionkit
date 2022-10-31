@@ -1,6 +1,7 @@
 import { Map } from 'immutable'
 import { isArray } from 'lodash'
 import { HTMLElement, NodeType, parse } from 'node-html-parser'
+import { evalCondition } from '../../../lib/flogramming/flogramming'
 import { logger as parentLogger } from '../../../logger'
 import { DataDart } from '../../../model/core/dart'
 import { DataFloem } from '../../../model/core/floem'
@@ -128,10 +129,8 @@ const helper = async (data: {
         const conditionId = condition.attributes['data-id']
         const conditionText = condition.innerHTML
 
-        const conditionResult = Function(
-          'vars',
-          `vars.entrySeq().forEach(([k, v]) => { this[k] = v }); return !!(${conditionText})`,
-        )(vars)
+        const conditionResult = await evalCondition(conditionText, vars)
+        logger.debug('condition result: ', conditionResult)
         if (conditionResult) {
           caseId = conditionId
           break
