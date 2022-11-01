@@ -23,7 +23,7 @@ export interface Flocation {
 export interface AdvancerProps {
   active: boolean
   value: any
-  onHop: (value: any) => void
+  onHop: (value: any, chosenCaseId?: string) => void
 }
 
 export type AdvancerType = 'pause' | 'choice' | 'finish' | 'string' | 'int' | 'float'
@@ -61,6 +61,7 @@ const rewindAndApply = async (
   pageNumber: number,
   stepNumber: number,
   value: any,
+  chosenCaseId?: string,
 ): Promise<GuideState> => {
   logger.debug('rewindAndApply', { pageNumber, stepNumber, value })
   const guidePage = state.pages.get(pageNumber)!
@@ -80,7 +81,7 @@ const rewindAndApply = async (
   if (newPage) {
     updatedPages = updatedPages.push(List())
   }
-  const newGuideStep: GuideStep = await guideStepAt(floem, flowFrom, newBooty)
+  const newGuideStep: GuideStep = await guideStepAt(floem, flowFrom, newBooty, chosenCaseId)
   updatedPages = updatedPages.set(-1, updatedPages.get(-1)!.push(newGuideStep))
   return {
     pages: updatedPages,
@@ -130,8 +131,8 @@ export const Guide = ({ floem }: GuideProps) => {
               {page.map((step, j) => {
                 const { ui, value } = step.step
                 const active = i === activePage && j === page.size - 1
-                const onHop = async (value: any) => {
-                  setState(await rewindAndApply(state, floem, i, j, value))
+                const onHop = async (value: any, chosenCaseId?: string) => {
+                  setState(await rewindAndApply(state, floem, i, j, value, chosenCaseId))
                 }
                 return (
                   <StepView
