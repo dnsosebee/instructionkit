@@ -81,7 +81,10 @@ export const floemMutators = {
     while (prev.darts.some(d => d.id === id)) {
       id = nextId(id, DART_UUID_LENGTH)
     }
-    const darts = [...prev.darts, { ...dart, id }]
+    const darts = [
+      ...prev.darts.filter(v => v.from != dart.from || v.case != dart.case),
+      { ...dart, id },
+    ]
     await tx.put(floem, parseOrSkip(floemSchema, { ...prev, darts }))
   },
   async updateDart(tx: WriteTransaction, dartUpdate: DartUpdate) {
