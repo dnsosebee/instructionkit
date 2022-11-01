@@ -115,14 +115,19 @@ const Choice = ({ params, props }: { params: ChoiceParams; props: AdvancerProps 
     editable: false,
   })
 
+  const inHopActive = (value: any, chosenCaseId?: string) => {
+    setState({ ...state, isOpen: false, chosenValue: value, chosenCaseId })
+    onHop(value, chosenCaseId)
+  }
+
   const onHopInactive = (value: any, chosenCaseId?: string) => {
-    setState({ isOpen: true, chosenValue: value, chosenCaseId: chosenCaseId })
+    setState({ ...state, isOpen: true, chosenValue: value, chosenCaseId: chosenCaseId })
   }
 
   const context: FlowtextContext<View.Guide> = {
     view: View.Guide,
-    onHop: active ? onHop : onHopInactive,
-    chosenCaseId: value as string,
+    onHop: active ? inHopActive : onHopInactive,
+    chosenCaseId: state.chosenCaseId,
   }
 
   return (
