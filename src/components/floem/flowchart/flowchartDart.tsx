@@ -17,10 +17,10 @@ export default function FlowchartDart({
 }: FlowchartDartProps) {
   const [path] = getSmoothStepPath({
     sourceX,
-    sourceY,
+    sourceY: sourceY - 8,
     sourcePosition,
     targetX,
-    targetY,
+    targetY: targetY + 10,
     targetPosition,
     borderRadius: 20,
   })
@@ -29,7 +29,7 @@ export default function FlowchartDart({
     <>
       <path
         id={id}
-        style={{ ...style, strokeWidth: 6 }}
+        style={{ ...style, strokeWidth: 1.5, strokeLinecap: 'butt', stroke: '#0EA5E9' }}
         className='react-flow__edge-path'
         d={path}
         markerEnd={markerEnd}
