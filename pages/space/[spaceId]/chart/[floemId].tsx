@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next'
 import { spaceExists } from 'replicache-nextjs/lib/backend'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { FloemInjector } from '../../../../src/components/floem/floem'
-import { Flowchart } from '../../../../src/components/floem/flowchart/flowchart'
+import Flowchart from '../../../../src/components/floem/flowchart/flowchart'
 import { floemMutators } from '../../../../src/model/core/mutators'
 
 export const getServerSideProps: GetServerSideProps = async context => {
