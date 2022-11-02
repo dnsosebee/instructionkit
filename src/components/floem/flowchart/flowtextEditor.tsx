@@ -1,5 +1,6 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import { applyDevTools } from 'prosemirror-dev-toolkit'
+import { findParentNodeOfType } from 'prosemirror-utils'
 import { useEffect, useRef } from 'react'
 import { Handle, Position } from 'reactflow'
 import { logger } from '../../../logger'
@@ -25,6 +26,11 @@ export const FlowtextEditor = (props: FlowtextEditorProps) => {
   const { flocus, setFlocus } = useFlowchartContext()
   const propsRef = useRef(props) // TODO might need to ref even more
 
+  //keep propsRef up to date
+  useEffect(() => {
+    propsRef.current = props
+  }, [props])
+
   const ExtensionWithShortcuts = FlowtextExtension.extend({
     addKeyboardShortcuts() {
       return {
@@ -33,11 +39,34 @@ export const FlowtextEditor = (props: FlowtextEditorProps) => {
           return false
         },
         Tab: () => {
+          // probably shouhld clean this up
           logger.debug('trying to branch...')
-          const parentOfSelection = this.editor.state.selection.$from.parent
+          const selection = this.editor.state.selection
+          const parentOfSelection = selection.$from.parent
+          const caseNodeType = this.editor.schema.nodes.case
           logger.debug(parentOfSelection)
-          if (parentOfSelection.type === this.editor.schema.nodes.case) {
+          if (parentOfSelection.type === caseNodeType) {
             const caseId = parentOfSelection.attrs.id
+            const switchNodeType = this.editor.schema.nodes.switch
+            const parentSwitch = findParentNodeOfType(switchNodeType)(selection)
+            if (parentSwitch === undefined) {
+              throw new Error('case should have a switch parent')
+            }
+            const switchNode = parentSwitch.node
+            let index = 0
+            let found = false
+            switchNode.content.forEach(node => {
+              if (node.type === caseNodeType && !found) {
+                if (node.attrs.id === caseId) {
+                  found = true
+                } else {
+                  index++
+                }
+              }
+            })
+            const xOffset = (found ? index * 400 : 0) - 250
+            const yOffset = 500
+
             const existingDart = propsRef.current.floem.darts.find(
               dart => dart.case === caseId && dart.from === propsRef.current.flow.id,
             )
@@ -46,19 +75,23 @@ export const FlowtextEditor = (props: FlowtextEditorProps) => {
               setFlocus(existingDart.to)
             } else {
               const newFlowId = genFlowId()
+              const flowPos = propsRef.current.flow.position
               mutate.addFlow({
-                floemId: floem.id,
+                floemId: propsRef.current.floem.id,
                 flow: {
                   id: newFlowId,
                   flowtext: DEFAULT_FLOWTEXT,
-                  position: flow.position,
+                  position: {
+                    x: flowPos.x + xOffset,
+                    y: flowPos.y + yOffset,
+                  },
                 },
               })
               mutate.addDart({
-                floem: floem.id, // WARNING this will fail if there's an ID collision: rethink or move to longer UUIDs
+                floem: propsRef.current.floem.id, // WARNING this will fail if there's an ID collision: rethink or move to longer UUIDs
                 dart: {
                   id: genDartId(),
-                  from: flow.id,
+                  from: propsRef.current.flow.id,
                   case: caseId,
                   to: newFlowId,
                 },
@@ -101,8 +134,8 @@ export const FlowtextEditor = (props: FlowtextEditorProps) => {
   }, [flow.flowtext])
 
   useEffect(() => {
-    if (flocus === flow.id) {
-      contentEditor?.commands.focus()
+    if (contentEditor && flocus === flow.id) {
+      contentEditor.commands.focus()
       setFlocus(null)
     }
   }, [flocus, !!contentEditor])
