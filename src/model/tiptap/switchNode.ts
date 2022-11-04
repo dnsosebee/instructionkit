@@ -82,10 +82,12 @@ const switchInputRule = (regex: RegExp, switchtype: string): InputRule => {
       // create the switch's fragment
       const children = [initialCase(state)]
       if (switchtype === SwitchType.Button) {
-        const assignee = match.groups?.assignee || 'choice'
-        const assigneeText = state.schema.text(assignee)
-        const assigneeNode = state.schema.nodes.assignee.create({ name: assignee }, assigneeText)
-        children.unshift(assigneeNode)
+        const assignee = match.groups?.assignee
+        if (assignee) {
+          const assigneeText = state.schema.text(assignee)
+          const assigneeNode = state.schema.nodes.assignee.create({ name: assignee }, assigneeText)
+          children.unshift(assigneeNode)
+        }
       }
       const fragment = Fragment.fromArray(children)
 
