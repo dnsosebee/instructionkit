@@ -44,6 +44,8 @@ export const createImageExtension = (uploadFn: UploadFn) => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     addCommands() {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       return attrs => (state, dispatch) => {
         const { selection } = state
         const position = selection.$cursor ? selection.$cursor.pos : selection.$to.pos
