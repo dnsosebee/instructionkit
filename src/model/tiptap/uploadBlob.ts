@@ -22,19 +22,19 @@ export const uploadBlob = async (file: File): Promise<string> => {
   const extant = await supabase.storage.from('blobs').getPublicUrl(hash)
   const download = await supabase.storage.from('blobs').download(hash)
 
-  logger.debug('Uploading Blob', { hash, extant })
+  console.log('Uploading Blob', { hash, extant })
 
   // Super weird and hacky, but for some reason getPublicUrl succeeds even if the file doesn't exist
   if (!download.error && extant.publicURL) {
-    logger.debug('Downloaded file', { download })
-    logger.debug('Found extant instance of this file. Returning:', extant.publicURL)
+    console.log('Downloaded file', { download })
+    console.log('Found extant instance of this file. Returning:', extant.publicURL)
     return extant.publicURL
   }
 
   const uploadResponse = await supabase.storage.from('blobs').upload(hash, file)
 
   if (uploadResponse.error) {
-    logger.error('Error uploading file to Supabase:', uploadResponse.error)
+    console.error('Error uploading file to Supabase:', uploadResponse.error)
     return errorImageUrl
   }
 
@@ -42,11 +42,11 @@ export const uploadBlob = async (file: File): Promise<string> => {
   const publicUrlResponse = await supabase.storage.from('blobs').getPublicUrl(hash)
 
   if (publicUrlResponse.error) {
-    logger.error('Error retrieving public URL from Supabase:', uploadResponse.error)
+    console.error('Error retrieving public URL from Supabase:', uploadResponse.error)
     return errorImageUrl
   }
 
-  logger.debug('Uploaded file to Supabase:', publicUrlResponse.publicURL)
+  console.log('Uploaded file to Supabase:', publicUrlResponse.publicURL)
 
   return publicUrlResponse.publicURL!
 }
