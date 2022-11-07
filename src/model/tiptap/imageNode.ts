@@ -1,6 +1,8 @@
 import { Node, nodeInputRule } from '@tiptap/core'
 import { dropImagePlugin, UploadFn } from './dropImage'
 
+// Gratefully stolen from https://gist.github.com/waptik/f44b0d3c803fade75456817b1b1df6b4
+
 /**
  * Matches following attributes in Markdown-typed image: [, alt, src, title]
  *
