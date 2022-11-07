@@ -8,11 +8,7 @@ import AssigneeNode from './assigneeNode'
 import CaseNode from './caseNode'
 import SwitchNode from './switchNode'
 import { createImageExtension } from './imageNode'
-
-const uploadFn = async (file: File) => {
-  console.log('Faking upload of file', file.name)
-  return 'http://polytrope.com/favicon.png'
-}
+import { uploadBlob } from './uploadBlob'
 
 const FlowtextExtension = Extension.create({
   addExtensions() {
@@ -23,7 +19,7 @@ const FlowtextExtension = Extension.create({
       SwitchNode,
       CaseNode,
       AssigneeNode,
-      createImageExtension(uploadFn),
+      createImageExtension(uploadBlob),
     ] // TODO follow up with reactflow on fixing dropcursor rendering
   },
 })
