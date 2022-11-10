@@ -7,7 +7,7 @@ export default () => {
   const navigation = [{ name: 'About Us', href: '#' }]
 
   return (
-    <div className='bg-slate-900 relative w-full min-h-full'>
+    <div className='bg-slate-900 relative w-full'>
       <Popover as='header' className='relative'>
         <div className='bg-slate-900 pt-6'>
           <nav
@@ -25,7 +25,7 @@ export default () => {
                   />
                 </a>
                 <div className='-mr-2 flex items-center md:hidden'>
-                  <Popover.Button className='focus-ring-inset inline-flex items-center justify-center rounded-md bg-gray-900 p-2 text-gray-400 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-white'>
+                  <Popover.Button className='focus-ring-inset inline-flex items-center justify-center rounded-md bg-slate-900 p-2 text-slate-400 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-white'>
                     <span className='sr-only'>Open main menu</span>
                     <Bars3Icon className='h-6 w-6' aria-hidden='true' />
                   </Popover.Button>
@@ -36,7 +36,7 @@ export default () => {
                   <a
                     key={item.name}
                     href={item.href}
-                    className='text-base font-medium text-white hover:text-gray-300'
+                    className='text-base font-medium text-white hover:text-slate-300'
                   >
                     {item.name}
                   </a>
@@ -44,12 +44,12 @@ export default () => {
               </div>
             </div>
             <div className='hidden md:flex md:items-center md:space-x-6'>
-              <a href='#' className='text-base font-medium text-white hover:text-gray-300'>
+              <a href='#' className='text-base font-medium text-white hover:text-slate-300'>
                 Log in
               </a>
               <a
                 href='#'
-                className='inline-flex items-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-base font-medium text-white hover:bg-gray-700'
+                className='inline-flex items-center rounded-md border border-transparent bg-slate-600 px-4 py-2 text-base font-medium text-white hover:bg-slate-700'
               >
                 Start building
               </a>
@@ -80,7 +80,7 @@ export default () => {
                   />
                 </div>
                 <div className='-mr-2'>
-                  <Popover.Button className='inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-600'>
+                  <Popover.Button className='inline-flex items-center justify-center rounded-md bg-white p-2 text-slate-400 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-600'>
                     <span className='sr-only'>Close menu</span>
                     <XMarkIcon className='h-6 w-6' aria-hidden='true' />
                   </Popover.Button>
@@ -92,7 +92,7 @@ export default () => {
                     <a
                       key={item.name}
                       href={item.href}
-                      className='block rounded-md px-3 py-2 text-base font-medium text-gray-900 hover:bg-gray-50'
+                      className='block rounded-md px-3 py-2 text-base font-medium text-slate-900 hover:bg-slate-50'
                     >
                       {item.name}
                     </a>
@@ -107,9 +107,9 @@ export default () => {
                   </a>
                 </div>
                 <div className='mt-6 px-5'>
-                  <p className='text-center text-base font-medium text-gray-500'>
+                  <p className='text-center text-base font-medium text-slate-500'>
                     Existing customer?{' '}
-                    <a href='#' className='text-gray-900 hover:underline'>
+                    <a href='#' className='text-slate-900 hover:underline'>
                       Login
                     </a>
                   </p>
@@ -120,20 +120,20 @@ export default () => {
         </Transition>
       </Popover>
 
-      <div className='bg-gray-900 pt-10 sm:pt-16 lg:overflow-hidden lg:pt-8 lg:pb-14'>
+      <div className='bg-slate-900 pt-10 sm:pt-16 lg:overflow-hidden lg:pt-8 lg:pb-14'>
         <div className='mx-auto max-w-7xl lg:px-8'>
           <div className='lg:grid lg:grid-cols-2 lg:gap-8'>
             <div className='mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:flex lg:items-center lg:px-0 lg:text-left'>
               <div className='lg:py-24'>
                 <a
                   href='#'
-                  className='inline-flex items-center rounded-full bg-black p-1 pr-2 text-white hover:text-gray-200 sm:text-base lg:text-sm xl:text-base'
+                  className='inline-flex items-center rounded-full bg-black p-1 pr-2 text-white hover:text-slate-200 sm:text-base lg:text-sm xl:text-base'
                 >
                   <span className='rounded-full bg-gradient-to-r from-teal-500 to-cyan-600 px-3 py-0.5 text-sm font-semibold leading-5 text-white'>
                     We're hiring
                   </span>
                   <span className='ml-4 text-sm'>Visit our careers page</span>
-                  <ChevronRightIcon className='ml-2 h-5 w-5 text-gray-500' aria-hidden='true' />
+                  <ChevronRightIcon className='ml-2 h-5 w-5 text-slate-500' aria-hidden='true' />
                 </a>
                 <h1 className='mt-4 text-4xl font-bold tracking-tight text-white sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl'>
                   <span className='block'>Beautifully simple</span>
@@ -141,7 +141,7 @@ export default () => {
                     instructions
                   </span>
                 </h1>
-                <p className='text-base text-gray-300 sm:text-xl lg:text-lg xl:text-xl'>
+                <p className='text-base text-slate-300 sm:text-xl lg:text-lg xl:text-xl'>
                   When customers open your product, one thing remains between them and your
                   beautiful product: the instructions. Make a good first impression with beautifully
                   simple instructions.
@@ -157,19 +157,19 @@ export default () => {
                           id='email'
                           type='email'
                           placeholder='Enter your email'
-                          className='block w-full rounded-md border-0 px-4 py-3 text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-gray-900'
+                          className='block w-full rounded-md border-0 px-4 py-3 text-base text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900'
                         />
                       </div>
                       <div className='mt-3 sm:mt-0 sm:ml-3'>
                         <button
                           type='submit'
-                          className='block w-full rounded-md bg-gradient-to-r from-teal-500 to-cyan-600 py-3 px-4 font-medium text-white shadow hover:from-teal-600 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-gray-900'
+                          className='block w-full rounded-md bg-gradient-to-r from-teal-500 to-cyan-600 py-3 px-4 font-medium text-white shadow hover:from-teal-600 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:ring-offset-2 focus:ring-offset-slate-900'
                         >
                           Register
                         </button>
                       </div>
                     </div>
-                    <p className='mt-3 text-sm text-gray-300 sm:mt-4'>
+                    <p className='mt-3 text-sm text-slate-300 sm:mt-4'>
                       Register now for the public beta, starting in Q1 2023!
                     </p>
                   </form>
