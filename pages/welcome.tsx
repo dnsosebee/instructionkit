@@ -9,7 +9,7 @@ export default () => {
   return (
     <div className='bg-slate-900 relative w-full min-h-full'>
       <Popover as='header' className='relative'>
-        <div className='bg-gray-900 pt-6'>
+        <div className='bg-slate-900 pt-6'>
           <nav
             className='relative mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6'
             aria-label='Global'
