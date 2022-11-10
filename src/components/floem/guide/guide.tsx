@@ -126,7 +126,7 @@ export const Guide = ({ floem }: GuideProps) => {
             <div
               id={'page ' + i}
               key={i}
-              className='guide-page overflow-hidden rounded-lg bg-white shadow my-5 p-5 flex flex-col'
+              className='guide-page overflow-hidden rounded-lg shadow my-5 p-5 flex flex-col prose-2xl text-white prose-headings:font-bold prose-h1:text-9xl prose-h2:text-7xl prose-h3:text-5xl prose-h4:text-3xl'
             >
               {page.map((step, j) => {
                 const { ui, value } = step.step

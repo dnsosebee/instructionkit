@@ -34,7 +34,7 @@ export const StoneView = ({
   }
   return (
     <motion.div className='stone relative h-0 opacity-0' animate={{ height: 'auto', opacity: 1 }}>
-      <div dangerouslySetInnerHTML={{ __html: fragment }} className='prose' />
+      <div dangerouslySetInnerHTML={{ __html: fragment }} />
       <Advancer props={advancerProps} params={advancer.params} />
     </motion.div>
   )
