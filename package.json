@@ -19,6 +19,8 @@
   "dependencies": {
     "@headlessui/react": "^1.7.3",
     "@heroicons/react": "^2.0.12",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@tailwindcss/forms": "^0.5.3",
     "@tiptap-pro/extension-unique-id": "^2.0.0-beta.14",
     "@tiptap/extension-code-block-lowlight": "^2.0.0-beta.199",
     "@tiptap/extension-document": "^2.0.0-beta.196",
@@ -28,8 +30,8 @@
     "@tiptap/react": "^2.0.0-beta.195",
     "@tiptap/starter-kit": "^2.0.0-beta.195",
     "classnames": "^2.3.1",
-    "framer-motion": "^7.6.2",
     "esprima": "^4.0.1",
+    "framer-motion": "^7.6.2",
     "immutable": "^4.1.0",
     "lodash": "^4.17.21",
     "lowlight": "^2.7.0",
