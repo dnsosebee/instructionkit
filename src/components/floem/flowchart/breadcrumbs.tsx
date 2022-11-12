@@ -1,4 +1,4 @@
-import { HomeIcon } from '@heroicons/react/20/solid'
+import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { DataFloem } from '../../../model/core/floem'
 import { Mutate } from '../../../model/core/mutators'
@@ -17,7 +17,13 @@ export default function Breadcrumbs({ floem, mutate }: BreadcrumbsProps) {
           <div>
             <Link href={mutate.spaceRelativeUrl('')}>
               <a className='text-gray-400 hover:text-gray-500'>
-                <HomeIcon className='h-5 w-5 flex-shrink-0' aria-hidden='true' />
+                {/* an icon with /favicon.svg */}
+                <motion.img
+                  src='/dark.svg'
+                  className='h-5 w-5 hover:-rotate-90 duration-200'
+                  alt=''
+                  // whileHover={{ transform: `rotate(-90)` }}
+                />
                 <span className='sr-only'>Home</span>
               </a>
             </Link>

@@ -1,28 +1,24 @@
 import { Popover, Transition } from '@headlessui/react'
-import { Bars3Icon, ChevronRightIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import { Fragment } from 'react'
 import PageRiver from './space/[spaceId]/river/[floemId]'
 
 export default () => {
-  const navigation = [{ name: 'About Us', href: '#' }]
+  const navigation = [{ name: 'InstructionKit', href: '#' }]
 
   return (
-    <div className='bg-slate-900 relative w-full'>
+    <div className='bg-slate-900 relative w-full h-full max-w-7xl'>
       <Popover as='header' className='relative'>
         <div className='bg-slate-900 pt-6'>
           <nav
-            className='relative mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6'
+            className='relative mx-auto flex  items-center justify-between px-4 sm:px-6'
             aria-label='Global'
           >
             <div className='flex flex-1 items-center'>
               <div className='flex w-full items-center justify-between md:w-auto'>
                 <a href='#'>
                   <span className='sr-only'>Your Company</span>
-                  <img
-                    className='h-8 w-auto sm:h-10'
-                    src='https://tailwindui.com/img/logos/mark.svg?from-color=teal&from-shade=200&to-color=cyan&to-shade=400&toShade=400'
-                    alt=''
-                  />
+                  <img className='h-8 w-auto sm:h-10' src='/favicon.svg' alt='' />
                 </a>
                 <div className='-mr-2 flex items-center md:hidden'>
                   <Popover.Button className='focus-ring-inset inline-flex items-center justify-center rounded-md bg-slate-900 p-2 text-slate-400 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-white'>
@@ -119,7 +115,7 @@ export default () => {
           </Popover.Panel>
         </Transition>
       </Popover>
-
+      {/* 
       <div className='bg-slate-900 pt-10 sm:pt-16 lg:overflow-hidden lg:pt-8 lg:pb-14'>
         <div className='mx-auto max-w-7xl lg:px-8'>
           <div className='lg:grid lg:grid-cols-2 lg:gap-8'>
@@ -178,7 +174,6 @@ export default () => {
             </div>
             <div className='mt-12 -mb-16 sm:-mb-48 lg:relative lg:m-0'>
               <div className='mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 lg:max-w-none lg:px-0'>
-                {/* Illustration taken from Lucid Illustrations: https://lucid.pixsellz.io/ */}
                 <img
                   className='w-full lg:absolute lg:inset-y-0 lg:left-0 lg:h-full lg:w-auto lg:max-w-none'
                   src='/networkIllustration.png'
@@ -188,8 +183,10 @@ export default () => {
             </div>
           </div>
         </div>
+      </div> */}
+      <div className='px-5 bg-slate-900 h-full'>
+        <PageRiver spaceId={'uXa1ZC'} floemId={'floem-WVP738wN6a7V7fyfGVih7'} />
       </div>
-      <PageRiver spaceId={'uXa1ZC'} floemId={'floem-WVP738wN6a7V7fyfGVih7'} />
     </div>
   )
 }

@@ -117,7 +117,7 @@ export const Guide = ({ floem }: GuideProps) => {
   return (
     <div
       id='guide'
-      className='absolute bg-slate-900 grow flex flex-col items-center p-2 min-h-full min-w-full'
+      className=' bg-slate-900 grow flex flex-col items-center p-2 min-h-full min-w-full'
     >
       {/* reversed so that new elements transition in smoothly at the bottom (at least, sometimes they do) */}
       <div className='flex flex-col-reverse overflow-auto'>
@@ -145,9 +145,9 @@ export const Guide = ({ floem }: GuideProps) => {
             </div>
           ))}
         </div>
-        <div className='text-3xl text-white mt-3 font-bold tracking-tight text-gray-50'>
+        {/* <div className='text-3xl text-white mt-3 font-bold tracking-tight text-gray-50'>
           {floem.title}
-        </div>
+        </div> */}
       </div>
     </div>
   )

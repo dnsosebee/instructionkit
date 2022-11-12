@@ -8,6 +8,15 @@
   flex-grow: 1;
   justify-content: center;
 }
+
+body,
+html,
+#__next {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  @apply bg-slate-900;
+}
 /* stylelint-enable selector-id-pattern */
 
 .todoapp {

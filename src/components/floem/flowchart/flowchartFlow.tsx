@@ -1,10 +1,9 @@
-import { Handle, Node, NodeProps, Position } from 'reactflow'
+import { Node, NodeProps } from 'reactflow'
 import { DataFloem } from '../../../model/core/floem'
 import { DataFlow } from '../../../model/core/flow'
 import { FLOW_START_ID } from '../../../model/core/ids'
 import { Mutate } from '../../../model/core/mutators'
 import { FlowtextEditor } from './flowtextEditor'
-import { TitleEditor } from './titleEditor'
 
 type Data = {
   mutate: Mutate
@@ -21,7 +20,7 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
 
   return (
     <div className='w-96'>
-      {
+      {/* {
         isStart ? (
           <div className='pb-1 w-full'>
             <TitleEditor
@@ -31,7 +30,7 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
             />
           </div>
         ) : null // <Handle type='target' position={Position.Top} className='p-1 z-10' />
-      }
+      } */}
       <div
         className={`px-4 ${isTop ? 'pt-4' : ''} ${
           isBottom ? 'pb-4' : ''
