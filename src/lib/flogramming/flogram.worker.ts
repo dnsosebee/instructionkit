@@ -37,7 +37,6 @@ const assignContextCode = (
 
 const retrieveContextCode = (
   context: { [key: string]: unknown },
-  toEval: string,
   declaredIdentifiers: string[],
 ): string => {
   const keys = Object.keys(context)
@@ -60,7 +59,6 @@ const evalAssign = (
   logger.debug('evalAssign', { toEval, context })
   const code = ` ${assignContextCode(context)} ${toEval}; ${retrieveContextCode(
     context,
-    toEval,
     declaredIdentifiers,
   )}`
   logger.debug('evalAssign code', code)

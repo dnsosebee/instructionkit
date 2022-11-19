@@ -138,7 +138,7 @@ export const Guide = ({ floem }: GuideProps) => {
                   <StepView
                     uiConfig={ui}
                     advancerProps={{ active, value, onHop }}
-                    key={`r ${i} s ${j}`}
+                    key={`r ${i} s ${j} f ${step.step.consequences.flowFrom.flow}`}
                   />
                 )
               })}
