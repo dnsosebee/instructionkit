@@ -3,5 +3,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 export default (req: NextApiRequest, res: NextApiResponse) => {
-  res.status(200).json({ key: process.env.SUPABASE_KEY })
+  res.status(200).json({ key: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY })
 }

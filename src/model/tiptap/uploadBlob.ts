@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js'
-import { logger } from '../../logger'
 
 const errorImageUrl =
   'https://media.australian.museum/media/dd/images/Some_image.width-800.bbe274e.jpg'
@@ -25,10 +24,10 @@ export const uploadBlob = async (file: File): Promise<string> => {
   console.log('Uploading Blob', { hash, extant })
 
   // Super weird and hacky, but for some reason getPublicUrl succeeds even if the file doesn't exist
-  if (!download.error && extant.publicURL) {
+  if (!download.error && extant.data.publicUrl) {
     console.log('Downloaded file', { download })
-    console.log('Found extant instance of this file. Returning:', extant.publicURL)
-    return extant.publicURL
+    console.log('Found extant instance of this file. Returning:', extant.data.publicUrl)
+    return extant.data.publicUrl
   }
 
   const uploadResponse = await supabase.storage.from('blobs').upload(hash, file)
@@ -41,12 +40,12 @@ export const uploadBlob = async (file: File): Promise<string> => {
   // Feels weird, is there a better way to get the public URL after uploading?
   const publicUrlResponse = await supabase.storage.from('blobs').getPublicUrl(hash)
 
-  if (publicUrlResponse.error) {
+  if (!publicUrlResponse?.data?.publicUrl) {
     console.error('Error retrieving public URL from Supabase:', uploadResponse.error)
     return errorImageUrl
   }
 
-  console.log('Uploaded file to Supabase:', publicUrlResponse.publicURL)
+  console.log('Uploaded file to Supabase:', publicUrlResponse.data.publicUrl)
 
-  return publicUrlResponse.publicURL!
+  return publicUrlResponse.data.publicUrl
 }
