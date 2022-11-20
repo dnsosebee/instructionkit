@@ -19,17 +19,15 @@ export const FloemCard = ({ floem, mutate }: FloemCardProps) => {
             <img className="h-10 w-10 rounded-full" src={floem.imageUrl} alt="" />
           </div> */}
       <div className='min-w-0 flex-1'>
-        <Link href={mutate.spaceRelativeUrl(`/chart/${floem.id}`)}>
-          <a className='focus:outline-none'>
-            <span className='absolute inset-0' aria-hidden='true' />
-            <p className='text-sm font-medium text-gray-900'>{floem.title}</p>
-            <p className='truncate text-sm text-gray-500'>
-              {'created ' +
-                (new Date().toLocaleDateString() === date.toLocaleDateString()
-                  ? date.toLocaleTimeString()
-                  : date.toLocaleDateString())}
-            </p>
-          </a>
+        <Link href={mutate.spaceRelativeUrl(`/chart/${floem.id}`)} className='focus:outline-none'>
+          <span className='absolute inset-0' aria-hidden='true' />
+          <p className='text-sm font-medium text-gray-900'>{floem.title}</p>
+          <p className='truncate text-sm text-gray-500'>
+            {'created ' +
+              (new Date().toLocaleDateString() === date.toLocaleDateString()
+                ? date.toLocaleTimeString()
+                : date.toLocaleDateString())}
+          </p>
         </Link>
       </div>
       <ContextMenu onClickDeleteButton={() => mutate.deleteFloem(floem.id)} />
