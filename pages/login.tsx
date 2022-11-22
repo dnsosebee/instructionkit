@@ -1,6 +1,7 @@
 import { LockClosedIcon } from '@heroicons/react/20/solid'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const SignIn = () => {
   const supabase = useSupabaseClient()
@@ -18,7 +19,7 @@ const SignIn = () => {
 
     // if success, redirect to account page
     if (authResponse.data.user) {
-      window.location.href = '/account'
+      window.location.href = '/settings'
     }
   }
 
@@ -92,9 +93,9 @@ const SignIn = () => {
                 </div> */}
 
               <div className='text-sm'>
-                <a href='#' className='font-medium text-indigo-600 hover:text-indigo-500'>
+                <Link href='/recover' className='font-medium text-indigo-600 hover:text-indigo-500'>
                   Forgot your password?
-                </a>
+                </Link>
               </div>
             </div>
 

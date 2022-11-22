@@ -1,9 +1,11 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { Database } from '../src/lib/database.types'
+import Navbar from '../../src/components/layout/navbar'
+import { Database } from '../../src/lib/database.types'
 type Profiles = Database['public']['Tables']['profiles']['Row']
 
-export default function Account() {
+export default function Settings() {
   const supabase = useSupabaseClient<Database>()
   const user = useUser()
   const [loading, setLoading] = useState(true)
@@ -12,6 +14,9 @@ export default function Account() {
   const [about, setAbout] = useState<Profiles['about'] | null>(null)
   const [fullName, setFullName] = useState<Profiles['full_name'] | null>(null)
   const [avatar_url, setAvatarUrl] = useState<Profiles['avatar_url']>(null)
+
+  // get query params from next router
+  const { query } = useRouter()
 
   useEffect(() => {
     if (user) {
@@ -74,98 +79,120 @@ export default function Account() {
     }
   }
 
+  async function updatePassword(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    try {
+      setLoading(true)
+      if (!user) throw new Error('No user')
+
+      const { error } = await supabase.auth.updateUser({
+        email: user.email,
+        password: e.currentTarget.password.value,
+      })
+      if (error) throw error
+      alert('Password updated!')
+    } catch (error) {
+      alert('Error updating the password!')
+      console.log(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return loading ? (
     <div className='flex items-center justify-center'>
       <div className='w-12 h-12 border-t-2 border-b-2 border-white rounded-full animate-spin'></div>
     </div>
   ) : (
-    <div className='mx-auto max-w-7xl sm:px-6 lg:px-8 py-5 bg-white'>
-      <div>
-        <div className='md:grid md:grid-cols-3 md:gap-6'>
-          <div className='md:col-span-1'>
-            <div className='px-4 sm:px-0'>
-              <h3 className='text-lg font-medium leading-6 text-gray-900'>Profile</h3>
-              {/* <p className='mt-1 text-sm text-gray-600'>
+    <div className='w-full'>
+      <Navbar />
+      <div className='mx-auto max-w-7xl sm:px-6 lg:px-8 py-5 bg-white'>
+        <div>
+          <div className='md:grid md:grid-cols-3 md:gap-6'>
+            <div className='md:col-span-1'>
+              <div className='px-4 sm:px-0'>
+                <h3 className='text-lg font-medium leading-6 text-gray-900'>Profile</h3>
+                {/* <p className='mt-1 text-sm text-gray-600'>
                 This information will be displayed publicly so be careful what you share.
               </p> */}
+              </div>
             </div>
-          </div>
-          <div className='mt-5 md:col-span-2 md:mt-0'>
-            <form onSubmit={e => e.preventDefault()}>
-              <div className='shadow sm:overflow-hidden sm:rounded-md'>
-                <div className='space-y-6 bg-white px-4 py-5 sm:p-6'>
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700'>Email</label>
-                    <input
-                      type='text'
-                      name='email'
-                      id='email'
-                      className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm cursor-not-allowed'
-                      value={user?.email}
-                      disabled
-                    />
-                  </div>
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700'>Username</label>
-                    <input
-                      type='text'
-                      name='username'
-                      id='username'
-                      className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                      placeholder='johndoe'
-                      value={username || ''}
-                      onChange={e => setUsername(e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700'>Full name</label>
-                    <input
-                      type='text'
-                      name='full_name'
-                      id='full_name'
-                      className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                      placeholder='John Doe'
-                      value={fullName || ''}
-                      onChange={e => setFullName(e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <label className='block text-sm font-medium text-gray-700'>Title</label>
-                    <input
-                      type='text'
-                      name='title'
-                      id='title'
-                      className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                      placeholder='Designer'
-                      value={title || ''}
-                      onChange={e => setTitle(e.target.value)}
-                    />
-                  </div>
-
-                  <div>
-                    <label htmlFor='about' className='block text-sm font-medium text-gray-700'>
-                      About
-                    </label>
-                    <div className='mt-1'>
-                      <textarea
-                        id='about'
-                        name='about'
-                        rows={3}
-                        className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                        placeholder='you@example.com'
-                        defaultValue={''}
-                        value={about || ''}
-                        onChange={e => setAbout(e.target.value)}
+            <div className='mt-5 md:col-span-2 md:mt-0'>
+              <form onSubmit={e => e.preventDefault()}>
+                <div className='shadow sm:overflow-hidden sm:rounded-md'>
+                  <div className='space-y-6 bg-white px-4 py-5 sm:p-6'>
+                    <div>
+                      <label className='block text-sm font-medium text-gray-700'>Email</label>
+                      <input
+                        type='text'
+                        name='email'
+                        id='email'
+                        className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm cursor-not-allowed'
+                        value={user?.email}
+                        disabled
                       />
                     </div>
-                    <p className='mt-2 text-sm text-gray-500'>
-                      Brief description for your profile. URLs are hyperlinked.
-                    </p>
-                  </div>
+                    <div>
+                      <label className='block text-sm font-medium text-gray-700'>Username</label>
+                      <input
+                        type='text'
+                        name='username'
+                        id='username'
+                        className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                        placeholder='johndoe'
+                        value={username || ''}
+                        onChange={e => setUsername(e.target.value)}
+                      />
+                    </div>
 
-                  {/* <div>
+                    <div>
+                      <label className='block text-sm font-medium text-gray-700'>Full name</label>
+                      <input
+                        type='text'
+                        name='full_name'
+                        id='full_name'
+                        className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                        placeholder='John Doe'
+                        value={fullName || ''}
+                        onChange={e => setFullName(e.target.value)}
+                      />
+                    </div>
+
+                    <div>
+                      <label className='block text-sm font-medium text-gray-700'>Title</label>
+                      <input
+                        type='text'
+                        name='title'
+                        id='title'
+                        className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                        placeholder='Designer'
+                        value={title || ''}
+                        onChange={e => setTitle(e.target.value)}
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor='about' className='block text-sm font-medium text-gray-700'>
+                        About
+                      </label>
+                      <div className='mt-1'>
+                        <textarea
+                          id='about'
+                          name='about'
+                          rows={3}
+                          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                          placeholder='you@example.com'
+                          defaultValue={''}
+                          value={about || ''}
+                          onChange={e => setAbout(e.target.value)}
+                        />
+                      </div>
+                      <p className='mt-2 text-sm text-gray-500'>
+                        Brief description for your profile.
+                      </p>
+                    </div>
+
+                    {/* <div>
                     <label className='block text-sm font-medium text-gray-700'>Photo</label>
                     <div className='mt-1 flex items-center'>
                       <span className='inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100'>
@@ -185,22 +212,77 @@ export default function Account() {
                       </button>
                     </div>
                   </div> */}
+                  </div>
+                  <div className='bg-gray-50 px-4 py-3 text-right sm:px-6'>
+                    <button
+                      type='submit'
+                      className='inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                      onClick={updateProfile}
+                    >
+                      Save
+                    </button>
+                  </div>
                 </div>
-                <div className='bg-gray-50 px-4 py-3 text-right sm:px-6'>
-                  <button
-                    type='submit'
-                    className='inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
-                    onClick={updateProfile}
-                  >
-                    Save
-                  </button>
-                </div>
-              </div>
-            </form>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
-      {/* 
+
+        <div className='hidden sm:block' aria-hidden='true'>
+          <div className='py-5'>
+            <div className='border-t border-gray-200' />
+          </div>
+        </div>
+
+        <div className='mt-10 sm:mt-0'>
+          <div className='md:grid md:grid-cols-3 md:gap-6'>
+            <div className='md:col-span-1'>
+              <div className='px-4 sm:px-0'>
+                <h3 className='text-lg font-medium leading-6 text-gray-900'>Password</h3>
+                <p className='mt-1 text-sm text-gray-600'>
+                  Use a secure password to protect your account.
+                </p>
+              </div>
+            </div>
+            <div className='mt-5 md:mt-0 md:col-span-2'>
+              <form onSubmit={updatePassword}>
+                <div className='shadow sm:rounded-md sm:overflow-hidden'>
+                  <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
+                    <div className='grid grid-cols-3 gap-6'>
+                      <div className='col-span-3 sm:col-span-2'>
+                        <label
+                          htmlFor='password'
+                          className='block text-sm font-medium text-gray-700'
+                        >
+                          New password
+                        </label>
+                        <div className='mt-1 flex rounded-md shadow-sm'>
+                          <input
+                            type='password'
+                            name='password'
+                            id='password'
+                            className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            placeholder='New password'
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='px-4 py-3 bg-gray-50 text-right sm:px-6'>
+                    <button
+                      type='submit'
+                      className='inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm'
+                    >
+                      Reset password
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        {/* 
       <div className='hidden sm:block' aria-hidden='true'>
         <div className='py-5'>
           <div className='border-t border-gray-200' />
@@ -507,6 +589,7 @@ export default function Account() {
           </div>
         </div>
       </div> */}
+      </div>
     </div>
   )
 }
