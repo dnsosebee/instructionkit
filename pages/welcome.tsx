@@ -2,6 +2,7 @@ import { Popover, Transition } from '@headlessui/react'
 import Bars3Icon from '@heroicons/react/20/solid/Bars3Icon'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
+import Link from 'next/link'
 import { Fragment } from 'react'
 import PageRiver from './space/[spaceId]/river/[floemId]'
 export default () => {
@@ -35,26 +36,29 @@ export default () => {
                 </div>
                 <div className='hidden space-x-8 md:ml-10 md:flex'>
                   {navigation.map(item => (
-                    <a
+                    <Link
                       key={item.name}
                       href={item.href}
                       className='text-base font-medium text-white hover:text-gray-300'
                     >
                       {item.name}
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
               <div className='hidden md:flex md:items-center md:space-x-6'>
-                <a href='#' className='text-base font-medium text-white hover:text-gray-300'>
+                <Link
+                  href='/login'
+                  className='text-base font-medium text-white hover:text-gray-300'
+                >
                   Log in
-                </a>
-                <a
+                </Link>
+                <Link
                   href='#'
                   className='inline-flex items-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-base font-medium text-white hover:bg-gray-700'
                 >
                   Start building
-                </a>
+                </Link>
               </div>
             </nav>
           </div>
@@ -113,9 +117,9 @@ export default () => {
                   <div className='mt-6 px-5'>
                     <p className='text-center text-base font-medium text-gray-500'>
                       Existing customer?{' '}
-                      <a href='#' className='text-gray-900 hover:underline'>
+                      <Link href='/login' className='text-gray-900 hover:underline'>
                         Login
-                      </a>
+                      </Link>
                     </p>
                   </div>
                 </div>
@@ -126,12 +130,6 @@ export default () => {
         <main>
           <div className='px-5 bg-slate-900 h-full'>
             <PageRiver spaceId={'uXa1ZC'} floemId={'floem-WVP738wN6a7V7fyfGVih7'} />
-            <div className='prose'>
-              <h1>BIGGG</h1>
-              <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod. Quisquam
-              </p>
-            </div>
           </div>
         </main>
       </div>
