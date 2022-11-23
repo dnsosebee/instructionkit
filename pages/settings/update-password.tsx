@@ -17,7 +17,7 @@ const UpdatePasswordPage = () => {
   return loading || !user ? (
     <Loading />
   ) : (
-    <div className='h-full p-6 bg-white'>
+    <div className='h-full p-6 '>
       <UpdatePassword supabase={supabase} user={user} setLoading={setLoading} />
     </div>
   )
@@ -54,12 +54,12 @@ export const UpdatePassword = ({ user, supabase, setLoading }: UpdatePasswordPro
   }
 
   return (
-    <div className='mt-10 sm:mt-0 bg-white'>
+    <div className='mt-10 sm:mt-0'>
       <div className='md:grid md:grid-cols-3 md:gap-6'>
         <div className='md:col-span-1'>
           <div className='px-4 sm:px-0'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900'>Update Password</h3>
-            <p className='mt-1 text-sm text-gray-600'>
+            <h3 className='text-lg font-medium leading-6 text-white'>Update Password</h3>
+            <p className='mt-1 text-sm text-gray-300'>
               Use a secure password to protect your account.
             </p>
           </div>
@@ -67,10 +67,10 @@ export const UpdatePassword = ({ user, supabase, setLoading }: UpdatePasswordPro
         <div className='mt-5 md:mt-0 md:col-span-2'>
           <form onSubmit={updatePassword}>
             <div className='shadow sm:rounded-md sm:overflow-hidden'>
-              <div className='px-4 py-5 bg-white space-y-6 sm:p-6'>
+              <div className='px-4 py-5 pace-y-6 sm:p-6'>
                 <div className='grid grid-cols-3 gap-6'>
                   <div className='col-span-3 sm:col-span-2'>
-                    <label htmlFor='password' className='block text-sm font-medium text-gray-700'>
+                    <label htmlFor='password' className='block text-sm font-medium text-gray-300'>
                       New password
                     </label>
                     <div className='mt-1 flex rounded-md shadow-sm'>
@@ -85,7 +85,7 @@ export const UpdatePassword = ({ user, supabase, setLoading }: UpdatePasswordPro
                   </div>
                 </div>
               </div>
-              <div className='px-4 py-3 bg-gray-50 text-right sm:px-6'>
+              <div className='px-4 py-3text-right sm:px-6'>
                 <button
                   type='submit'
                   className='inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm'

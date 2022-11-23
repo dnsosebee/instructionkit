@@ -105,12 +105,12 @@ export default function Settings() {
   ) : (
     <div className='w-full'>
       <Navbar>
-        <div className='mx-auto max-w-7xl sm:px-6 lg:px-8 py-5 bg-white'>
+        <div className='mx-auto max-w-7xl sm:px-6 lg:px-8 py-5 prose'>
           <div>
             <div className='md:grid md:grid-cols-3 md:gap-6'>
               <div className='md:col-span-1'>
                 <div className='px-4 sm:px-0'>
-                  <h3 className='text-lg font-medium leading-6 text-gray-900'>Profile</h3>
+                  <h3 className='text-lg font-medium leading-6 text-white'>Profile</h3>
                   {/* <p className='mt-1 text-sm text-gray-600'>
                 This information will be displayed publicly so be careful what you share.
               </p> */}
@@ -119,9 +119,9 @@ export default function Settings() {
               <div className='mt-5 md:col-span-2 md:mt-0'>
                 <form onSubmit={e => e.preventDefault()}>
                   <div className='shadow sm:overflow-hidden sm:rounded-md'>
-                    <div className='space-y-6 bg-white px-4 py-5 sm:p-6'>
+                    <div className='space-y-6 px-4 py-5 sm:p-6'>
                       <div>
-                        <label className='block text-sm font-medium text-gray-700'>Email</label>
+                        <label className='block text-sm font-medium text-gray-300'>Email</label>
                         <input
                           type='text'
                           name='email'
@@ -133,7 +133,7 @@ export default function Settings() {
                       </div>
 
                       <div>
-                        <label className='block text-sm font-medium text-gray-700'>Full name</label>
+                        <label className='block text-sm font-medium text-gray-300'>Full name</label>
                         <input
                           type='text'
                           name='full_name'
@@ -146,7 +146,7 @@ export default function Settings() {
                       </div>
 
                       <div>
-                        <label className='block text-sm font-medium text-gray-700'>
+                        <label className='block text-sm font-medium text-gray-300'>
                           Company Website
                         </label>
                         <input
@@ -161,12 +161,12 @@ export default function Settings() {
                       </div>
 
                       <div>
-                        <label className='block text-sm font-medium text-gray-700'>Title</label>
+                        <label className='block text-sm font-medium text-gray-300'>Title</label>
                         <input
                           type='text'
                           name='title'
                           id='title'
-                          className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                          className='mt-1 block w-full rounded-md border-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                           placeholder='Designer'
                           value={title || ''}
                           onChange={e => setTitle(e.target.value)}
@@ -174,7 +174,7 @@ export default function Settings() {
                       </div>
 
                       <div>
-                        <label htmlFor='about' className='block text-sm font-medium text-gray-700'>
+                        <label htmlFor='about' className='block text-sm font-medium text-gray-300'>
                           About
                         </label>
                         <div className='mt-1'>
@@ -182,7 +182,7 @@ export default function Settings() {
                             id='about'
                             name='about'
                             rows={3}
-                            className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            className='mt-1 block w-full rounded-md border-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                             placeholder='you@example.com'
                             value={about || ''}
                             onChange={e => setAbout(e.target.value)}
@@ -194,7 +194,7 @@ export default function Settings() {
                       </div>
 
                       {/* <div>
-                    <label className='block text-sm font-medium text-gray-700'>Photo</label>
+                    <label className='block text-sm font-medium text-gray-300'>Photo</label>
                     <div className='mt-1 flex items-center'>
                       <span className='inline-block h-12 w-12 overflow-hidden rounded-full bg-gray-100'>
                         <svg
@@ -207,14 +207,14 @@ export default function Settings() {
                       </span>
                       <button
                         type='button'
-                        className='ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                        className='ml-5 rounded-md border border-gray-300 bg-white py-2 px-3 text-sm font-medium leading-4 text-gray-300 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
                       >
                         Change
                       </button>
                     </div>
                   </div> */}
                     </div>
-                    <div className='bg-gray-50 px-4 py-3 text-right sm:px-6'>
+                    <div className='px-4 py-3 text-right sm:px-6'>
                       <button
                         type='submit'
                         className='inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
@@ -231,7 +231,7 @@ export default function Settings() {
 
           <div className='hidden sm:block' aria-hidden='true'>
             <div className='py-5'>
-              <div className='border-t border-gray-200' />
+              <div className='border-t border-gray-700' />
             </div>
           </div>
 
@@ -248,7 +248,7 @@ export default function Settings() {
         <div className='md:grid md:grid-cols-3 md:gap-6'>
           <div className='md:col-span-1'>
             <div className='px-4 sm:px-0'>
-              <h3 className='text-lg font-medium leading-6 text-gray-900'>Personal Information</h3>
+              <h3 className='text-lg font-medium leading-6 text-white'>Personal Information</h3>
               <p className='mt-1 text-sm text-gray-600'>
                 Use a permanent address where you can receive mail.
               </p>
@@ -262,7 +262,7 @@ export default function Settings() {
                     <div className='col-span-6 sm:col-span-3'>
                       <label
                         htmlFor='first-name'
-                        className='block text-sm font-medium text-gray-700'
+                        className='block text-sm font-medium text-gray-300'
                       >
                         First name
                       </label>
@@ -278,7 +278,7 @@ export default function Settings() {
                     <div className='col-span-6 sm:col-span-3'>
                       <label
                         htmlFor='last-name'
-                        className='block text-sm font-medium text-gray-700'
+                        className='block text-sm font-medium text-gray-300'
                       >
                         Last name
                       </label>
@@ -294,7 +294,7 @@ export default function Settings() {
                     <div className='col-span-6 sm:col-span-4'>
                       <label
                         htmlFor='email-address'
-                        className='block text-sm font-medium text-gray-700'
+                        className='block text-sm font-medium text-gray-300'
                       >
                         Email address
                       </label>
@@ -308,7 +308,7 @@ export default function Settings() {
                     </div>
 
                     <div className='col-span-6 sm:col-span-3'>
-                      <label htmlFor='country' className='block text-sm font-medium text-gray-700'>
+                      <label htmlFor='country' className='block text-sm font-medium text-gray-300'>
                         Country
                       </label>
                       <select
@@ -326,7 +326,7 @@ export default function Settings() {
                     <div className='col-span-6'>
                       <label
                         htmlFor='street-address'
-                        className='block text-sm font-medium text-gray-700'
+                        className='block text-sm font-medium text-gray-300'
                       >
                         Street address
                       </label>
@@ -340,7 +340,7 @@ export default function Settings() {
                     </div>
 
                     <div className='col-span-6 sm:col-span-6 lg:col-span-2'>
-                      <label htmlFor='city' className='block text-sm font-medium text-gray-700'>
+                      <label htmlFor='city' className='block text-sm font-medium text-gray-300'>
                         City
                       </label>
                       <input
@@ -353,7 +353,7 @@ export default function Settings() {
                     </div>
 
                     <div className='col-span-6 sm:col-span-3 lg:col-span-2'>
-                      <label htmlFor='region' className='block text-sm font-medium text-gray-700'>
+                      <label htmlFor='region' className='block text-sm font-medium text-gray-300'>
                         State / Province
                       </label>
                       <input
@@ -368,7 +368,7 @@ export default function Settings() {
                     <div className='col-span-6 sm:col-span-3 lg:col-span-2'>
                       <label
                         htmlFor='postal-code'
-                        className='block text-sm font-medium text-gray-700'
+                        className='block text-sm font-medium text-gray-300'
                       >
                         ZIP / Postal code
                       </label>
@@ -406,7 +406,7 @@ export default function Settings() {
         <div className='md:grid md:grid-cols-3 md:gap-6'>
           <div className='md:col-span-1'>
             <div className='px-4 sm:px-0'>
-              <h3 className='text-lg font-medium leading-6 text-gray-900'>Notifications</h3>
+              <h3 className='text-lg font-medium leading-6 text-white'>Notifications</h3>
               <p className='mt-1 text-sm text-gray-600'>
                 Decide which communications you'd like to receive and how.
               </p>
@@ -418,7 +418,7 @@ export default function Settings() {
                 <div className='space-y-6 bg-white px-4 py-5 sm:p-6'>
                   <fieldset>
                     <legend className='sr-only'>By Email</legend>
-                    <div className='text-base font-medium text-gray-900' aria-hidden='true'>
+                    <div className='text-base font-medium text-white' aria-hidden='true'>
                       By Email
                     </div>
                     <div className='mt-4 space-y-4'>
@@ -432,7 +432,7 @@ export default function Settings() {
                           />
                         </div>
                         <div className='ml-3 text-sm'>
-                          <label htmlFor='comments' className='font-medium text-gray-700'>
+                          <label htmlFor='comments' className='font-medium text-gray-300'>
                             Comments
                           </label>
                           <p className='text-gray-500'>
@@ -450,7 +450,7 @@ export default function Settings() {
                           />
                         </div>
                         <div className='ml-3 text-sm'>
-                          <label htmlFor='candidates' className='font-medium text-gray-700'>
+                          <label htmlFor='candidates' className='font-medium text-gray-300'>
                             Candidates
                           </label>
                           <p className='text-gray-500'>
@@ -468,7 +468,7 @@ export default function Settings() {
                           />
                         </div>
                         <div className='ml-3 text-sm'>
-                          <label htmlFor='offers' className='font-medium text-gray-700'>
+                          <label htmlFor='offers' className='font-medium text-gray-300'>
                             Offers
                           </label>
                           <p className='text-gray-500'>
@@ -479,7 +479,7 @@ export default function Settings() {
                     </div>
                   </fieldset>
                   <fieldset>
-                    <legend className='contents text-base font-medium text-gray-900'>
+                    <legend className='contents text-base font-medium text-white'>
                       Push Notifications
                     </legend>
                     <p className='text-sm text-gray-500'>
@@ -495,7 +495,7 @@ export default function Settings() {
                         />
                         <label
                           htmlFor='push-everything'
-                          className='ml-3 block text-sm font-medium text-gray-700'
+                          className='ml-3 block text-sm font-medium text-gray-300'
                         >
                           Everything
                         </label>
@@ -509,7 +509,7 @@ export default function Settings() {
                         />
                         <label
                           htmlFor='push-email'
-                          className='ml-3 block text-sm font-medium text-gray-700'
+                          className='ml-3 block text-sm font-medium text-gray-300'
                         >
                           Same as email
                         </label>
@@ -523,7 +523,7 @@ export default function Settings() {
                         />
                         <label
                           htmlFor='push-nothing'
-                          className='ml-3 block text-sm font-medium text-gray-700'
+                          className='ml-3 block text-sm font-medium text-gray-300'
                         >
                           No push notifications
                         </label>

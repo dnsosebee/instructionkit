@@ -8,9 +8,9 @@ export default ({ children }: { children: JSX.Element }) => {
   const navigation = [] as { name: string; href: string }[]
 
   return (
-    <div>
+    <div className='w-full'>
       <Popover as='header' className='relative'>
-        <div className='bg-gray-900 pt-6'>
+        <div className='bg-gray-900 py-6'>
           <nav
             className='relative mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6'
             aria-label='Global'
@@ -18,13 +18,15 @@ export default ({ children }: { children: JSX.Element }) => {
             <div className='flex flex-1 items-center'>
               <div className='flex w-full items-center justify-between md:w-auto'>
                 <span className='sr-only'>InstructionKit</span>
-                <Image
-                  className='h-8 w-auto sm:h-10'
-                  src='/light.svg'
-                  alt=''
-                  width={50}
-                  height={50}
-                />
+                <Link href='/welcome'>
+                  <Image
+                    className='h-8 w-auto sm:h-10'
+                    src='/light.svg'
+                    alt=''
+                    width={50}
+                    height={50}
+                  />
+                </Link>
                 <div className='-mr-2 flex items-center md:hidden'>
                   <Popover.Button className='focus-ring-inset inline-flex items-center justify-center rounded-md bg-gray-900 p-2 text-gray-400 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-white'>
                     <span className='sr-only'>Open main menu</span>
@@ -49,7 +51,7 @@ export default ({ children }: { children: JSX.Element }) => {
                 Log in
               </Link>
               <Link
-                href='#'
+                href='/waitlist'
                 className='inline-flex items-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-base font-medium text-white hover:bg-gray-700'
               >
                 Start building
