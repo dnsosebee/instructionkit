@@ -162,7 +162,6 @@ export default () => {
                           id='full-name'
                           autoComplete='full-name'
                           className='block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm'
-                          required
                         />
                       </div>
                     </div>
@@ -181,7 +180,6 @@ export default () => {
                           autoComplete='company-website'
                           className='block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm'
                           placeholder='https://'
-                          required
                         />
                       </div>
                     </div>
@@ -208,7 +206,6 @@ export default () => {
                                     type='radio'
                                     value='1 - 5 employees'
                                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
-                                    required
                                   />
                                   <label
                                     htmlFor='1-5'
@@ -224,7 +221,6 @@ export default () => {
                                     type='radio'
                                     value='6 - 20 employees'
                                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
-                                    required
                                   />
                                   <label
                                     htmlFor='6-20'
@@ -240,7 +236,6 @@ export default () => {
                                     type='radio'
                                     value='21 - 50 employees'
                                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
-                                    required
                                   />
                                   <label
                                     htmlFor='21-50'
@@ -256,7 +251,6 @@ export default () => {
                                     type='radio'
                                     value='51 - 200 employees'
                                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
-                                    required
                                   />
                                   <label
                                     htmlFor='51-200'
@@ -272,7 +266,6 @@ export default () => {
                                     type='radio'
                                     value='200+ employees'
                                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
-                                    required
                                   />
                                   <label
                                     htmlFor='200+'
@@ -303,7 +296,6 @@ export default () => {
                           autoComplete='job-title'
                           className='block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm'
                           placeholder='e.g. Designer'
-                          required
                         />
                       </div>
                     </div>
@@ -325,7 +317,6 @@ export default () => {
                       autoComplete='how-did-you-hear'
                       className='block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm'
                       placeholder='e.g. Google'
-                      required
                     />
                   </div>
                 </div>
