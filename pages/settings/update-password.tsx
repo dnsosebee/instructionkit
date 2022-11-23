@@ -45,6 +45,7 @@ export const UpdatePassword = ({ user, supabase, setLoading }: UpdatePasswordPro
       })
       if (error) throw error
       alert('Password updated!')
+      window.location.href = '/settings'
     } catch (error) {
       alert('Error updating the password!')
       console.log(error)

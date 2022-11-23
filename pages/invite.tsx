@@ -45,7 +45,7 @@ const Join = () => {
                 priority
               />
               <h1 className='mt-6 text-center text-5xl font-bold tracking-tight text-white mb-10'>
-                Welcome to InstructionKit
+                Welcome
               </h1>
               <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-white'>
                 Create your account

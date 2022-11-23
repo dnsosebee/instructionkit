@@ -1,3 +1,5 @@
+import Image from 'next/image'
+import Link from 'next/link'
 import { useState } from 'react'
 import MarketingNav from '../src/components/layout/marketingNav'
 import { validateEmail } from '../src/lib/validation'
@@ -75,52 +77,62 @@ export default () => {
 
   return (
     <MarketingNav>
-      <div className='self-center p-6 flex justify-center'>
-        <div className='flex flex-col justify-center max-w-7xl'>
+      <div className='self-center container'>
+        <div className='flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8'>
           {state === State.Pending ? (
-            <form className='space-y-8 divide-y divide-gray-700' onSubmit={handleSubmit1}>
-              <div className='space-y-8 divide-y divide-gray-700 sm:space-y-5'>
-                <div className='space-y-6 pt-8 sm:space-y-5 sm:pt-10'>
+            <div className='w-full max-w-md space-y-8'>
+              <div>
+                <Image
+                  className='mx-auto h-12 w-auto'
+                  src='/light.svg'
+                  alt='logo'
+                  width={50}
+                  height={50}
+                  priority
+                />
+                <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-white'>
+                  Join the waitlist
+                </h2>
+              </div>
+              <form className='mt-8 space-y-6' onSubmit={handleSubmit1}>
+                <div className='-space-y-px rounded-md shadow-sm'>
                   <div>
-                    <h3 className='text-3xl mb-6 font-medium leading-6 text-white'>
-                      Join the waitlist
-                    </h3>
-                    <p className='mt-1 max-w-2xl text-sm text-gray-400'>
-                      Enter your email to join the waitlist.
-                    </p>
-                  </div>
-
-                  <div className='sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-700 sm:pt-5'>
-                    <label
-                      htmlFor='email'
-                      className='block text-sm font-medium text-gray-300 sm:mt-px sm:pt-2'
-                    >
-                      Email
+                    <label htmlFor='email-address' className='sr-only'>
+                      Email address
                     </label>
-                    <div className='mt-1 sm:col-span-2 sm:mt-0'>
-                      <input
-                        type='email'
-                        name='email'
-                        id='email'
-                        autoComplete='email'
-                        className='block w-full max-w-lg rounded-md border-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm'
-                        required
-                      />
-                    </div>
+                    <input
+                      id='email-address'
+                      name='email'
+                      type='email'
+                      autoComplete='email'
+                      required
+                      className='relative block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm'
+                      placeholder='Email address'
+                    />
                   </div>
                 </div>
-              </div>
-              <div className='pt-5'>
-                <div className='flex justify-end'>
+
+                <div className='flex items-center justify-between'>
+                  <div className='text-sm'>
+                    <Link
+                      href='/signin'
+                      className='font-medium text-indigo-600 hover:text-indigo-500'
+                    >
+                      Already have an account?
+                    </Link>
+                  </div>
+                </div>
+
+                <div>
                   <button
                     type='submit'
-                    className='ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+                    className='group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
                   >
                     Join the waitlist
                   </button>
                 </div>
-              </div>
-            </form>
+              </form>
+            </div>
           ) : state === State.SubmittedEmail ? (
             <div className='p-6'>
               <form className='space-y-8 divide-y divide-gray-700' onSubmit={handleSubmit2}>
