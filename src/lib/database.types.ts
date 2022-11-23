@@ -68,7 +68,7 @@ export interface Database {
           avatar_url: string | null
           title: string | null
           about: string | null
-          company_website: string | null
+          company: string | null
           registered: boolean
         }
         Insert: {
@@ -78,7 +78,7 @@ export interface Database {
           avatar_url?: string | null
           title?: string | null
           about?: string | null
-          company_website?: string | null
+          company?: string | null
           registered?: boolean
         }
         Update: {
@@ -88,7 +88,7 @@ export interface Database {
           avatar_url?: string | null
           title?: string | null
           about?: string | null
-          company_website?: string | null
+          company?: string | null
           registered?: boolean
         }
       }

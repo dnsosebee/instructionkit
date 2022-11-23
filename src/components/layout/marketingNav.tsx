@@ -18,7 +18,7 @@ export default ({ children }: { children: JSX.Element }) => {
             <div className='flex flex-1 items-center'>
               <div className='flex w-full items-center justify-between md:w-auto'>
                 <span className='sr-only'>InstructionKit</span>
-                <Link href='/welcome'>
+                <Link href='/'>
                   <Image
                     className='h-8 w-auto sm:h-10'
                     src='/light.svg'
@@ -47,8 +47,8 @@ export default ({ children }: { children: JSX.Element }) => {
               </div>
             </div>
             <div className='hidden md:flex md:items-center md:space-x-6'>
-              <Link href='/login' className='text-base font-medium text-white hover:text-gray-300'>
-                Log in
+              <Link href='/signin' className='text-base font-medium text-white hover:text-gray-300'>
+                Sign in
               </Link>
               <Link
                 href='/waitlist'
@@ -114,8 +114,8 @@ export default ({ children }: { children: JSX.Element }) => {
                 <div className='mt-6 px-5'>
                   <p className='text-center text-base font-medium text-gray-500'>
                     Existing customer?{' '}
-                    <Link href='/login' className='text-gray-900 hover:underline'>
-                      Login
+                    <Link href='/signin' className='text-gray-900 hover:underline'>
+                      Sign in
                     </Link>
                   </p>
                 </div>
@@ -124,7 +124,7 @@ export default ({ children }: { children: JSX.Element }) => {
           </Popover.Panel>
         </Transition>
       </Popover>
-      {children}
+      <div className='w-full flex flex-col'>{children}</div>
     </div>
   )
 }

@@ -1,4 +1,5 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { Database } from '../src/lib/database.types'
 
@@ -32,15 +33,15 @@ export default () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const fullName = e.currentTarget['full-name'].value
-    const companyWebsite = e.currentTarget['company-website'].value
+    const company = e.currentTarget['company'].value
     const title = e.currentTarget['job-title'].value
     // update the profiles table
     const { error } = await supabase
       .from('profiles')
       .update({
         full_name: fullName,
-        company_website: companyWebsite,
-        title: title,
+        company,
+        title,
         registered: true,
       })
       .eq('id', user!.id)
@@ -60,6 +61,8 @@ export default () => {
 
   return (
     <div className='bg-white p-6'>
+      <Image src='/dark.svg' alt='logo' width={100} height={100} className='mx-auto' />
+
       <form className='space-y-8 divide-y divide-gray-200' onSubmit={handleSubmit}>
         <div className='space-y-8 divide-y divide-gray-200 sm:space-y-5'>
           <div className='space-y-6 pt-8 sm:space-y-5 sm:pt-10'>
@@ -92,19 +95,19 @@ export default () => {
 
               <div className='sm:grid sm:grid-cols-3 sm:items-start sm:gap-4 sm:border-t sm:border-gray-200 sm:pt-5'>
                 <label
-                  htmlFor='company-website'
+                  htmlFor='company'
                   className='block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'
                 >
-                  Company Website
+                  Company
                 </label>
                 <div className='mt-1 sm:col-span-2 sm:mt-0'>
                   <input
                     type='text'
-                    name='company-website'
-                    id='company-website'
-                    autoComplete='company-website'
+                    name='company'
+                    id='company'
+                    autoComplete='company'
                     className='block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm'
-                    placeholder='https://www.example.com'
+                    placeholder='Acme Inc.'
                     required
                   />
                 </div>

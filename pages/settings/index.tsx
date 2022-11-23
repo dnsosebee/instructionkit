@@ -11,7 +11,7 @@ export default function Settings() {
   const supabase = useSupabaseClient<Database>()
   const user = useUser()
   const [loading, setLoading] = useState(true)
-  const [companyWebsite, setCompanyWebsite] = useState<Profiles['company_website'] | null>(null)
+  const [company, setCompany] = useState<Profiles['company'] | null>(null)
   const [title, setTitle] = useState<Profiles['title'] | null>(null)
   const [about, setAbout] = useState<Profiles['about'] | null>(null)
   const [fullName, setFullName] = useState<Profiles['full_name'] | null>(null)
@@ -62,7 +62,7 @@ export default function Settings() {
 
       const updates = {
         id: user.id,
-        companyWebsite,
+        company,
         title,
         about,
         avatar_url,
@@ -74,26 +74,6 @@ export default function Settings() {
       alert('Profile updated!')
     } catch (error) {
       alert('Error updating the data!')
-      console.log(error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  async function updatePassword(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    try {
-      setLoading(true)
-      if (!user) throw new Error('No user')
-
-      const { error } = await supabase.auth.updateUser({
-        email: user.email,
-        password: e.currentTarget.password.value,
-      })
-      if (error) throw error
-      alert('Password updated!')
-    } catch (error) {
-      alert('Error updating the password!')
       console.log(error)
     } finally {
       setLoading(false)
@@ -146,17 +126,15 @@ export default function Settings() {
                       </div>
 
                       <div>
-                        <label className='block text-sm font-medium text-gray-300'>
-                          Company Website
-                        </label>
+                        <label className='block text-sm font-medium text-gray-300'>Company</label>
                         <input
                           type='text'
-                          name='company_website'
-                          id='company_website'
+                          name='company'
+                          id='company'
                           className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                          placeholder='https://example.com'
-                          value={companyWebsite || ''}
-                          onChange={e => setCompanyWebsite(e.target.value)}
+                          placeholder='Acme Inc.'
+                          value={company || ''}
+                          onChange={e => setCompany(e.target.value)}
                         />
                       </div>
 
@@ -188,7 +166,7 @@ export default function Settings() {
                             onChange={e => setAbout(e.target.value)}
                           />
                         </div>
-                        <p className='mt-2 text-sm text-gray-500'>
+                        <p className='mt-2 text-sm text-gray-300'>
                           Brief description for your profile.
                         </p>
                       </div>

@@ -1,20 +1,14 @@
-import { nanoid } from 'nanoid'
-import { GetServerSideProps } from 'next'
-import { createSpace } from 'replicache-nextjs/lib/backend'
+import MarketingNav from '../src/components/layout/marketingNav'
+import PageRiver from './space/[spaceId]/river/[floemId]'
 
-function Page() {
-  return ''
+export default () => {
+  return (
+    <MarketingNav>
+      <main>
+        <div className='px-5 bg-slate-900 h-full'>
+          <PageRiver spaceId={'uXa1ZC'} floemId={'floem-WVP738wN6a7V7fyfGVih7'} />
+        </div>
+      </main>
+    </MarketingNav>
+  )
 }
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const spaceId = nanoid(6)
-  await createSpace(spaceId)
-  return {
-    redirect: {
-      destination: `/space/${spaceId}`,
-      permanent: false,
-    },
-  }
-}
-
-export default Page

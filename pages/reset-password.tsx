@@ -1,5 +1,6 @@
 import { LockClosedIcon } from '@heroicons/react/20/solid'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import MarketingNav from '../src/components/layout/marketingNav'
 
 const ResetPassword = () => {
   const supabase = useSupabaseClient()
@@ -22,7 +23,7 @@ const ResetPassword = () => {
   }
 
   return (
-    <>
+    <MarketingNav>
       {/*
         This example requires updating your template:
 
@@ -36,7 +37,7 @@ const ResetPassword = () => {
           <div>
             <img className='mx-auto h-12 w-auto' src='/light.svg' alt='logo' />
             <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-white'>
-              Enter your email address
+              Enter your email address to reset password
             </h2>
           </div>
           <form className='mt-8 space-y-6' onSubmit={handleResetPassword}>
@@ -75,7 +76,7 @@ const ResetPassword = () => {
           </form>
         </div>
       </div>
-    </>
+    </MarketingNav>
   )
 }
 

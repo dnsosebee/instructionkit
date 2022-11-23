@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import MarketingNav from '../src/components/layout/marketingNav'
+import { validateEmail } from '../src/lib/validation'
 
 enum State {
   Pending,
@@ -16,7 +17,7 @@ export default () => {
     const email = e.currentTarget['email'].value
 
     // validate
-    if (!email || !email.includes('@')) {
+    if (!email || !validateEmail(email)) {
       alert('Please enter a valid email address')
       return
     }
@@ -31,8 +32,16 @@ export default () => {
       },
       body: JSON.stringify({ email }),
     })
+
     if (response.status === 200) {
-      setState(State.SubmittedEmail)
+      const { alreadyProvidedInfo } = await response.json()
+      if (alreadyProvidedInfo) {
+        setState(State.SubmittedExtraInfo)
+      } else {
+        setState(State.SubmittedEmail)
+      }
+    } else {
+      alert('Error submitting email')
     }
   }
 
@@ -73,8 +82,10 @@ export default () => {
               <div className='space-y-8 divide-y divide-gray-700 sm:space-y-5'>
                 <div className='space-y-6 pt-8 sm:space-y-5 sm:pt-10'>
                   <div>
-                    <h3 className='text-lg font-medium leading-6 text-white'>Join the waitlist</h3>
-                    <p className='mt-1 max-w-2xl text-sm text-gray-500'>
+                    <h3 className='text-3xl mb-6 font-medium leading-6 text-white'>
+                      Join the waitlist
+                    </h3>
+                    <p className='mt-1 max-w-2xl text-sm text-gray-400'>
                       Enter your email to join the waitlist.
                     </p>
                   </div>
@@ -116,7 +127,7 @@ export default () => {
                 <div className='space-y-8 divide-y divide-gray-700 sm:space-y-5'>
                   <div className='space-y-6 pt-8 sm:space-y-5 sm:pt-10'>
                     <div>
-                      <h3 className='text-lg font-medium leading-6 text-white'>
+                      <h3 className='text-3xl mb-6 font-medium leading-6 text-white'>
                         You're on the waitlist!
                       </h3>
                       <p className='mt-1 max-w-2xl text-sm text-gray-300'>
@@ -185,6 +196,7 @@ export default () => {
                                     type='radio'
                                     value='1 - 5 employees'
                                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
+                                    required
                                   />
                                   <label
                                     htmlFor='1-5'
@@ -200,6 +212,7 @@ export default () => {
                                     type='radio'
                                     value='6 - 20 employees'
                                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
+                                    required
                                   />
                                   <label
                                     htmlFor='6-20'
@@ -215,6 +228,7 @@ export default () => {
                                     type='radio'
                                     value='21 - 50 employees'
                                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
+                                    required
                                   />
                                   <label
                                     htmlFor='21-50'
@@ -230,6 +244,7 @@ export default () => {
                                     type='radio'
                                     value='51 - 200 employees'
                                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
+                                    required
                                   />
                                   <label
                                     htmlFor='51-200'
@@ -245,6 +260,7 @@ export default () => {
                                     type='radio'
                                     value='200+ employees'
                                     className='focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300'
+                                    required
                                   />
                                   <label
                                     htmlFor='200+'
@@ -317,7 +333,7 @@ export default () => {
           ) : (
             <div className='h-full p-6'>
               <h1 className='text-3xl font-bold leading-9 text-white'>Thank you!</h1>
-              <p className='mt-4 text-lg leading-6 text-gray-300'>We'll be in touch soon.</p>
+              <p className='mt-4 text-lg leading-6 text-gray-300'>We'll get in touch soon.</p>
             </div>
           )}
         </div>

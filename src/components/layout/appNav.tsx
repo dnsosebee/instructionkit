@@ -16,7 +16,7 @@ export default ({ children }: { children: JSX.Element }) => {
 
   const handleSignOut = async () => {
     await supabaseClient.auth.signOut()
-    window.location.href = '/login'
+    window.location.href = '/signin'
   }
   return (
     <div>
