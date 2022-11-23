@@ -4,8 +4,16 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 export default (req: NextApiRequest, res: NextApiResponse) => {
   const { email, company_website, company_size, title, how_did_you_hear, name } = req.body
 
+  const defined = (x: any) => x !== undefined && x !== null
   // make sure they're all defined and the email is valid
-  if (!company_website || !company_size || !title || !how_did_you_hear) {
+  if (
+    !defined(email) ||
+    !defined(company_website) ||
+    !defined(company_size) ||
+    !defined(title) ||
+    !defined(how_did_you_hear) ||
+    !defined(name)
+  ) {
     res.status(400).json({ error: 'Invalid request' })
     return
   }

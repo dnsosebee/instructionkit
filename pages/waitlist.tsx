@@ -49,11 +49,11 @@ export default () => {
 
   const handleSubmit2 = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const company_website = e.currentTarget['company-website'].value
-    const company_size = e.currentTarget['company-size'].value
-    const title = e.currentTarget['job-title'].value
-    const how_did_you_hear = e.currentTarget['how-did-you-hear'].value
-    const name = e.currentTarget['full-name'].value
+    const company_website = e.currentTarget['company-website'].value || ''
+    const company_size = e.currentTarget['company-size'].value || 'unspecified'
+    const title = e.currentTarget['job-title'].value || ''
+    const how_did_you_hear = e.currentTarget['how-did-you-hear'].value || ''
+    const name = e.currentTarget['full-name'].value || ''
 
     // post to the waitlist2 api endpoint
     const response = await fetch('/api/waitlist2', {
