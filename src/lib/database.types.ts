@@ -64,29 +64,32 @@ export interface Database {
         Row: {
           id: string
           updated_at: string | null
-          username: string | null
           full_name: string | null
           avatar_url: string | null
           title: string | null
           about: string | null
+          company_website: string | null
+          registered: boolean
         }
         Insert: {
           id: string
           updated_at?: string | null
-          username?: string | null
           full_name?: string | null
           avatar_url?: string | null
           title?: string | null
           about?: string | null
+          company_website?: string | null
+          registered?: boolean
         }
         Update: {
           id?: string
           updated_at?: string | null
-          username?: string | null
           full_name?: string | null
           avatar_url?: string | null
           title?: string | null
           about?: string | null
+          company_website?: string | null
+          registered?: boolean
         }
       }
       space: {

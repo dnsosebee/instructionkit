@@ -1,12 +1,36 @@
 // TODO this file not to be used!
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
-import { useState } from 'react'
+import { SupabaseClient, User, useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import { useEffect, useState } from 'react'
+import Loading from '../../src/components/shared/loading'
 
-const UpdatePassword = () => {
+const UpdatePasswordPage = () => {
   const [loading, setLoading] = useState(true)
   const supabase = useSupabaseClient()
   const user = useUser()
 
+  useEffect(() => {
+    if (user) {
+      setLoading(false)
+    }
+  }, [user])
+
+  return loading || !user ? (
+    <Loading />
+  ) : (
+    <div className='h-full p-6 bg-white'>
+      <UpdatePassword supabase={supabase} user={user} setLoading={setLoading} />
+    </div>
+  )
+}
+export default UpdatePasswordPage
+
+export interface UpdatePasswordProps {
+  user: User
+  supabase: SupabaseClient
+  setLoading: (loading: boolean) => void
+}
+
+export const UpdatePassword = ({ user, supabase, setLoading }: UpdatePasswordProps) => {
   async function updatePassword(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
 
@@ -30,11 +54,11 @@ const UpdatePassword = () => {
   }
 
   return (
-    <div className='mt-10 sm:mt-0'>
+    <div className='mt-10 sm:mt-0 bg-white'>
       <div className='md:grid md:grid-cols-3 md:gap-6'>
         <div className='md:col-span-1'>
           <div className='px-4 sm:px-0'>
-            <h3 className='text-lg font-medium leading-6 text-gray-900'>Password</h3>
+            <h3 className='text-lg font-medium leading-6 text-gray-900'>Update Password</h3>
             <p className='mt-1 text-sm text-gray-600'>
               Use a secure password to protect your account.
             </p>
@@ -66,7 +90,7 @@ const UpdatePassword = () => {
                   type='submit'
                   className='inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm'
                 >
-                  Reset password
+                  Update password
                 </button>
               </div>
             </div>
@@ -76,4 +100,3 @@ const UpdatePassword = () => {
     </div>
   )
 }
-export default UpdatePassword

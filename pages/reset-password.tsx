@@ -7,7 +7,7 @@ const ResetPassword = () => {
   const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const authResponse = await supabase.auth.resetPasswordForEmail(e.currentTarget.email.value, {
-      redirectTo: `${window.location.origin}/settings#reset-password`,
+      redirectTo: `${window.location.origin}/settings/update-password`,
     })
 
     // if error, show error message
