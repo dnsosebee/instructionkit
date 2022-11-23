@@ -1,13 +1,12 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Database } from '../src/lib/database.types'
 
 export default () => {
   const user = useUser()
 
   const supabase = useSupabaseClient<Database>()
-  const [loading, setLoading] = useState(true)
 
   const setup = async () => {
     const { data, error } = await supabase
@@ -67,9 +66,11 @@ export default () => {
         <div className='space-y-8 divide-y divide-gray-200 sm:space-y-5'>
           <div className='space-y-6 pt-8 sm:space-y-5 sm:pt-10'>
             <div>
-              <h3 className='text-lg font-medium leading-6 text-gray-900'>Finish Registration</h3>
+              <h3 className='text-lg font-medium leading-6 text-gray-900'>
+                Welcome to InstructionKit!
+              </h3>
               <p className='mt-1 max-w-2xl text-sm text-gray-500'>
-                Help us out by filling out the following information.
+                Help us by filling out the following information.
               </p>
             </div>
             <div className='space-y-6 sm:space-y-5'>

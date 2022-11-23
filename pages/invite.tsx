@@ -13,7 +13,7 @@ const Join = () => {
       email: e.currentTarget.email.value,
       password: e.currentTarget.password.value,
       options: {
-        emailRedirectTo: window.location.origin + '/registration', // TODO this should go to a page for finishing signup
+        emailRedirectTo: `https://instructionkit.com/registration`,
       },
     })
 
