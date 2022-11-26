@@ -1,4 +1,4 @@
-import { isArray } from 'lodash'
+import { get, isArray } from 'lodash'
 import { HTMLElement, NodeType, parse } from 'node-html-parser'
 import { evalAssignments, evalCondition } from '../../../lib/flogramming/flogramming'
 import { logger as parentLogger } from '../../../logger'
@@ -76,15 +76,18 @@ const helper = async (data: {
 
   // booty injections
   if (el.tagName !== 'PRE') {
-    el.innerHTML = el.innerHTML.replaceAll(/{ *([A-z_]+[A-z_0-9]*) *}/g, (match, bootyName) => {
-      const bootyValue = vars.get(bootyName)
+    el.innerHTML = el.innerHTML.replaceAll(
+      /{ *(?:([A-z_]+[A-z_0-9]*)\.?)+ *}/g,
+      (match, bootyName) => {
+        const bootyValue = get(vars, bootyName)
 
-      if (bootyValue === undefined) return 'UNDEFINED'
+        if (bootyValue === undefined) return 'UNDEFINED'
 
-      if (isArray(bootyValue)) return bootyValue.map(v => v.toString()).join(', ')
+        if (isArray(bootyValue)) return bootyValue.map(v => v.toString()).join(', ')
 
-      return bootyValue.toString()
-    })
+        return bootyValue.toString()
+      },
+    )
   }
 
   if (el.tagName === 'HR') {
