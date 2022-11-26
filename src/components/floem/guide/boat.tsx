@@ -79,9 +79,11 @@ const helper = async (data: {
     el.innerHTML = el.innerHTML.replaceAll(
       /{ *((?:(?:[A-z_]+[A-z_0-9]*)\.?)+) *}/g,
       (match, bootyName) => {
-        const bootyValue = get(vars, bootyName)
+        const booty = vars.toJS()
+        const bootyValue = get(booty, bootyName)
 
         if (bootyValue === undefined) return 'UNDEFINED'
+        if (bootyValue === null) return 'NULL'
 
         if (isArray(bootyValue)) return bootyValue.map(v => v.toString()).join(', ')
 
