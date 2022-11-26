@@ -1,5 +1,6 @@
 import { Popover, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid'
+import { motion } from 'framer-motion'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Fragment } from 'react'
@@ -124,7 +125,13 @@ export default ({ children }: { children: JSX.Element }) => {
           </Popover.Panel>
         </Transition>
       </Popover>
-      <div className='w-full flex flex-col'>{children}</div>
+      <motion.div
+        className='w-full flex flex-col'
+        animate={{ opacity: 1 }}
+        initial={{ opacity: 0 }}
+      >
+        {children}
+      </motion.div>
     </div>
   )
 }
