@@ -77,7 +77,7 @@ const helper = async (data: {
   // booty injections
   if (el.tagName !== 'PRE') {
     el.innerHTML = el.innerHTML.replaceAll(
-      /{ *((?:[A-z_]+[A-z_0-9]*)\.?)+ *}/g,
+      /{ *((?:(?:[A-z_]+[A-z_0-9]*)\.?)+) *}/g,
       (match, bootyName) => {
         const bootyValue = get(vars, bootyName)
 
