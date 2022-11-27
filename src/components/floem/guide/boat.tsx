@@ -51,13 +51,13 @@ const helper = async (data: {
   const doneWithFlow = flocation.node >= flowNodes.length
   if (doneWithFlow) {
     const branches = darts.filter(v => v.from == flocation.flow)
-    const noValidNextFlow = branches.length === 0
-    if (noValidNextFlow) {
+    const dart = branches.find(v => v.case === chosenCaseId)
+    if (!dart) {
       return finishStone({ fragment, vars, flowFrom: flocation })
     }
-    const dart = branches.find(v => v.case === chosenCaseId) || branches[0]
     const nextFlocation: Flocation = { flow: dart.to, node: 0 }
     const nextFlowNodes = refill(flows, nextFlocation.flow)
+    const nextChosenCaseId = CASE_DEFAULT_ID
     return helper({
       flows,
       darts,
@@ -65,7 +65,7 @@ const helper = async (data: {
       flowNodes: nextFlowNodes,
       fragment: data.fragment,
       vars,
-      chosenCaseId,
+      chosenCaseId: nextChosenCaseId,
     })
   }
 
@@ -134,7 +134,7 @@ const helper = async (data: {
       })
     } else {
       const conditions = el.childNodes as HTMLElement[]
-      let caseId = conditions[conditions.length - 1].attributes['data-id']
+      let caseId = CASE_DEFAULT_ID
       for (let i = 0; i < conditions.length; i++) {
         const condition = conditions[i]
         const conditionId = condition.attributes['data-id']
@@ -157,7 +157,11 @@ const helper = async (data: {
       })
     }
   } else if (el.tagName === 'PRE') {
-    const flogram = el.innerText.slice('<code>'.length, -'</code>'.length)
+    const flogram = el.innerText
+      .slice('<code>'.length, -'</code>'.length)
+      .replaceAll('&lt;', '<')
+      .replaceAll('&gt;', '>')
+    console.log('flogram', flogram)
     const updatedVars = await evalAssignments(flogram, vars)
     return helper({
       flows,

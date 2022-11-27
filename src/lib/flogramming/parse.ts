@@ -1,11 +1,13 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as esprima from 'esprima'
-import { ObjectPattern, VariableDeclaration } from 'estree'
+import { ObjectPattern, VariableDeclaration, FunctionExpression } from 'estree'
 
 export const getDeclaredIdentifiers = (toEval: string): string[] => {
-  const ast = esprima.parseModule(toEval)
-  const variableDeclarations = ast.body.filter(
-    node => node.type === 'VariableDeclaration',
-  ) as VariableDeclaration[]
+  const ast = esprima.parseModule(`const f = async function() {${toEval}}`)
+  // this is undoing the wrapping function
+  const variableDeclarations = (
+    (ast.body![0]! as VariableDeclaration).declarations![0].init! as FunctionExpression
+  ).body!.body!.filter(node => node.type === 'VariableDeclaration') as VariableDeclaration[]
   const assignedIdentifiers = variableDeclarations
     .map(node =>
       node.declarations.reduce((acc, decl) => {

@@ -4,6 +4,9 @@ import { MessageTypes } from './flogramming'
 
 const logger = parentLogger.child({ module: 'worker' })
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const AsyncFunction = async function () {}.constructor
+
 export type GenericMessageToWorker<T extends MessageTypes> = {
   type: T
   toEval: string // can have escaped pointy brackets, or not
@@ -31,7 +34,7 @@ const assignContextCode = (
   return (
     Object.keys(context)
       .map(k => `let ${k} = ${contextArgName}.${k}`)
-      .join('; ') + ';'
+      .join('; ') + '; const window = undefined;'
   )
 }
 
@@ -51,30 +54,31 @@ const evalExpression = (toEval: string, context: { [key: string]: unknown }): un
   return Function('context', code)(context)
 }
 
-const evalAssign = (
+// code blocks go through here: evaluate and assign variables back to context
+const evalAssign = async (
   toEval: string,
   context: { [key: string]: unknown },
   declaredIdentifiers: string[],
-): { [key: string]: unknown } => {
+): Promise<{ [key: string]: unknown }> => {
   logger.debug('evalAssign', { toEval, context })
   const code = ` ${assignContextCode(context)} ${toEval}; ${retrieveContextCode(
     context,
     declaredIdentifiers,
   )}`
   logger.debug('evalAssign code', code)
-  return Function('context', code)(context)
+  return await AsyncFunction('context', code)(context)
 }
 
-onmessage = (e: MessageEvent<MessageToWorker>) => {
+onmessage = async (e: MessageEvent<MessageToWorker>) => {
   const { toEval, context, type } = e.data
   logger.debug('onmessage', { toEval, context, type })
-  const toEvalUnescaped = toEval.replaceAll(/&lt;/g, '<').replaceAll(/&gt;/g, '>')
+  const toEvalUnescaped = toEval.replaceAll('&lt;', '<').replaceAll('&gt;', '>')
   let result: MessageFromWorker
   try {
     if (type === 'expression') {
       result = { result: evalExpression(toEvalUnescaped, context) }
     } else if (type === 'assign') {
-      result = { result: evalAssign(toEvalUnescaped, context, e.data.declaredIdentifiers) }
+      result = { result: await evalAssign(toEvalUnescaped, context, e.data.declaredIdentifiers) }
     } else {
       throw new Error(`Unknown type: ${type}`)
     }
