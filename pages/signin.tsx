@@ -20,7 +20,7 @@ const SignIn = () => {
 
     // if success, redirect to account page
     if (authResponse.data.user) {
-      window.location.href = '/settings'
+      window.location.href = '/profile'
     }
   }
 
