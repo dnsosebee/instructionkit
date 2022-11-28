@@ -157,21 +157,37 @@ const helper = async (data: {
       })
     }
   } else if (el.tagName === 'PRE') {
-    const flogram = el.innerText
-      .slice('<code>'.length, -'</code>'.length)
-      .replaceAll('&lt;', '<')
-      .replaceAll('&gt;', '>')
-    console.log('flogram', flogram)
-    const updatedVars = await evalAssignments(flogram, vars)
-    return helper({
-      flows,
-      darts,
-      flocation: flowFrom,
-      flowNodes,
-      fragment,
-      vars: updatedVars,
-      chosenCaseId,
-    })
+    if (el.innerText.startsWith('<code class="language-css">')) {
+      const css = el.innerText
+        .slice('<code class="language-css">'.length, -'</code>'.length)
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+      fragment.push(parse(`<style>${css}</style>`))
+      return helper({
+        flows,
+        darts,
+        flocation: flowFrom,
+        flowNodes,
+        fragment,
+        vars,
+        chosenCaseId,
+      })
+    } else {
+      const flogram = el.innerText
+        .slice('<code>'.length, -'</code>'.length)
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+      const updatedVars = await evalAssignments(flogram, vars)
+      return helper({
+        flows,
+        darts,
+        flocation: flowFrom,
+        flowNodes,
+        fragment,
+        vars: updatedVars,
+        chosenCaseId,
+      })
+    }
   }
 
   fragment.push(el)
