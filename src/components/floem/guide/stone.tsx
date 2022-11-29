@@ -33,7 +33,7 @@ export const StoneView = ({
       throw new Error(`Unknown advancer type: ${advancer.type}`)
   }
   return (
-    <motion.div className='stone h-0 opacity-0' animate={{ height: 'auto', opacity: 1 }}>
+    <motion.div className='stone opacity-0' animate={{ opacity: 1 }}>
       <div dangerouslySetInnerHTML={{ __html: fragment }} />
       <Advancer props={advancerProps} params={advancer.params} />
     </motion.div>
