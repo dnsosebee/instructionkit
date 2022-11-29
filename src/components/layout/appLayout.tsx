@@ -50,6 +50,7 @@ import {
   AppRep,
   APP_SPACE_ID,
 } from '../../model/replicache/space-app/appMutators'
+import { listInvites } from '../../model/replicache/space-app/invite'
 import { listMemberships } from '../../model/replicache/space-app/membership'
 import { listWorkspaces, RepWorkspace } from '../../model/replicache/space-app/workspace'
 import Loading from '../shared/loading'
@@ -58,12 +59,20 @@ import AppProvider, { AppContext } from './appProvider'
 
 const logger = parentLogger.child({ component: 'AppLayout' })
 
+export enum AppPage {
+  Projects = 'Projects',
+  Settings = 'Settings',
+  AcceptInvite = 'AcceptInvite',
+}
+
 export default ({
   children,
   selectedWorkspaceId,
+  selectedPage,
 }: {
   children: React.ReactNode
   selectedWorkspaceId: string | null
+  selectedPage: AppPage
 }) => {
   const appRep = useReplicache<AppMutators>({
     name: APP_SPACE_ID,
@@ -75,7 +84,12 @@ export default ({
   }
   // membershipRep.mutate.createOrUpdateMembership(genMembership('2', '2', '2'))
   return (
-    <AppLayout appRep={appRep} user={user} selectedWorkspaceId={selectedWorkspaceId}>
+    <AppLayout
+      appRep={appRep}
+      user={user}
+      selectedWorkspaceId={selectedWorkspaceId}
+      selectedPage={selectedPage}
+    >
       {children}
     </AppLayout>
   )
@@ -85,37 +99,74 @@ const AppLayout = ({
   appRep,
   user,
   selectedWorkspaceId,
+  selectedPage,
   children,
 }: {
   appRep: AppRep
   user: User
   selectedWorkspaceId: string | null
+  selectedPage: AppPage
   children?: React.ReactNode
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const supabaseClient = useSupabaseClient()
   const memberships = useSubscribe(appRep, listMemberships, null, [appRep])
+  const invites = useSubscribe(appRep, listInvites, null, [appRep])
   const workspaces = useSubscribe(appRep, listWorkspaces, null, [appRep])
-  logger.debug('render', { memberships, workspaces })
 
-  if (!workspaces || !memberships) {
+  if (!workspaces || !memberships || !invites) {
     return <Loading />
   }
 
   const userMemberships = memberships.filter(m => m.userId === user.id)
   const userWorkspaces = workspaces.filter(w => userMemberships.some(m => m.workspaceId === w.id))
+  const userInvites = invites.filter(i => i.email === user.email)
+  const userInviteWorkspaces = workspaces.filter(w => userInvites.some(i => i.workspaceId === w.id))
+  const userWorkspacesAndInviteWorkspaces = userWorkspaces.concat(userInviteWorkspaces)
+
+  // log all of the above
+  logger.debug('render', {
+    userMemberships,
+    userWorkspaces,
+    userInvites,
+    userInviteWorkspaces,
+    userWorkspacesAndInviteWorkspaces,
+    selectedWorkspaceId,
+  })
 
   // routing
   if (!userWorkspaces.length) {
-    window.location.href = '/app/create-workspace'
+    if (!userInviteWorkspaces.length) {
+      window.location.href = '/app/create-workspace'
+      return null
+    } else {
+      if (!selectedWorkspaceId) {
+        window.location.href = `/app/${userInviteWorkspaces[0].id}`
+        return null
+      }
+    }
+  } else {
+    if (!selectedWorkspaceId) {
+      window.location.href = `/app/${userWorkspaces[0].id}`
+      return null
+    }
   }
-  if (!selectedWorkspaceId) {
-    window.location.href = `/app/${userWorkspaces[0].id}`
-  }
-  const selectedWorkspace = userWorkspaces.find(w => w.id === selectedWorkspaceId)
+  const selectedWorkspace = userWorkspacesAndInviteWorkspaces.find(
+    w => w.id === selectedWorkspaceId,
+  )
   if (selectedWorkspace === undefined) {
-    window.location.href = `/app/${userWorkspaces[0].id}`
+    window.location.href = `/app/${userWorkspacesAndInviteWorkspaces[0].id}`
     return null
+  }
+
+  let acceptedInvite = true
+
+  if (userInviteWorkspaces.some(w => w.id === selectedWorkspaceId)) {
+    acceptedInvite = false
+    if (selectedPage !== AppPage.AcceptInvite) {
+      window.location.href = `/app/${selectedWorkspaceId}/accept-invite`
+      return null
+    }
   }
 
   const isSelectedWorkspace = (workspace: RepWorkspace) => {
@@ -127,9 +178,20 @@ const AppLayout = ({
     window.location.href = '/signin'
   }
 
+  const handlePickerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value
+    logger.debug('handlePickerChange', { id })
+    window.location.href = `/app/${id}`
+  }
+
   const appContext: AppContext = {
     selectedWorkspace,
-    appMutate: appRep.mutate,
+    appRep,
+    memberStatus: {
+      acceptedInvite,
+    },
+    user,
+    userInvites,
   }
 
   return (
@@ -156,10 +218,13 @@ const AppLayout = ({
               <select
                 id='workspace-select'
                 className='rounded-md border-0 bg-none pl-3 pr-8 text-base font-medium text-gray-900 focus:ring-2 focus:ring-indigo-600'
-                defaultValue={selectedWorkspace?.name}
+                defaultValue={selectedWorkspace.id}
+                onChange={handlePickerChange}
               >
-                {userWorkspaces.map(v => (
-                  <option key={v.id}>{v.name}</option>
+                {userWorkspacesAndInviteWorkspaces.map(v => (
+                  <option key={v.id} value={v.id}>
+                    {v.name}
+                  </option>
                 ))}
               </select>
               <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center justify-center pr-2'>
@@ -201,12 +266,27 @@ const AppLayout = ({
             </div>
             <div className='ml-10 flex flex-shrink-0 items-center space-x-10 pr-4'>
               <nav aria-label='Global' className='flex space-x-10'>
-                <Link href='/app' className='text-sm font-medium text-indigo-100'>
+                <Link
+                  href='/app'
+                  className={classNames(
+                    selectedPage === AppPage.Projects
+                      ? 'bg-indigo-800 text-white'
+                      : 'text-indigo-100 hover:bg-indigo-800 hover:text-white',
+                    'group w-full p-3 rounded-md',
+                  )}
+                  aria-current={selectedPage === AppPage.Projects ? 'page' : undefined}
+                >
                   Projects
                 </Link>
                 <Link
                   href={`/app/${selectedWorkspaceId}/settings`}
-                  className='text-sm font-medium text-indigo-100'
+                  className={classNames(
+                    selectedPage === AppPage.Settings
+                      ? 'bg-indigo-800 text-white'
+                      : 'text-indigo-100 hover:bg-indigo-800 hover:text-white',
+                    'group w-full p-3 rounded-md',
+                  )}
+                  aria-current={selectedPage === AppPage.Settings ? 'page' : undefined}
                 >
                   Settings
                 </Link>
@@ -338,25 +418,18 @@ const AppLayout = ({
                       </div>
                     </div> */}
                     <div className='max-w-8xl mx-auto py-3 px-2 sm:px-4'>
-                      {navigation.map(item => (
-                        <Fragment key={item.name}>
-                          <a
-                            href={item.href}
-                            className='block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100'
-                          >
-                            {item.name}
-                          </a>
-                          {item.children.map(child => (
-                            <a
-                              key={child.name}
-                              href={child.href}
-                              className='block rounded-md py-2 pl-5 pr-3 text-base font-medium text-gray-500 hover:bg-gray-100'
-                            >
-                              {child.name}
-                            </a>
-                          ))}
-                        </Fragment>
-                      ))}
+                      <Link
+                        href={`/app/${selectedWorkspaceId}`}
+                        className='block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100'
+                      >
+                        Projects
+                      </Link>
+                      <Link
+                        href={`/app/${selectedWorkspaceId}/settings`}
+                        className='block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100'
+                      >
+                        Settings
+                      </Link>
                     </div>
                     <div className='border-t border-gray-200 pt-4 pb-3'>
                       <div className='max-w-8xl mx-auto flex items-center px-4 sm:px-6'>
@@ -440,6 +513,32 @@ const AppLayout = ({
                   <span className='mt-2'>{workspace.name}</span>
                 </Link>
               ))}
+              {userInviteWorkspaces.length ? <div className='border-t border-indigo-700' /> : null}
+              {userInviteWorkspaces.map(workspace => (
+                <Link
+                  key={workspace.id}
+                  href={`/app/${workspace.id}`}
+                  className={classNames(
+                    isSelectedWorkspace(workspace)
+                      ? 'bg-indigo-800 text-white'
+                      : 'text-gray-500 hover:bg-indigo-800 hover:text-white',
+                    'group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium',
+                  )}
+                  aria-current={isSelectedWorkspace(workspace) ? 'page' : undefined}
+                >
+                  <Icon
+                    name={workspace.icon}
+                    className={classNames(
+                      isSelectedWorkspace(workspace)
+                        ? 'text-white'
+                        : 'text-gray-500 group-hover:text-white',
+                      'h-6 w-6',
+                    )}
+                    aria-hidden='true'
+                  />
+                  <span className='mt-2'>{workspace.name}</span>
+                </Link>
+              ))}
               <div className='grow' />
               <Link
                 key={'Create Workspace'}
@@ -459,7 +558,7 @@ const AppLayout = ({
           </nav>
 
           {/* Main area */}
-          <main className='w-full'>
+          <main className='w-full overflow-auto'>
             <AppProvider context={appContext}>{children}</AppProvider>
           </main>
         </div>
@@ -469,7 +568,7 @@ const AppLayout = ({
 }
 
 // some fun heroicons that people can choose between to give spunk to their workspaces
-export const ICONS: { [key: string]: React.FC } = {
+export const ICONS: { [key: string]: React.FC<React.ComponentProps<'svg'>> } = {
   folder: FolderIcon,
   home: HomeIcon,
   rocketLaunch: RocketLaunchIcon,

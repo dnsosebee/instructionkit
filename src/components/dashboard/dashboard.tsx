@@ -5,29 +5,33 @@ import { listFloems, STARTER_FLOEM } from '../../model/replicache/space-workspac
 import { genFloemId } from '../../model/replicache/space-workspace-[id]/ids'
 import { Rep } from '../../model/replicache/space-workspace-[id]/mutators'
 import { spaceRelativeUrl } from '../floem/floem'
+import { useAppContext } from '../layout/appProvider'
 import { FloemCard } from './floemCard'
 
 export const Dashboard = ({ rep }: { rep: Rep }) => {
+  const { selectedWorkspace } = useAppContext()
   const floems = useSubscribe(rep, listFloems, [], [rep])
 
   const [creatingNew, setCreatingNew] = React.useState(false)
 
   const relativeUrl = spaceRelativeUrl(rep.name)
 
-  const onClickNewFloemButton = () => {
+  const onClickNewFloemButton = async () => {
     const id = genFloemId()
     setCreatingNew(true)
-    rep.mutate.createFloem(STARTER_FLOEM(id))
-    window.location.href = relativeUrl(`/chart/${id}`)
+    await rep.mutate.createFloem(STARTER_FLOEM(id))
+    window.location.href = `/space/${selectedWorkspace.id}/chart/${id}`
   }
 
   const mutate = { ...rep.mutate, spaceRelativeUrl: relativeUrl }
 
   return (
     <>
-      <header className='bg-white shadow'>
+      <header className=' shadow'>
         <div className='mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8'>
-          <h1 className='text-3xl font-bold tracking-tight text-gray-900'>Dashboard</h1>
+          <h1 className='text-3xl font-bold tracking-tight text-indigo-100'>
+            <span className='text-indigo-400'>{selectedWorkspace.name}</span> Dashboard
+          </h1>
         </div>
       </header>
       <div className='pt-6 pb-8'>

@@ -1,5 +1,6 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { logger as parentLogger } from '../../../logger'
+import { AcceptInvite, inviteSchema, INVITE_ID_PREFIX, RepInvite } from './invite'
 import { membershipSchema, MEMBERSHIP_ID_PREFIX, RepMembership } from './membership'
 import { RepWorkspace, workspaceSchema, WorkspaceUpdate } from './workspace'
 
@@ -10,6 +11,26 @@ export type AppMutators = typeof appMutators
 export type AppRep = Replicache<AppMutators>
 export type AppMutate = AppRep['mutate']
 
+// invites
+const inviteMutators = {
+  async createOrUpdateInvite(tx: WriteTransaction, invite: RepInvite) {
+    logger.info('createOrUpdateInvite', invite)
+    inviteSchema.parse(invite)
+    await tx.put(`${INVITE_ID_PREFIX}${invite.workspaceId}/${invite.email}`, invite.accessPolicy)
+  },
+  async deleteInvite(tx: WriteTransaction, invite: RepInvite) {
+    logger.info('deleteInvite', invite)
+    await tx.del(`${INVITE_ID_PREFIX}${invite.workspaceId}/${invite.email}`)
+  },
+  async acceptInvite(tx: WriteTransaction, acceptInvite: AcceptInvite) {
+    logger.info('acceptInvite', acceptInvite)
+    const { invite, userId } = acceptInvite
+    await tx.put(`${MEMBERSHIP_ID_PREFIX}${invite.workspaceId}/${userId}`, invite.accessPolicy)
+    await tx.del(`${INVITE_ID_PREFIX}${invite.workspaceId}/${invite.email}`)
+  },
+}
+
+// memberships
 const membershipMutators = {
   async createOrUpdateMembership(tx: WriteTransaction, membership: RepMembership) {
     logger.info('createOrUpdateMembership', membership)
@@ -25,6 +46,7 @@ const membershipMutators = {
   },
 }
 
+// workspaces
 const workspaceMutators = {
   async createWorkspace(tx: WriteTransaction, workspace: RepWorkspace) {
     logger.info('createWorkspace', workspace)
@@ -53,6 +75,7 @@ const workspaceMutators = {
 }
 
 export const appMutators = {
+  ...inviteMutators,
   ...membershipMutators,
   ...workspaceMutators,
 }

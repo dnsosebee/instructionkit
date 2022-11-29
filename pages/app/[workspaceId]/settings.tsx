@@ -1,7 +1,7 @@
 import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
 import { GetServerSideProps } from 'next'
-import AppLayout, { ICONS } from '../../../src/components/layout/appLayout'
+import AppLayout, { AppPage, ICONS } from '../../../src/components/layout/appLayout'
 import { useAppContext } from '../../../src/components/layout/appProvider'
 import { logger } from '../../../src/logger'
 
@@ -18,27 +18,39 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 export default ({ workspaceId }: { workspaceId: string }) => {
   logger.debug('workspaceId', workspaceId)
   return (
-    <AppLayout selectedWorkspaceId={workspaceId}>
+    <AppLayout selectedWorkspaceId={workspaceId} selectedPage={AppPage.Settings}>
       <Settings workspaceId={workspaceId} />
     </AppLayout>
   )
 }
 
 const Settings = ({ workspaceId }: { workspaceId: string }) => {
-  const { selectedWorkspace, appMutate } = useAppContext()
+  const { selectedWorkspace, appRep } = useAppContext()
 
   const handleIconChange = (icon: string) => {
-    appMutate.updateWorkspace({
+    appRep.mutate.updateWorkspace({
       id: selectedWorkspace.id,
       icon,
     })
   }
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    appMutate.updateWorkspace({
+    appRep.mutate.updateWorkspace({
       id: selectedWorkspace.id,
       name: e.target.value,
     })
+  }
+
+  const handleInvite = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const form = e.target as HTMLFormElement
+    const email = form.elements.namedItem('email') as HTMLInputElement
+    appRep.mutate.createOrUpdateInvite({
+      workspaceId: selectedWorkspace.id,
+      email: email.value,
+      accessPolicy: 'editor',
+    })
+    alert('Invite sent!')
   }
 
   return (
@@ -47,19 +59,88 @@ const Settings = ({ workspaceId }: { workspaceId: string }) => {
         <div>
           <h1 className='text-2xl font-bold text-gray-100'>Workspace Settings</h1>
         </div>
+
         <div>
           <label htmlFor='workspace-name' className='block text-sm font-medium text-gray-100'>
             Name
           </label>
           <div className='mt-1'>
             <input
-              name='workspace-email'
-              id='workspace-email'
-              className='text-gray-100 bg-gray-700 block w-full rounded-md border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+              name='workspace-name'
+              id='workspace-name'
+              className='text-gray-100 bg-gray-700 block w-full rounded-md border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2'
               placeholder='Acme Inc.'
               value={selectedWorkspace.name}
               onChange={handleNameChange}
             />
+          </div>
+        </div>
+
+        <div className='bg-white shadow sm:rounded-lg'>
+          <div className='px-4 py-5 sm:p-6'>
+            <h3 className='text-lg font-medium leading-6 text-gray-900'>Invite Members</h3>
+
+            {/* <div>
+              <div className='mt-6 flow-root'>
+                <ul role='list' className='-my-5 divide-y divide-gray-200'>
+                  {people.map(person => (
+                    <li key={person.handle} className='py-4'>
+                      <div className='flex items-center space-x-4'>
+                        <div className='flex-shrink-0'>
+                          <img className='h-8 w-8 rounded-full' src={person.imageUrl} alt='' />
+                        </div>
+                        <div className='min-w-0 flex-1'>
+                          <p className='truncate text-sm font-medium text-gray-900'>
+                            {person.name}
+                          </p>
+                          <p className='truncate text-sm text-gray-500'>{'@' + person.handle}</p>
+                        </div>
+                        <div>
+                          <a
+                            href='#'
+                            className='inline-flex items-center rounded-full border border-gray-300 bg-white px-2.5 py-0.5 text-sm font-medium leading-5 text-gray-700 shadow-sm hover:bg-gray-50'
+                          >
+                            View
+                          </a>
+                        </div>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className='mt-6'>
+                <a
+                  href='#'
+                  className='flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50'
+                >
+                  View all
+                </a>
+              </div>
+            </div> */}
+
+            {/* <div className='mt-2 max-w-xl text-sm text-gray-500'>
+              <p>Invite new members</p>
+            </div> */}
+            <form className='mt-5 sm:flex sm:items-center' onSubmit={handleInvite}>
+              <div className='w-full sm:max-w-xs'>
+                <label htmlFor='email' className='sr-only'>
+                  Email
+                </label>
+                <input
+                  type='email'
+                  name='email'
+                  id='email'
+                  className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                  placeholder='teammate@company.com'
+                />
+              </div>
+              <button
+                type='submit'
+                className='mt-3 inline-flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm'
+              >
+                Invite
+              </button>
+            </form>
           </div>
         </div>
 

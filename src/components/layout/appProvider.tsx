@@ -1,10 +1,18 @@
+import { User } from '@supabase/auth-helpers-nextjs'
 import { createContext, useContext } from 'react'
-import { AppMutate } from '../../model/replicache/space-app/appMutators'
+import { AppRep } from '../../model/replicache/space-app/appMutators'
+import { RepInvite } from '../../model/replicache/space-app/invite'
 import { RepWorkspace } from '../../model/replicache/space-app/workspace'
 
 export type AppContext = {
   selectedWorkspace: RepWorkspace
-  appMutate: AppMutate
+  memberStatus: {
+    // accessPolicy: 'owner' | 'member'
+    acceptedInvite: boolean
+  }
+  appRep: AppRep
+  user: User
+  userInvites: RepInvite[]
 }
 
 const appContext = createContext<AppContext | null>(null)
@@ -21,7 +29,7 @@ const AppProvider = ({ children, context }: AppProviderProps) => {
 export const useAppContext = () => {
   const context = useContext(appContext)
   if (!context) {
-    throw new Error('useFlowtextContext must be used within a FlowtextProvider')
+    throw new Error('useAppContext must be used within an AppProvider')
   }
   return context
 }
