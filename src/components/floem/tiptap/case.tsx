@@ -28,8 +28,8 @@ export const Case = (props: NodeViewProps) => {
   const buttonClasses = isGuide
     ? `duration-150 select-none ${
         isChosen
-          ? 'bg-sky-500 text-zinc-50'
-          : 'bg-white hover:bg-sky-500 hover:text-zinc-50 text-sky-500 cursor-pointer'
+          ? 'bg-sky-500 text-zinc-50 selected'
+          : 'bg-white hover:bg-sky-500 hover:text-zinc-50 text-sky-500 cursor-pointer not-selected'
       }`
     : 'bg-sky-500 text-zinc-50'
 
