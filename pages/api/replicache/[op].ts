@@ -1,8 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { handleRequest } from 'replicache-nextjs/lib/backend'
-import { floemMutators } from '../../../src/model/core/mutators'
-import { MEMBERSHIP_SPACE_ID } from '../../../src/model/memberships/membership'
-import { membershipMutators } from '../../../src/model/memberships/mutators'
+import { appMutators, APP_SPACE_ID } from '../../../src/model/replicache/space-app/appMutators'
+import { floemMutators } from '../../../src/model/replicache/space-workspace-[id]/mutators'
 
 // Next.js runs this function server-side when /api/replicache/[anything].ts is
 // requested.
@@ -18,8 +17,8 @@ import { membershipMutators } from '../../../src/model/memberships/mutators'
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { spaceID } = req.query
 
-  if (spaceID === MEMBERSHIP_SPACE_ID) {
-    await handleRequest(req, res, membershipMutators)
+  if (spaceID === APP_SPACE_ID) {
+    await handleRequest(req, res, appMutators)
   } else {
     await handleRequest(req, res, floemMutators)
   }

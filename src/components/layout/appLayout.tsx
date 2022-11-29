@@ -1,24 +1,37 @@
 import { Dialog, Menu, Transition } from '@headlessui/react'
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import { Bars3Icon, BellIcon, FolderIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { logger, User } from '@supabase/auth-helpers-nextjs'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import {
+  Bars3Icon,
+  FolderIcon,
+  FolderPlusIcon,
+  RocketLaunchIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/outline'
+import { User } from '@supabase/auth-helpers-nextjs'
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
-import { GetServerSideProps } from 'next'
+import classNames from 'classnames'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Fragment, useState } from 'react'
-import { Replicache } from 'replicache'
-import { spaceExists } from 'replicache-nextjs/lib/backend'
+import React, { Fragment, useState } from 'react'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { useSubscribe } from 'replicache-react'
-import Loading from '../src/components/shared/loading'
-import Logo from '../src/components/shared/logo'
-import { listMemberships, MEMBERSHIP_SPACE_ID } from '../src/model/memberships/membership'
-import { membershipMutators, MembershipMutators } from '../src/model/memberships/mutators'
+import { logger as parentLogger } from '../../logger'
+import {
+  appMutators,
+  AppMutators,
+  AppRep,
+  APP_SPACE_ID,
+} from '../../model/replicache/space-app/appMutators'
+import { listMemberships } from '../../model/replicache/space-app/membership'
+import { listWorkspaces, RepWorkspace } from '../../model/replicache/space-app/workspace'
+import Loading from '../shared/loading'
+import Logo from '../shared/logo'
+
+const logger = parentLogger.child({ component: 'AppLayout' })
 
 const navigation: { name: string; href: string; children: { name: string; href: string }[] }[] = [
   {
-    name: 'Inboxes',
+    name: 'Projects',
     href: '#',
     children: [
       // { name: 'Technical Support', href: '#' },
@@ -26,67 +39,69 @@ const navigation: { name: string; href: string; children: { name: string; href: 
       // { name: 'General', href: '#' },
     ],
   },
-  { name: 'Reporting', href: '#', children: [] },
   { name: 'Settings', href: '#', children: [] },
 ]
 
-const userNavigation = [
-  { name: 'Your Profile', href: '#' },
-  { name: 'Sign out', href: '#' },
-]
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
-
-export const getServerSideProps: GetServerSideProps = async context => {
-  if (!(await spaceExists(MEMBERSHIP_SPACE_ID))) {
-    logger.debug('space does not exist')
-  }
-
-  logger.debug('space exists')
-
-  return {
-    props: {
-      spaceId: MEMBERSHIP_SPACE_ID,
-    },
-  }
-}
-
-export default () => {
-  const membershipRep = useReplicache<MembershipMutators>({
-    name: MEMBERSHIP_SPACE_ID,
-    mutators: membershipMutators,
+export default ({
+  children,
+  selectedWorkspaceId,
+}: {
+  children: React.ReactNode
+  selectedWorkspaceId: string | null
+}) => {
+  const membershipRep = useReplicache<AppMutators>({
+    name: APP_SPACE_ID,
+    mutators: appMutators,
   })
   const user = useUser()
   if (!membershipRep || !user) {
     return <Loading />
   }
   // membershipRep.mutate.createOrUpdateMembership(genMembership('2', '2', '2'))
-  return <App membershipRep={membershipRep} user={user} />
+  return (
+    <AppLayout membershipRep={membershipRep} user={user} selectedWorkspaceId={selectedWorkspaceId}>
+      {children}
+    </AppLayout>
+  )
 }
 
-const App = ({
+const AppLayout = ({
   membershipRep,
   user,
+  selectedWorkspaceId,
+  children,
 }: {
-  membershipRep: Replicache<MembershipMutators>
+  membershipRep: AppRep
   user: User
+  selectedWorkspaceId: string | null
+  children?: React.ReactNode
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const supabaseClient = useSupabaseClient()
-  const memberships = useSubscribe(membershipRep, listMemberships, [], [membershipRep])
-  const userMemberships = memberships.filter(m => m.userId === user.id)
+  const memberships = useSubscribe(membershipRep, listMemberships, null, [membershipRep])
+  const workspaces = useSubscribe(membershipRep, listWorkspaces, null, [membershipRep])
+  logger.debug('render', { memberships, workspaces })
 
-  const workspaces = 
-    userMemberships.map(m => {m.workspaceId)
-    { name: 'Open', href: '#', icon: FolderIcon, current: true },
-    { name: 'Archive', href: '#', icon: FolderIcon, current: false },
-    { name: 'Customers', href: '#', icon: FolderIcon, current: false },
-    { name: 'Flagged', href: '#', icon: FolderIcon, current: false },
-    { name: 'Spam', href: '#', icon: FolderIcon, current: false },
-    { name: 'Drafts', href: '#', icon: FolderIcon, current: false },
-  ]
+  if (!workspaces || !memberships) {
+    return <Loading />
+  }
+
+  const userMemberships = memberships.filter(m => m.userId === user.id)
+  const userWorkspaces = workspaces.filter(w => userMemberships.some(m => m.workspaceId === w.id))
+
+  // routing
+  if (!userWorkspaces.length) {
+    window.location.href = '/app/create-workspace'
+  }
+  if (!selectedWorkspaceId) {
+    window.location.href = `/app/${userWorkspaces[0].id}`
+  }
+
+  const selectedWorkspace = userWorkspaces.find(w => w.id === selectedWorkspaceId)
+
+  const isSelectedWorkspace = (workspace: RepWorkspace) => {
+    return selectedWorkspaceId === workspace.id
+  }
 
   const handleSignOut = async () => {
     await supabaseClient.auth.signOut()
@@ -95,46 +110,32 @@ const App = ({
 
   return (
     <>
-      {/*
-        This example requires updating your template:
-
-        ```
-        <html class="h-full bg-gray-100">
-        <body class="h-full overflow-hidden">
-        ```
-      */}
       <div className='flex h-full w-full flex-col'>
         {/* Top nav*/}
         <header className='relative flex h-16 flex-shrink-0 items-center bg-white'>
           {/* Logo area */}
           <div className='absolute inset-y-0 left-0 md:static md:flex-shrink-0'>
             <Link
-              href='#'
+              href='/app'
               className='flex h-16 w-16 items-center justify-center bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600 md:w-28'
             >
-              <Image
-                className='h-8 w-auto'
-                src='/IKlight.svg'
-                alt='InstructionKit'
-                height={50}
-                width={50}
-              />
+              <Logo light={true} className='h-8 w-auto text-white' />
             </Link>
           </div>
 
           {/* Picker area */}
           <div className='mx-auto md:hidden'>
             <div className='relative'>
-              <label htmlFor='inbox-select' className='sr-only'>
-                Choose inbox
+              <label htmlFor='workspace-select' className='sr-only'>
+                Choose workspace
               </label>
               <select
-                id='inbox-select'
+                id='workspace-select'
                 className='rounded-md border-0 bg-none pl-3 pr-8 text-base font-medium text-gray-900 focus:ring-2 focus:ring-indigo-600'
-                defaultValue={workspaces.find(item => item.current)!.name}
+                defaultValue={selectedWorkspace?.name}
               >
-                {workspaces.map(item => (
-                  <option key={item.name}>{item.name}</option>
+                {userWorkspaces.map(v => (
+                  <option key={v.id}>{v.name}</option>
                 ))}
               </select>
               <div className='pointer-events-none absolute inset-y-0 right-0 flex items-center justify-center pr-2'>
@@ -176,11 +177,11 @@ const App = ({
             </div>
             <div className='ml-10 flex flex-shrink-0 items-center space-x-10 pr-4'>
               <nav aria-label='Global' className='flex space-x-10'>
-                <Link href='#' className='text-sm font-medium text-gray-900'>
+                <Link href='/app' className='text-sm font-medium text-gray-900'>
                   Projects
                 </Link>
-                <Link href='#' className='text-sm font-medium text-gray-900'>
-                  Workplace Settings
+                <Link href='/app/settings' className='text-sm font-medium text-gray-900'>
+                  Workspace Settings
                 </Link>
               </nav>
               <div className='flex items-center space-x-8'>
@@ -219,7 +220,7 @@ const App = ({
                       <div className='py-1'>
                         <Menu.Item>
                           {({ active }) => (
-                            <a
+                            <Link
                               href='/profile'
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
@@ -227,7 +228,7 @@ const App = ({
                               )}
                             >
                               Your Profile
-                            </a>
+                            </Link>
                           )}
                         </Menu.Item>
                         <Menu.Item>
@@ -293,22 +294,22 @@ const App = ({
                         <XMarkIcon className='block h-6 w-6' aria-hidden='true' />
                       </button>
                     </div>
-                    <div className='max-w-8xl mx-auto mt-2 px-4 sm:px-6'>
+                    {/* <div className='max-w-8xl mx-auto mt-2 px-4 sm:px-6'>
                       <div className='relative text-gray-400 focus-within:text-gray-500'>
                         <label htmlFor='mobile-search' className='sr-only'>
-                          Search all inboxes
+                          Search in workspace
                         </label>
                         <input
                           id='mobile-search'
                           type='search'
-                          placeholder='Search all inboxes'
+                          placeholder='Search in workspace'
                           className='block w-full rounded-md border-gray-300 pl-10 placeholder-gray-500 focus:border-indigo-600 focus:ring-indigo-600'
                         />
                         <div className='absolute inset-y-0 left-0 flex items-center justify-center pl-3'>
                           <MagnifyingGlassIcon className='h-5 w-5' aria-hidden='true' />
                         </div>
                       </div>
-                    </div>
+                    </div> */}
                     <div className='max-w-8xl mx-auto py-3 px-2 sm:px-4'>
                       {navigation.map(item => (
                         <Fragment key={item.name}>
@@ -333,34 +334,43 @@ const App = ({
                     <div className='border-t border-gray-200 pt-4 pb-3'>
                       <div className='max-w-8xl mx-auto flex items-center px-4 sm:px-6'>
                         <div className='flex-shrink-0'>
-                          <img className='h-10 w-10 rounded-full' src={'/avatar.jpeg'} alt='' />
+                          <Image
+                            className='h-10 w-10 rounded-full'
+                            src={'/avatar.jpeg'}
+                            alt=''
+                            height={50}
+                            width={50}
+                          />
                         </div>
                         <div className='ml-3 min-w-0 flex-1'>
-                          <div className='truncate text-base font-medium text-gray-800'>
+                          {/* <div className='truncate text-base font-medium text-gray-800'>
                             {'Whitney Francis'}
-                          </div>
+                          </div> */}
                           <div className='truncate text-sm font-medium text-gray-500'>
-                            {'email@email'}
+                            {user.email}
                           </div>
                         </div>
-                        <a
+                        {/* <a
                           href='#'
                           className='ml-auto flex-shrink-0 bg-white p-2 text-gray-400 hover:text-gray-500'
                         >
                           <span className='sr-only'>View notifications</span>
                           <BellIcon className='h-6 w-6' aria-hidden='true' />
-                        </a>
+                        </a> */}
                       </div>
                       <div className='max-w-8xl mx-auto mt-3 space-y-1 px-2 sm:px-4'>
-                        {userNavigation.map(item => (
-                          <a
-                            key={item.name}
-                            href={item.href}
-                            className='block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-50'
-                          >
-                            {item.name}
-                          </a>
-                        ))}
+                        <Link
+                          href={'/profile'}
+                          className='block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-50'
+                        >
+                          Your Profile
+                        </Link>
+                        <button
+                          onClick={handleSignOut}
+                          className='block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-50 w-full text-left'
+                        >
+                          Sign out
+                        </button>
                       </div>
                     </div>
                   </Dialog.Panel>
@@ -378,53 +388,65 @@ const App = ({
             className='hidden md:block md:flex-shrink-0 md:overflow-y-auto md:bg-gray-800'
           >
             <div className='relative flex w-28 flex-col space-y-3 p-3'>
-              {workspaces.map(item => (
-                <a
-                  key={item.name}
-                  href={item.href}
+              {userWorkspaces.map(workspace => (
+                <Link
+                  key={workspace.id}
+                  href={`/app/${workspace.id}`}
                   className={classNames(
-                    item.current
+                    isSelectedWorkspace(workspace)
                       ? 'bg-indigo-800 text-white'
                       : 'text-indigo-100 hover:bg-indigo-800 hover:text-white',
                     'group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium',
                   )}
-                  aria-current={item.current ? 'page' : undefined}
+                  aria-current={isSelectedWorkspace(workspace) ? 'page' : undefined}
                 >
-                  <item.icon
+                  <Icon
+                    name={workspace.icon}
                     className={classNames(
-                      item.current ? 'text-white' : 'text-indigo-300 group-hover:text-white',
+                      isSelectedWorkspace(workspace)
+                        ? 'text-white'
+                        : 'text-indigo-300 group-hover:text-white',
                       'h-6 w-6',
                     )}
                     aria-hidden='true'
                   />
-                  <span className='mt-2'>{item.name}</span>
-                </a>
+                  <span className='mt-2'>{workspace.name}</span>
+                </Link>
               ))}
+              <Link
+                key={'Create Workspace'}
+                href={`/app/create-workspace`}
+                className={classNames(
+                  'text-indigo-100 hover:bg-indigo-800 hover:text-white',
+                  'group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium',
+                )}
+              >
+                <FolderPlusIcon
+                  className={classNames('text-indigo-300 group-hover:text-white', 'h-6 w-6')}
+                  aria-hidden='true'
+                />
+                <span className='mt-2'>{'+Workspace'}</span>
+              </Link>
             </div>
           </nav>
 
           {/* Main area */}
-          <main className='min-w-0 flex-1 border-t border-gray-200 lg:flex'>
-            {/* Primary column */}
-            <section
-              aria-labelledby='primary-heading'
-              className='flex h-full min-w-0 flex-1 flex-col overflow-y-auto lg:order-last'
-            >
-              <h1 id='primary-heading' className='sr-only'>
-                Home
-              </h1>
-              {/* Your content */}
-            </section>
-
-            {/* Secondary column (hidden on smaller screens) */}
-            <aside className='hidden lg:order-first lg:block lg:flex-shrink-0'>
-              <div className='relative flex h-full w-96 flex-col overflow-y-auto border-r border-gray-200 bg-gray-100'>
-                {/* Your content */}
-              </div>
-            </aside>
-          </main>
+          <main className='min-w-0 '>{children}</main>
         </div>
       </div>
     </>
   )
+}
+
+// some fun heroicons that people can choose between to give spunk to their workspaces
+const ICONS: { [key: string]: React.FC } = {
+  rocketLaunch: RocketLaunchIcon,
+}
+
+const Icon = ({ name, ...props }: { name: string } & React.ComponentProps<'svg'>) => {
+  let Icon = ICONS[name]
+  if (!Icon) {
+    Icon = FolderIcon
+  }
+  return <Icon {...props} />
 }

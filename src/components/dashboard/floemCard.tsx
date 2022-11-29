@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { DataFloem } from '../../model/core/floem'
-import { Mutate } from '../../model/core/mutators'
+import { DataFloem } from '../../model/replicache/space-workspace-[id]/floem'
+import { Mutate } from '../../model/replicache/space-workspace-[id]/mutators'
 import ContextMenu from './contextMenu'
 
 export interface FloemCardProps {

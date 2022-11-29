@@ -1,9 +1,9 @@
 import { PlusCircleIcon, PlusIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
-import { listFloems, STARTER_FLOEM } from '../../model/core/floem'
-import { genFloemId } from '../../model/core/ids'
-import { Rep } from '../../model/core/mutators'
+import { listFloems, STARTER_FLOEM } from '../../model/replicache/space-workspace-[id]/floem'
+import { genFloemId } from '../../model/replicache/space-workspace-[id]/ids'
+import { Rep } from '../../model/replicache/space-workspace-[id]/mutators'
 import { spaceRelativeUrl } from '../floem/floem'
 import { FloemCard } from './floemCard'
 

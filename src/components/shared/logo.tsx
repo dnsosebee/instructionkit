@@ -1,20 +1,12 @@
-import Image from 'next/image'
-export default ({ light }: { light: boolean }) => {
-  return light ? (
+import Image, { ImageProps } from 'next/image'
+export default ({ light, ...props }: { light: boolean } & Partial<ImageProps>) => {
+  return (
     <Image
-      className='block lg:hidden h-8 w-auto'
-      src='/light.svg'
+      src={light ? '/IKlight.svg' : '/dark.svg'}
       alt='logo'
       width={50}
       height={50}
-    />
-  ) : (
-    <Image
-      className='block lg:hidden h-8 w-auto'
-      src='/dark.svg'
-      alt='logo'
-      width={50}
-      height={50}
+      {...props}
     />
   )
 }

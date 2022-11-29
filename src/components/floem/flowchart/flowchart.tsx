@@ -7,20 +7,20 @@ import ReactFlow, {
   ReactFlowProvider,
   useReactFlow,
 } from 'reactflow'
-import { DataFloem } from '../../../model/core/floem'
+import { DataFloem } from '../../../model/replicache/space-workspace-[id]/floem'
 import {
   toDataDarts,
   toDataFlows,
   toFlowchartEdges,
   toFlowchartNodes,
-} from '../../../model/core/reactflowAdapters'
+} from '../../../model/replicache/space-workspace-[id]/reactflowAdapters'
 
 import React from 'react'
 import 'reactflow/dist/style.css'
 import { logger as parentLogger } from '../../../logger'
-import { DEFAULT_FLOWTEXT } from '../../../model/core/flow'
-import { genDartId, genFlowId } from '../../../model/core/ids'
-import { Mutate } from '../../../model/core/mutators'
+import { DEFAULT_FLOWTEXT } from '../../../model/replicache/space-workspace-[id]/flow'
+import { genDartId, genFlowId } from '../../../model/replicache/space-workspace-[id]/ids'
+import { Mutate } from '../../../model/replicache/space-workspace-[id]/mutators'
 import Breadcrumbs from './breadcrumbs'
 import FlowchartDart, { FlowchartEdge } from './flowchartDart'
 import FlowchartFlow, { FlowchartNode } from './flowchartFlow'

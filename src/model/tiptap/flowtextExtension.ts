@@ -3,11 +3,11 @@ import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import { Extension } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { lowlight } from 'lowlight'
-import { genCaseId } from '../core/ids'
+import { genCaseId } from '../replicache/space-workspace-[id]/ids'
 import AssigneeNode from './assigneeNode'
 import CaseNode from './caseNode'
-import SwitchNode from './switchNode'
 import { createImageExtension } from './imageNode'
+import SwitchNode from './switchNode'
 import { uploadBlob } from './uploadBlob'
 
 const FlowtextExtension = Extension.create({

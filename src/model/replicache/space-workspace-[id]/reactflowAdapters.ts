@@ -1,5 +1,5 @@
-import { FlowchartEdge } from '../../components/floem/flowchart/flowchartDart'
-import { FlowchartNode } from '../../components/floem/flowchart/flowchartFlow'
+import { FlowchartEdge } from '../../../components/floem/flowchart/flowchartDart'
+import { FlowchartNode } from '../../../components/floem/flowchart/flowchartFlow'
 import { DataDart } from './dart'
 import { DataFloem } from './floem'
 import { DataFlow } from './flow'

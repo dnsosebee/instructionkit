@@ -3,8 +3,8 @@ import Paragraph from '@tiptap/extension-paragraph'
 import Text from '@tiptap/extension-text'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useEffect } from 'react'
-import { DataFloem } from '../../../model/core/floem'
-import { Mutate } from '../../../model/core/mutators'
+import { DataFloem } from '../../../model/replicache/space-workspace-[id]/floem'
+import { Mutate } from '../../../model/replicache/space-workspace-[id]/mutators'
 
 interface TitleEditorProps {
   mutate: Mutate

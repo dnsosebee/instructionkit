@@ -1,12 +1,18 @@
-import {} from 'nanoid'
+import { customAlphabet } from 'nanoid'
 import { Replicache, WriteTransaction } from 'replicache'
-import { logger as parentLogger } from '../../logger'
+import { logger as parentLogger } from '../../../logger'
+import { WORKSPACE_ID_PREFIX } from '../space-app/workspace'
 import { DartUpdate, DataDart } from './dart'
 import { DataFloem, floemSchema, FloemUpdate } from './floem'
 import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate } from './flow'
-import { DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './ids'
+import { ALPHABET, DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './ids'
 
 const logger = parentLogger.child({ module: 'mutators' })
+
+export const SPACE_WORKSPACE_ID_PREFIX = WORKSPACE_ID_PREFIX
+export const WORKSPACE_UUID_LENGTH = 10
+export const genWorkspaceUuid = customAlphabet(ALPHABET, WORKSPACE_UUID_LENGTH)
+export const genWorkspaceId = () => SPACE_WORKSPACE_ID_PREFIX + genWorkspaceUuid()
 
 export type M = typeof floemMutators
 export type Rep = Replicache<M>

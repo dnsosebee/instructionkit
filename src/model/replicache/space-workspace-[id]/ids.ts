@@ -2,7 +2,7 @@
 // also, make sure not to generate IDs from the mutator: could lead to de-sync'ed client views. We want mutators to be deterministic.
 import { customAlphabet } from 'nanoid'
 
-const ALPHABET = '346789ABCDEFGHJKLMNPQRTUVWXYabcdefghijkmnpqrtwxyz'
+export const ALPHABET = '346789ABCDEFGHJKLMNPQRTUVWXYabcdefghijkmnpqrtwxyz'
 
 // floem
 export const FLOEM_ID_PREFIX = 'floem-'
