@@ -9,6 +9,7 @@ import CaseNode from './caseNode'
 import SwitchNode from './switchNode'
 import { createImageExtension } from './imageNode'
 import { uploadBlob } from './uploadBlob'
+import Link from '@tiptap/extension-link'
 
 const FlowtextExtension = Extension.create({
   addExtensions() {
@@ -19,6 +20,7 @@ const FlowtextExtension = Extension.create({
       SwitchNode,
       CaseNode,
       AssigneeNode,
+      Link,
       createImageExtension(uploadBlob),
     ] // TODO follow up with reactflow on fixing dropcursor rendering
   },

@@ -27,6 +27,7 @@
     "@tiptap-pro/extension-unique-id": "^2.0.0-beta.14",
     "@tiptap/extension-code-block-lowlight": "^2.0.0-beta.199",
     "@tiptap/extension-document": "^2.0.0-beta.196",
+    "@tiptap/extension-link": "^2.0.0-beta.204",
     "@tiptap/extension-paragraph": "^2.0.0-beta.196",
     "@tiptap/extension-placeholder": "^2.0.0-beta.199",
     "@tiptap/extension-text": "^2.0.0-beta.196",
