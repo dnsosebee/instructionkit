@@ -58,19 +58,6 @@ import AppProvider, { AppContext } from './appProvider'
 
 const logger = parentLogger.child({ component: 'AppLayout' })
 
-const navigation: { name: string; href: string; children: { name: string; href: string }[] }[] = [
-  {
-    name: 'Projects',
-    href: '#',
-    children: [
-      // { name: 'Technical Support', href: '#' },
-      // { name: 'Sales', href: '#' },
-      // { name: 'General', href: '#' },
-    ],
-  },
-  { name: 'Settings', href: '#', children: [] },
-]
-
 export default ({
   children,
   selectedWorkspaceId,
@@ -122,11 +109,14 @@ const AppLayout = ({
   if (!userWorkspaces.length) {
     window.location.href = '/app/create-workspace'
   }
-  if (!selectedWorkspaceId || !userWorkspaces.some(w => w.id === selectedWorkspaceId)) {
+  if (!selectedWorkspaceId) {
     window.location.href = `/app/${userWorkspaces[0].id}`
   }
-
-  const selectedWorkspace = userWorkspaces.find(w => w.id === selectedWorkspaceId)!
+  const selectedWorkspace = userWorkspaces.find(w => w.id === selectedWorkspaceId)
+  if (selectedWorkspace === undefined) {
+    window.location.href = `/app/${userWorkspaces[0].id}`
+    return null
+  }
 
   const isSelectedWorkspace = (workspace: RepWorkspace) => {
     return selectedWorkspaceId === workspace.id
@@ -146,14 +136,14 @@ const AppLayout = ({
     <>
       <div className='flex h-full w-full flex-col'>
         {/* Top nav*/}
-        <header className='relative flex h-16 flex-shrink-0 items-center bg-white'>
+        <header className='relative flex h-16 flex-shrink-0 items-center bg-gray-800'>
           {/* Logo area */}
           <div className='absolute inset-y-0 left-0 md:static md:flex-shrink-0'>
             <Link
               href='/app'
               className='flex h-16 w-16 items-center justify-center bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600 md:w-28'
             >
-              <Logo light={true} className='h-8 w-auto text-white' />
+              <Logo light={true} className='h-8 w-auto' />
             </Link>
           </div>
 
@@ -211,12 +201,12 @@ const AppLayout = ({
             </div>
             <div className='ml-10 flex flex-shrink-0 items-center space-x-10 pr-4'>
               <nav aria-label='Global' className='flex space-x-10'>
-                <Link href='/app' className='text-sm font-medium text-gray-900'>
+                <Link href='/app' className='text-sm font-medium text-indigo-100'>
                   Projects
                 </Link>
                 <Link
                   href={`/app/${selectedWorkspaceId}/settings`}
-                  className='text-sm font-medium text-gray-900'
+                  className='text-sm font-medium text-indigo-100'
                 >
                   Settings
                 </Link>
@@ -424,7 +414,7 @@ const AppLayout = ({
             aria-label='Sidebar'
             className='hidden md:block md:flex-shrink-0 md:overflow-y-auto md:bg-gray-800'
           >
-            <div className='relative flex w-28 flex-col space-y-3 p-3'>
+            <div className='relative flex w-28 flex-col space-y-3 p-3 h-full'>
               {userWorkspaces.map(workspace => (
                 <Link
                   key={workspace.id}
@@ -450,11 +440,12 @@ const AppLayout = ({
                   <span className='mt-2'>{workspace.name}</span>
                 </Link>
               ))}
+              <div className='grow' />
               <Link
                 key={'Create Workspace'}
                 href={`/app/create-workspace`}
                 className={classNames(
-                  'text-indigo-100 hover:bg-indigo-800 hover:text-white',
+                  'text-gray-500 hover:bg-indigo-800 hover:text-white',
                   'group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium',
                 )}
               >
@@ -468,7 +459,7 @@ const AppLayout = ({
           </nav>
 
           {/* Main area */}
-          <main className='min-w-0'>
+          <main className='w-full'>
             <AppProvider context={appContext}>{children}</AppProvider>
           </main>
         </div>
