@@ -2,9 +2,37 @@ import { Dialog, Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import {
   Bars3Icon,
+  Battery100Icon,
+  BeakerIcon,
+  BoltIcon,
+  BookOpenIcon,
+  BugAntIcon,
+  BuildingLibraryIcon,
+  BuildingStorefrontIcon,
+  CalculatorIcon,
+  CameraIcon,
+  CodeBracketSquareIcon,
+  CommandLineIcon,
+  CpuChipIcon,
+  DevicePhoneMobileIcon,
+  FaceSmileIcon,
+  FireIcon,
   FolderIcon,
   FolderPlusIcon,
+  GiftIcon,
+  GlobeAltIcon,
+  HomeIcon,
+  LifebuoyIcon,
+  MapIcon,
+  MusicalNoteIcon,
+  PaintBrushIcon,
+  PrinterIcon,
+  PuzzlePieceIcon,
+  RadioIcon,
   RocketLaunchIcon,
+  TruckIcon,
+  TvIcon,
+  WrenchScrewdriverIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline'
 import { User } from '@supabase/auth-helpers-nextjs'
@@ -26,6 +54,7 @@ import { listMemberships } from '../../model/replicache/space-app/membership'
 import { listWorkspaces, RepWorkspace } from '../../model/replicache/space-app/workspace'
 import Loading from '../shared/loading'
 import Logo from '../shared/logo'
+import AppProvider, { AppContext } from './appProvider'
 
 const logger = parentLogger.child({ component: 'AppLayout' })
 
@@ -49,37 +78,37 @@ export default ({
   children: React.ReactNode
   selectedWorkspaceId: string | null
 }) => {
-  const membershipRep = useReplicache<AppMutators>({
+  const appRep = useReplicache<AppMutators>({
     name: APP_SPACE_ID,
     mutators: appMutators,
   })
   const user = useUser()
-  if (!membershipRep || !user) {
+  if (!appRep || !user) {
     return <Loading />
   }
   // membershipRep.mutate.createOrUpdateMembership(genMembership('2', '2', '2'))
   return (
-    <AppLayout membershipRep={membershipRep} user={user} selectedWorkspaceId={selectedWorkspaceId}>
+    <AppLayout appRep={appRep} user={user} selectedWorkspaceId={selectedWorkspaceId}>
       {children}
     </AppLayout>
   )
 }
 
 const AppLayout = ({
-  membershipRep,
+  appRep,
   user,
   selectedWorkspaceId,
   children,
 }: {
-  membershipRep: AppRep
+  appRep: AppRep
   user: User
   selectedWorkspaceId: string | null
   children?: React.ReactNode
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const supabaseClient = useSupabaseClient()
-  const memberships = useSubscribe(membershipRep, listMemberships, null, [membershipRep])
-  const workspaces = useSubscribe(membershipRep, listWorkspaces, null, [membershipRep])
+  const memberships = useSubscribe(appRep, listMemberships, null, [appRep])
+  const workspaces = useSubscribe(appRep, listWorkspaces, null, [appRep])
   logger.debug('render', { memberships, workspaces })
 
   if (!workspaces || !memberships) {
@@ -93,11 +122,11 @@ const AppLayout = ({
   if (!userWorkspaces.length) {
     window.location.href = '/app/create-workspace'
   }
-  if (!selectedWorkspaceId) {
+  if (!selectedWorkspaceId || !userWorkspaces.some(w => w.id === selectedWorkspaceId)) {
     window.location.href = `/app/${userWorkspaces[0].id}`
   }
 
-  const selectedWorkspace = userWorkspaces.find(w => w.id === selectedWorkspaceId)
+  const selectedWorkspace = userWorkspaces.find(w => w.id === selectedWorkspaceId)!
 
   const isSelectedWorkspace = (workspace: RepWorkspace) => {
     return selectedWorkspaceId === workspace.id
@@ -106,6 +135,11 @@ const AppLayout = ({
   const handleSignOut = async () => {
     await supabaseClient.auth.signOut()
     window.location.href = '/signin'
+  }
+
+  const appContext: AppContext = {
+    selectedWorkspace,
+    appMutate: appRep.mutate,
   }
 
   return (
@@ -180,8 +214,11 @@ const AppLayout = ({
                 <Link href='/app' className='text-sm font-medium text-gray-900'>
                   Projects
                 </Link>
-                <Link href='/app/settings' className='text-sm font-medium text-gray-900'>
-                  Workspace Settings
+                <Link
+                  href={`/app/${selectedWorkspaceId}/settings`}
+                  className='text-sm font-medium text-gray-900'
+                >
+                  Settings
                 </Link>
               </nav>
               <div className='flex items-center space-x-8'>
@@ -431,7 +468,9 @@ const AppLayout = ({
           </nav>
 
           {/* Main area */}
-          <main className='min-w-0 '>{children}</main>
+          <main className='min-w-0'>
+            <AppProvider context={appContext}>{children}</AppProvider>
+          </main>
         </div>
       </div>
     </>
@@ -439,11 +478,40 @@ const AppLayout = ({
 }
 
 // some fun heroicons that people can choose between to give spunk to their workspaces
-const ICONS: { [key: string]: React.FC } = {
+export const ICONS: { [key: string]: React.FC } = {
+  folder: FolderIcon,
+  home: HomeIcon,
   rocketLaunch: RocketLaunchIcon,
+  battery100: Battery100Icon,
+  beaker: BeakerIcon,
+  bolt: BoltIcon,
+  bookOpen: BookOpenIcon,
+  bugAnt: BugAntIcon,
+  buildingLibrary: BuildingLibraryIcon,
+  buildingStorefront: BuildingStorefrontIcon,
+  calculator: CalculatorIcon,
+  camera: CameraIcon,
+  codeBracketSquare: CodeBracketSquareIcon,
+  commandLine: CommandLineIcon,
+  cpuChip: CpuChipIcon,
+  devicePhone: DevicePhoneMobileIcon,
+  faceSmile: FaceSmileIcon,
+  fire: FireIcon,
+  globeAlt: GlobeAltIcon,
+  gift: GiftIcon,
+  lifeBuoy: LifebuoyIcon,
+  map: MapIcon,
+  musicalNote: MusicalNoteIcon,
+  paintBrush: PaintBrushIcon,
+  printer: PrinterIcon,
+  puzzlePiece: PuzzlePieceIcon,
+  radio: RadioIcon,
+  truck: TruckIcon,
+  tv: TvIcon,
+  wrenchScrewdriver: WrenchScrewdriverIcon,
 }
 
-const Icon = ({ name, ...props }: { name: string } & React.ComponentProps<'svg'>) => {
+export const Icon = ({ name, ...props }: { name: string } & React.ComponentProps<'svg'>) => {
   let Icon = ICONS[name]
   if (!Icon) {
     Icon = FolderIcon

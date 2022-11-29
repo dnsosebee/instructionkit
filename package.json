@@ -40,6 +40,7 @@
     "immutable": "^4.1.0",
     "lodash": "^4.17.21",
     "lowlight": "^2.7.0",
+    "mssql": "^9.0.1",
     "next": "^13.0.4",
     "node-html-parser": "^6.1.1",
     "pino": "^8.7.0",
@@ -51,6 +52,7 @@
     "replicache": "^11.0.0",
     "replicache-nextjs": "^0.4.0",
     "replicache-react": "^2.9.0",
+    "tedious": "^15.1.2",
     "valtio": "^1.7.0",
     "zod": "^3.19.1"
   },

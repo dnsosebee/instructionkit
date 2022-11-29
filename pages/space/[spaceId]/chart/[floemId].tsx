@@ -1,3 +1,4 @@
+'use client'
 import { GetServerSideProps } from 'next'
 import { spaceExists } from 'replicache-nextjs/lib/backend'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
