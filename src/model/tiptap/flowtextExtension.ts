@@ -1,18 +1,18 @@
 import UniqueID from '@tiptap-pro/extension-unique-id'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
+import { Gapcursor } from '@tiptap/extension-gapcursor'
+import Link from '@tiptap/extension-link'
 import { Extension } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { lowlight } from 'lowlight'
 import { genCaseId } from '../replicache-spaces/ws-[id]/ids'
 import AssigneeNode from './assigneeNode'
 import CaseNode from './caseNode'
-import { createImageExtension } from './imageNode'
-import SwitchNode from './switchNode'
-import RowNode from './rowNode'
 import ColumnNode from './columnNode'
+import { createImageExtension } from './imageNode'
+import RowNode from './rowNode'
+import SwitchNode from './switchNode'
 import { uploadBlob } from './uploadBlob'
-import Link from '@tiptap/extension-link'
-import { Gapcursor } from '@tiptap/extension-gapcursor'
 
 const FlowtextExtension = Extension.create({
   addExtensions() {
