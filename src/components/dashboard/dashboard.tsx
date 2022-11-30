@@ -1,15 +1,23 @@
 import { PlusCircleIcon, PlusIcon } from '@heroicons/react/20/solid'
+import { logger } from '@supabase/auth-helpers-nextjs'
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
-import { listFloems, STARTER_FLOEM } from '../../model/replicache/space-workspace-[id]/floem'
-import { genFloemId } from '../../model/replicache/space-workspace-[id]/ids'
-import { Rep } from '../../model/replicache/space-workspace-[id]/mutators'
+import { RepWorkspace } from '../../model/replicache-spaces/app/types/workspace'
+import { listFloems, STARTER_FLOEM } from '../../model/replicache-spaces/workspace-[id]/floem'
+import { genFloemId } from '../../model/replicache-spaces/workspace-[id]/ids'
+import { Rep } from '../../model/replicache-spaces/workspace-[id]/mutators'
 import { spaceRelativeUrl } from '../floem/floem'
 import { useAppContext } from '../layout/appProvider'
+import Redirect from '../shared/redirect'
 import { FloemCard } from './floemCard'
 
 export const Dashboard = ({ rep }: { rep: Rep }) => {
-  const { selectedWorkspace } = useAppContext()
+  let workspace: RepWorkspace | null = null
+  try {
+    workspace = useAppContext().workspace
+  } catch (e) {
+    logger.log('Dashboard: no workspace context')
+  }
   const floems = useSubscribe(rep, listFloems, [], [rep])
 
   const [creatingNew, setCreatingNew] = React.useState(false)
@@ -20,7 +28,11 @@ export const Dashboard = ({ rep }: { rep: Rep }) => {
     const id = genFloemId()
     setCreatingNew(true)
     await rep.mutate.createFloem(STARTER_FLOEM(id))
-    window.location.href = `/space/${selectedWorkspace.id}/chart/${id}`
+    if (workspace) {
+      return <Redirect to={`/space/${workspace.id}/chart/${id}`} />
+    } else {
+      return <Redirect to={`/space/${rep.name}/chart/${id}`} />
+    }
   }
 
   const mutate = { ...rep.mutate, spaceRelativeUrl: relativeUrl }
@@ -30,7 +42,7 @@ export const Dashboard = ({ rep }: { rep: Rep }) => {
       <header className=' shadow'>
         <div className='mx-auto max-w-7xl py-6 px-4 sm:px-6 lg:px-8'>
           <h1 className='text-3xl font-bold tracking-tight text-indigo-100'>
-            <span className='text-indigo-400'>{selectedWorkspace.name}</span> Dashboard
+            <span className='text-indigo-400'>{workspace?.name}</span> Dashboard
           </h1>
         </div>
       </header>

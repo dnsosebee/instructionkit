@@ -1,7 +1,7 @@
 import { customAlphabet } from 'nanoid'
 import { Replicache, WriteTransaction } from 'replicache'
 import { logger as parentLogger } from '../../../logger'
-import { WORKSPACE_ID_PREFIX } from '../space-app/workspace'
+import { WORKSPACE_ID_PREFIX } from '../app/types/workspace'
 import { DartUpdate, DataDart } from './dart'
 import { DataFloem, floemSchema, FloemUpdate } from './floem'
 import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate } from './flow'

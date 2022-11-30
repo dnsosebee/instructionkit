@@ -1,9 +1,9 @@
 import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
 import { GetServerSideProps } from 'next'
-import AppLayout, { AppPage, ICONS } from '../../../src/components/layout/appLayout'
+import AppLayout, { AppPage } from '../../../src/components/layout/appLayout'
 import { useAppContext } from '../../../src/components/layout/appProvider'
-import { logger } from '../../../src/logger'
+import { ICONS } from '../../../src/components/shared/icons'
 
 // get workspaceId from routes
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
@@ -16,27 +16,26 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 export default ({ workspaceId }: { workspaceId: string }) => {
-  logger.debug('workspaceId', workspaceId)
   return (
-    <AppLayout selectedWorkspaceId={workspaceId} selectedPage={AppPage.Settings}>
-      <Settings workspaceId={workspaceId} />
+    <AppLayout workspaceId={workspaceId} selectedPage={AppPage.Settings}>
+      <Settings />
     </AppLayout>
   )
 }
 
-const Settings = ({ workspaceId }: { workspaceId: string }) => {
-  const { selectedWorkspace, appRep } = useAppContext()
+const Settings = () => {
+  const { workspace, appRep } = useAppContext()
 
   const handleIconChange = (icon: string) => {
     appRep.mutate.updateWorkspace({
-      id: selectedWorkspace.id,
+      id: workspace.id,
       icon,
     })
   }
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     appRep.mutate.updateWorkspace({
-      id: selectedWorkspace.id,
+      id: workspace.id,
       name: e.target.value,
     })
   }
@@ -46,7 +45,7 @@ const Settings = ({ workspaceId }: { workspaceId: string }) => {
     const form = e.target as HTMLFormElement
     const email = form.elements.namedItem('email') as HTMLInputElement
     appRep.mutate.createOrUpdateInvite({
-      workspaceId: selectedWorkspace.id,
+      workspaceId: workspace.id,
       email: email.value,
       accessPolicy: 'editor',
     })
@@ -70,7 +69,7 @@ const Settings = ({ workspaceId }: { workspaceId: string }) => {
               id='workspace-name'
               className='text-gray-100 bg-gray-700 block w-full rounded-md border-gray-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2'
               placeholder='Acme Inc.'
-              value={selectedWorkspace.name}
+              value={workspace.name}
               onChange={handleNameChange}
             />
           </div>
@@ -148,7 +147,7 @@ const Settings = ({ workspaceId }: { workspaceId: string }) => {
           <div className='flex items-center justify-between'>
             <h2 className='sm:text-sm font-medium text-gray-100'> Icon</h2>
           </div>
-          <RadioGroup value={selectedWorkspace.icon} onChange={handleIconChange} className='mt-2'>
+          <RadioGroup value={workspace.icon} onChange={handleIconChange} className='mt-2'>
             <RadioGroup.Label className='sr-only'> Choose a workspace icon</RadioGroup.Label>
             <div className='grid grid-cols-3 gap-3 sm:grid-cols-6'>
               {Object.entries(ICONS).map(([iconName, IconComponent]) => (

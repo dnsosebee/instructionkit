@@ -1,8 +1,10 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { GetServerSideProps } from 'next'
 import { Fragment, useRef, useState } from 'react'
-import AppLayout, { AppPage, Icon } from '../../../src/components/layout/appLayout'
+import AppLayout, { AppPage } from '../../../src/components/layout/appLayout'
 import { useAppContext } from '../../../src/components/layout/appProvider'
+import { useSupaAuthed } from '../../../src/components/layout/supaProvider'
+import { Icon } from '../../../src/components/shared/icons'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -15,24 +17,20 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 export default ({ workspaceId }: { workspaceId: string }) => {
   return (
-    <AppLayout selectedWorkspaceId={workspaceId} selectedPage={AppPage.AcceptInvite}>
-      <AcceptInvite workspaceId={workspaceId} />
+    <AppLayout workspaceId={workspaceId} selectedPage={AppPage.AcceptInvite}>
+      <AcceptInvite />
     </AppLayout>
   )
 }
 
-const AcceptInvite = ({ workspaceId }: { workspaceId: string }) => {
-  const { appRep, memberStatus, selectedWorkspace, user, userInvites } = useAppContext()
-
-  if (memberStatus.acceptedInvite) {
-    window.location.href = `/app/${workspaceId}`
-    return null
-  }
-
-  const invite = userInvites.find(invite => invite.workspaceId === workspaceId)!
-
+const AcceptInvite = () => {
+  const { user } = useSupaAuthed()
+  const { appRep, workspace, userInvites } = useAppContext()
   const [open, setOpen] = useState(true)
   const cancelButtonRef = useRef(null)
+
+  // this can be assumed based on routing that happens within the AppProvider component
+  const invite = userInvites.find(invite => invite.workspaceId === workspace.id)!
 
   const handleAccept = () => {
     appRep.mutate.acceptInvite({
@@ -40,7 +38,7 @@ const AcceptInvite = ({ workspaceId }: { workspaceId: string }) => {
       userId: user.id,
     })
     setOpen(false)
-    window.location.href = `/app/${workspaceId}`
+    window.location.href = `/app/${workspace.id}`
   }
 
   const handleDecline = () => {
@@ -78,12 +76,12 @@ const AcceptInvite = ({ workspaceId }: { workspaceId: string }) => {
               <Dialog.Panel className='relative transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg sm:p-6'>
                 <div>
                   <div className='mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100'>
-                    <Icon name={selectedWorkspace.icon} className='h-6 w-6 text-green-600' />
+                    <Icon name={workspace.icon} className='h-6 w-6 text-green-600' />
                   </div>
                   <div className='mt-3 text-center sm:mt-5'>
                     <Dialog.Title as='h3' className='text-lg font-medium leading-6 text-gray-900'>
                       You've been invited to join{' '}
-                      <span className='text-indigo-400'>{selectedWorkspace.name}</span>
+                      <span className='text-indigo-400'>{workspace.name}</span>
                     </Dialog.Title>
                     <div className='mt-2'>
                       <p className='text-sm text-gray-500'>

@@ -1,61 +1,15 @@
 import { Dialog, Menu, Transition } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import {
-  Bars3Icon,
-  Battery100Icon,
-  BeakerIcon,
-  BoltIcon,
-  BookOpenIcon,
-  BugAntIcon,
-  BuildingLibraryIcon,
-  BuildingStorefrontIcon,
-  CalculatorIcon,
-  CameraIcon,
-  CodeBracketSquareIcon,
-  CommandLineIcon,
-  CpuChipIcon,
-  DevicePhoneMobileIcon,
-  FaceSmileIcon,
-  FireIcon,
-  FolderIcon,
-  FolderPlusIcon,
-  GiftIcon,
-  GlobeAltIcon,
-  HomeIcon,
-  LifebuoyIcon,
-  MapIcon,
-  MusicalNoteIcon,
-  PaintBrushIcon,
-  PrinterIcon,
-  PuzzlePieceIcon,
-  RadioIcon,
-  RocketLaunchIcon,
-  TruckIcon,
-  TvIcon,
-  WrenchScrewdriverIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline'
-import { User } from '@supabase/auth-helpers-nextjs'
-import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
+import { Bars3Icon, FolderPlusIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import classNames from 'classnames'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { Fragment, useState } from 'react'
-import { useReplicache } from 'replicache-nextjs/lib/frontend'
-import { useSubscribe } from 'replicache-react'
 import { logger as parentLogger } from '../../logger'
-import {
-  appMutators,
-  AppMutators,
-  AppRep,
-  APP_SPACE_ID,
-} from '../../model/replicache/space-app/appMutators'
-import { listInvites } from '../../model/replicache/space-app/invite'
-import { listMemberships } from '../../model/replicache/space-app/membership'
-import { listWorkspaces, RepWorkspace } from '../../model/replicache/space-app/workspace'
-import Loading from '../shared/loading'
+import { Icon } from '../shared/icons'
 import Logo from '../shared/logo'
-import AppProvider, { AppContext } from './appProvider'
+import AppProvider, { useAppContext } from './appProvider'
+import { useSupaAuthed } from './supaProvider'
 
 const logger = parentLogger.child({ component: 'AppLayout' })
 
@@ -67,114 +21,40 @@ export enum AppPage {
 
 export default ({
   children,
-  selectedWorkspaceId,
+  workspaceId,
   selectedPage,
 }: {
   children: React.ReactNode
-  selectedWorkspaceId: string | null
+  workspaceId: string
   selectedPage: AppPage
 }) => {
-  const appRep = useReplicache<AppMutators>({
-    name: APP_SPACE_ID,
-    mutators: appMutators,
-  })
-  const user = useUser()
-  if (!appRep || !user) {
-    return <Loading />
-  }
-  // membershipRep.mutate.createOrUpdateMembership(genMembership('2', '2', '2'))
   return (
-    <AppLayout
-      appRep={appRep}
-      user={user}
-      selectedWorkspaceId={selectedWorkspaceId}
-      selectedPage={selectedPage}
-    >
-      {children}
-    </AppLayout>
+    <AppProvider {...{ workspaceId, selectedPage }}>
+      <AppLayout {...{ selectedPage }}>{children}</AppLayout>
+    </AppProvider>
   )
 }
 
 const AppLayout = ({
-  appRep,
-  user,
-  selectedWorkspaceId,
   selectedPage,
   children,
 }: {
-  appRep: AppRep
-  user: User
-  selectedWorkspaceId: string | null
   selectedPage: AppPage
-  children?: React.ReactNode
+  children: React.ReactNode
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const supabaseClient = useSupabaseClient()
-  const memberships = useSubscribe(appRep, listMemberships, null, [appRep])
-  const invites = useSubscribe(appRep, listInvites, null, [appRep])
-  const workspaces = useSubscribe(appRep, listWorkspaces, null, [appRep])
 
-  if (!workspaces || !memberships || !invites) {
-    return <Loading />
-  }
-
-  const userMemberships = memberships.filter(m => m.userId === user.id)
-  const userWorkspaces = workspaces.filter(w => userMemberships.some(m => m.workspaceId === w.id))
-  const userInvites = invites.filter(i => i.email === user.email)
-  const userInviteWorkspaces = workspaces.filter(w => userInvites.some(i => i.workspaceId === w.id))
-  const userWorkspacesAndInviteWorkspaces = userWorkspaces.concat(userInviteWorkspaces)
-
-  // log all of the above
-  logger.debug('render', {
-    userMemberships,
+  const { user, supabase } = useSupaAuthed()
+  const {
+    workspace: selectedWorkspace,
+    isSelectedWorkspace,
     userWorkspaces,
-    userInvites,
     userInviteWorkspaces,
     userWorkspacesAndInviteWorkspaces,
-    selectedWorkspaceId,
-  })
-
-  // routing
-  if (!userWorkspaces.length) {
-    if (!userInviteWorkspaces.length) {
-      window.location.href = '/app/create-workspace'
-      return null
-    } else {
-      if (!selectedWorkspaceId) {
-        window.location.href = `/app/${userInviteWorkspaces[0].id}`
-        return null
-      }
-    }
-  } else {
-    if (!selectedWorkspaceId) {
-      window.location.href = `/app/${userWorkspaces[0].id}`
-      return null
-    }
-  }
-  const selectedWorkspace = userWorkspacesAndInviteWorkspaces.find(
-    w => w.id === selectedWorkspaceId,
-  )
-  if (selectedWorkspace === undefined) {
-    window.location.href = `/app/${userWorkspacesAndInviteWorkspaces[0].id}`
-    return null
-  }
-
-  let acceptedInvite = true
-
-  if (userInviteWorkspaces.some(w => w.id === selectedWorkspaceId)) {
-    acceptedInvite = false
-    if (selectedPage !== AppPage.AcceptInvite) {
-      window.location.href = `/app/${selectedWorkspaceId}/accept-invite`
-      return null
-    }
-  }
-
-  const isSelectedWorkspace = (workspace: RepWorkspace) => {
-    return selectedWorkspaceId === workspace.id
-  }
+  } = useAppContext()
 
   const handleSignOut = async () => {
-    await supabaseClient.auth.signOut()
+    await supabase.auth.signOut()
     window.location.href = '/signin'
   }
 
@@ -182,16 +62,6 @@ const AppLayout = ({
     const id = e.target.value
     logger.debug('handlePickerChange', { id })
     window.location.href = `/app/${id}`
-  }
-
-  const appContext: AppContext = {
-    selectedWorkspace,
-    appRep,
-    memberStatus: {
-      acceptedInvite,
-    },
-    user,
-    userInvites,
   }
 
   return (
@@ -279,7 +149,7 @@ const AppLayout = ({
                   Projects
                 </Link>
                 <Link
-                  href={`/app/${selectedWorkspaceId}/settings`}
+                  href={`/app/${selectedWorkspace.id}/settings`}
                   className={classNames(
                     selectedPage === AppPage.Settings
                       ? 'bg-indigo-800 text-white'
@@ -419,13 +289,13 @@ const AppLayout = ({
                     </div> */}
                     <div className='max-w-8xl mx-auto py-3 px-2 sm:px-4'>
                       <Link
-                        href={`/app/${selectedWorkspaceId}`}
+                        href={`/app/${selectedWorkspace.id}`}
                         className='block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100'
                       >
                         Projects
                       </Link>
                       <Link
-                        href={`/app/${selectedWorkspaceId}/settings`}
+                        href={`/app/${selectedWorkspace.id}/settings`}
                         className='block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-100'
                       >
                         Settings
@@ -558,53 +428,9 @@ const AppLayout = ({
           </nav>
 
           {/* Main area */}
-          <main className='w-full overflow-auto'>
-            <AppProvider context={appContext}>{children}</AppProvider>
-          </main>
+          <main className='w-full overflow-auto'>{children}</main>
         </div>
       </div>
     </>
   )
-}
-
-// some fun heroicons that people can choose between to give spunk to their workspaces
-export const ICONS: { [key: string]: React.FC<React.ComponentProps<'svg'>> } = {
-  folder: FolderIcon,
-  home: HomeIcon,
-  rocketLaunch: RocketLaunchIcon,
-  battery100: Battery100Icon,
-  beaker: BeakerIcon,
-  bolt: BoltIcon,
-  bookOpen: BookOpenIcon,
-  bugAnt: BugAntIcon,
-  buildingLibrary: BuildingLibraryIcon,
-  buildingStorefront: BuildingStorefrontIcon,
-  calculator: CalculatorIcon,
-  camera: CameraIcon,
-  codeBracketSquare: CodeBracketSquareIcon,
-  commandLine: CommandLineIcon,
-  cpuChip: CpuChipIcon,
-  devicePhone: DevicePhoneMobileIcon,
-  faceSmile: FaceSmileIcon,
-  fire: FireIcon,
-  globeAlt: GlobeAltIcon,
-  gift: GiftIcon,
-  lifeBuoy: LifebuoyIcon,
-  map: MapIcon,
-  musicalNote: MusicalNoteIcon,
-  paintBrush: PaintBrushIcon,
-  printer: PrinterIcon,
-  puzzlePiece: PuzzlePieceIcon,
-  radio: RadioIcon,
-  truck: TruckIcon,
-  tv: TvIcon,
-  wrenchScrewdriver: WrenchScrewdriverIcon,
-}
-
-export const Icon = ({ name, ...props }: { name: string } & React.ComponentProps<'svg'>) => {
-  let Icon = ICONS[name]
-  if (!Icon) {
-    Icon = FolderIcon
-  }
-  return <Icon {...props} />
 }

@@ -3,7 +3,7 @@ import { createSpace, spaceExists } from 'replicache-nextjs/lib/backend'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { Dashboard } from '../../../src/components/dashboard/dashboard'
 import AppLayout, { AppPage } from '../../../src/components/layout/appLayout'
-import { floemMutators } from '../../../src/model/replicache/space-workspace-[id]/mutators'
+import { floemMutators } from '../../../src/model/replicache-spaces/workspace-[id]/mutators'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 export default ({ workspaceId }: { workspaceId: string }) => {
   return (
-    <AppLayout selectedWorkspaceId={workspaceId} selectedPage={AppPage.Projects}>
+    <AppLayout workspaceId={workspaceId} selectedPage={AppPage.Projects}>
       <Dash workspaceId={workspaceId} />
     </AppLayout>
   )

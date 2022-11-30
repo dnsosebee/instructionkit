@@ -2,7 +2,7 @@ import { GetServerSideProps } from 'next'
 import { spaceExists } from 'replicache-nextjs/lib/backend'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { Dashboard } from '../../../src/components/dashboard/dashboard'
-import { floemMutators } from '../../../src/model/replicache/space-workspace-[id]/mutators'
+import { floemMutators } from '../../../src/model/replicache-spaces/workspace-[id]/mutators'
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const { params } = context

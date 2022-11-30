@@ -1,8 +1,9 @@
 import { Replicache, WriteTransaction } from 'replicache'
+import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { logger as parentLogger } from '../../../logger'
-import { AcceptInvite, inviteSchema, INVITE_ID_PREFIX, RepInvite } from './invite'
-import { membershipSchema, MEMBERSHIP_ID_PREFIX, RepMembership } from './membership'
-import { RepWorkspace, workspaceSchema, WorkspaceUpdate } from './workspace'
+import { AcceptInvite, inviteSchema, INVITE_ID_PREFIX, RepInvite } from './types/invite'
+import { membershipSchema, MEMBERSHIP_ID_PREFIX, RepMembership } from './types/membership'
+import { RepWorkspace, workspaceSchema, WorkspaceUpdate } from './types/workspace'
 
 const logger = parentLogger.child({ module: 'model/memberships/mutators' })
 
@@ -25,8 +26,8 @@ const inviteMutators = {
   async acceptInvite(tx: WriteTransaction, acceptInvite: AcceptInvite) {
     logger.info('acceptInvite', acceptInvite)
     const { invite, userId } = acceptInvite
-    await tx.put(`${MEMBERSHIP_ID_PREFIX}${invite.workspaceId}/${userId}`, invite.accessPolicy)
     await tx.del(`${INVITE_ID_PREFIX}${invite.workspaceId}/${invite.email}`)
+    await tx.put(`${MEMBERSHIP_ID_PREFIX}${invite.workspaceId}/${userId}`, invite.accessPolicy)
   },
 }
 
@@ -54,6 +55,23 @@ const workspaceMutators = {
     await tx.put(workspace.id, workspace)
   },
 
+  async createWorkspaceWithOwner(
+    tx: WriteTransaction,
+    data: { workspace: RepWorkspace; userId: string },
+  ) {
+    logger.info('createWorkspaceWithOwner', data)
+    const { workspace, userId } = data
+    const membership = {
+      workspaceId: workspace.id,
+      userId,
+      accessPolicy: 'owner',
+    }
+    workspaceSchema.parse(workspace)
+    membershipSchema.parse(membership)
+    await tx.put(workspace.id, workspace)
+    await tx.put(`${MEMBERSHIP_ID_PREFIX}${membership.workspaceId}/${userId}`, 'owner')
+  },
+
   async deleteWorkspace(tx: WriteTransaction, workspaceId: string) {
     logger.info('deleteWorkspace', workspaceId)
     await tx.del(workspaceId)
@@ -78,4 +96,9 @@ export const appMutators = {
   ...inviteMutators,
   ...membershipMutators,
   ...workspaceMutators,
+}
+
+export const useAppReplicache = () => {
+  const rep = useReplicache<AppMutators>({ name: APP_SPACE_ID, mutators: appMutators })
+  return rep
 }

@@ -1,8 +1,8 @@
 import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon } from '@heroicons/react/20/solid'
-import { DataFloem } from '../../../../model/replicache/space-workspace-[id]/floem'
-import { DEFAULT_FLOWTEXT } from '../../../../model/replicache/space-workspace-[id]/flow'
-import { FLOW_START_ID, genFlowId } from '../../../../model/replicache/space-workspace-[id]/ids'
-import { Mutate } from '../../../../model/replicache/space-workspace-[id]/mutators'
+import { DataFloem } from '../../../../model/replicache-spaces/workspace-[id]/floem'
+import { DEFAULT_FLOWTEXT } from '../../../../model/replicache-spaces/workspace-[id]/flow'
+import { FLOW_START_ID, genFlowId } from '../../../../model/replicache-spaces/workspace-[id]/ids'
+import { Mutate } from '../../../../model/replicache-spaces/workspace-[id]/mutators'
 import { IconButton } from './iconButton'
 
 export interface ToolbarProps {

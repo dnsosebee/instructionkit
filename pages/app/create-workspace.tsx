@@ -1,32 +1,40 @@
-import { User } from '@supabase/auth-helpers-nextjs'
-import { useUser } from '@supabase/auth-helpers-react'
-import { useReplicache } from 'replicache-nextjs/lib/frontend'
-import { appMutators, AppRep, APP_SPACE_ID } from '../../src/model/replicache/space-app/appMutators'
-import { genWorkspaceId } from '../../src/model/replicache/space-workspace-[id]/mutators'
+import { useEffect, useState } from 'react'
+import AppProvider, { useAppContext } from '../../src/components/layout/appProvider'
+import { useSupaAuthed } from '../../src/components/layout/supaProvider'
+import Redirect from '../../src/components/shared/redirect'
+import { genWorkspaceId } from '../../src/model/replicache-spaces/workspace-[id]/mutators'
 
 export default () => {
-  const appRep = useReplicache({ name: APP_SPACE_ID, mutators: appMutators })
-  const user = useUser()
-  if (!appRep || !user) {
-    return null
-  }
-  return <CreateWorkspace appRep={appRep} user={user} />
+  return (
+    <AppProvider workspaceId={null} selectedPage={null}>
+      <CreateWorkspace />
+    </AppProvider>
+  )
 }
 
-export const CreateWorkspace = ({ appRep, user }: { appRep: AppRep; user: User }) => {
-  const newWorkspaceId = genWorkspaceId()
-  appRep.mutate.createWorkspace({
-    id: newWorkspaceId,
-    name: '',
-    icon: '',
-    createdAt: Date.now(),
-  })
-  appRep.mutate.createOrUpdateMembership({
-    userId: user.id,
-    workspaceId: newWorkspaceId,
-    accessPolicy: 'owner',
-  })
+export const CreateWorkspace = () => {
+  const { user } = useSupaAuthed()
+  const { appRep } = useAppContext()
+  const [resolvedNewWorkspaceId, setResolvedNewWorkspaceId] = useState<string | null>(null)
+  useEffect(() => {
+    const create = async () => {
+      const newWorkspaceId = genWorkspaceId()
+
+      await appRep.mutate.createWorkspaceWithOwner({
+        workspace: {
+          id: newWorkspaceId,
+          name: '',
+          icon: '',
+          createdAt: Date.now(),
+        },
+        userId: user.id,
+      })
+
+      setResolvedNewWorkspaceId(newWorkspaceId)
+    }
+    create()
+  }, [appRep, user.id])
+
   // redirect to the new workspace
-  window.location.href = `/app/${newWorkspaceId}/settings`
-  return null
+  return <Redirect to={`/app/${resolvedNewWorkspaceId}/settings`} />
 }

@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { DataFloem } from '../../../model/replicache/space-workspace-[id]/floem'
-import { Mutate } from '../../../model/replicache/space-workspace-[id]/mutators'
+import { DataFloem } from '../../../model/replicache-spaces/workspace-[id]/floem'
+import { Mutate } from '../../../model/replicache-spaces/workspace-[id]/mutators'
 import { TitleEditor } from './titleEditor'
 
 export interface BreadcrumbsProps {
