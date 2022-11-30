@@ -3,6 +3,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import MarketingNav from '../src/components/layout/marketingNav'
+import Redirect from '../src/components/shared/redirect'
 
 const SignIn = () => {
   const supabase = useSupabaseClient()
@@ -18,9 +19,8 @@ const SignIn = () => {
       alert(authResponse.error.message)
     }
 
-    // if success, redirect to account page
     if (authResponse.data.user) {
-      window.location.href = '/profile'
+      return <Redirect to='/app' />
     }
   }
 

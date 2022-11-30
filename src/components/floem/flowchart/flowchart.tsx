@@ -7,20 +7,20 @@ import ReactFlow, {
   ReactFlowProvider,
   useReactFlow,
 } from 'reactflow'
-import { DataFloem } from '../../../model/replicache-spaces/workspace-[id]/floem'
+import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/floem'
 import {
   toDataDarts,
   toDataFlows,
   toFlowchartEdges,
   toFlowchartNodes,
-} from '../../../model/replicache-spaces/workspace-[id]/reactflowAdapters'
+} from '../../../model/replicache-spaces/ws-[id]/reactflowAdapters'
 
 import React from 'react'
 import 'reactflow/dist/style.css'
 import { logger as parentLogger } from '../../../logger'
-import { DEFAULT_FLOWTEXT } from '../../../model/replicache-spaces/workspace-[id]/flow'
-import { genDartId, genFlowId } from '../../../model/replicache-spaces/workspace-[id]/ids'
-import { Mutate } from '../../../model/replicache-spaces/workspace-[id]/mutators'
+import { DEFAULT_FLOWTEXT } from '../../../model/replicache-spaces/ws-[id]/flow'
+import { genDartId, genFlowId } from '../../../model/replicache-spaces/ws-[id]/ids'
+import { WorkspaceMutate } from '../../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import Breadcrumbs from './breadcrumbs'
 import FlowchartDart, { FlowchartEdge } from './flowchartDart'
 import FlowchartFlow, { FlowchartNode } from './flowchartFlow'
@@ -34,7 +34,7 @@ const edgeTypes = { dart: FlowchartDart }
 const FLOW_OFFSET = 200
 
 interface FlowchartProps {
-  mutate: Mutate
+  mutate: WorkspaceMutate
   floem: DataFloem
 }
 

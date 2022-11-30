@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { DataFloem } from '../../../model/replicache-spaces/workspace-[id]/floem'
-import { Mutate } from '../../../model/replicache-spaces/workspace-[id]/mutators'
+import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/floem'
+import { WorkspaceMutate } from '../../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import { TitleEditor } from './titleEditor'
 
 export interface BreadcrumbsProps {
   floem: DataFloem
-  mutate: Mutate
+  mutate: WorkspaceMutate
 }
 
 export default function Breadcrumbs({ floem, mutate }: BreadcrumbsProps) {

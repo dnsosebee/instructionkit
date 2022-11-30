@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 import AppProvider, { useAppContext } from '../../src/components/layout/appProvider'
-import { useSupaAuthed } from '../../src/components/layout/supaProvider'
+import SupaProvider, { AuthState, useSupaAuthed } from '../../src/components/layout/supaProvider'
 import Redirect from '../../src/components/shared/redirect'
-import { genWorkspaceId } from '../../src/model/replicache-spaces/workspace-[id]/mutators'
+import { genWorkspaceId } from '../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
 
 export default () => {
   return (
-    <AppProvider workspaceId={null} selectedPage={null}>
-      <CreateWorkspace />
-    </AppProvider>
+    <SupaProvider intendedAuthState={AuthState.SignedIn}>
+      <AppProvider workspaceId={null} selectedPage={null}>
+        <CreateWorkspace />
+      </AppProvider>
+    </SupaProvider>
   )
 }
 
@@ -29,6 +31,11 @@ export const CreateWorkspace = () => {
         },
         userId: user.id,
       })
+
+      // see whether successful
+      fetch(`/api/replicache/create-workspace?workspaceId=${newWorkspaceId}`).then(res =>
+        res.json(),
+      )
 
       setResolvedNewWorkspaceId(newWorkspaceId)
     }

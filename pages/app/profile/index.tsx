@@ -1,9 +1,9 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import Navbar from '../../src/components/layout/appNav'
-import Loading from '../../src/components/shared/loading'
-import { Database } from '../../src/lib/database.types'
+import Navbar from '../../../src/components/layout/appNav'
+import Loading from '../../../src/components/shared/loading'
+import { Database } from '../../../src/lib/database.types'
 import { UpdatePassword } from './update-password'
 type Profiles = Database['public']['Tables']['profiles']['Row']
 

@@ -25,7 +25,7 @@ export default () => {
 
     const registered = data.registered
     if (registered) {
-      window.location.href = '/profile'
+      window.location.href = '/app/profile'
     }
   }
 
@@ -49,7 +49,7 @@ export default () => {
       console.log(error)
       return
     }
-    window.location.href = '/profile'
+    window.location.href = '/app'
   }
 
   useEffect(() => {

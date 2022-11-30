@@ -1,22 +1,22 @@
 import { PlusCircleIcon, PlusIcon } from '@heroicons/react/20/solid'
-import { logger } from '@supabase/auth-helpers-nextjs'
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
+import { logger } from '../../logger'
 import { RepWorkspace } from '../../model/replicache-spaces/app/types/workspace'
-import { listFloems, STARTER_FLOEM } from '../../model/replicache-spaces/workspace-[id]/floem'
-import { genFloemId } from '../../model/replicache-spaces/workspace-[id]/ids'
-import { Rep } from '../../model/replicache-spaces/workspace-[id]/mutators'
+import { listFloems, STARTER_FLOEM } from '../../model/replicache-spaces/ws-[id]/floem'
+import { genFloemId } from '../../model/replicache-spaces/ws-[id]/ids'
+import { WorkspaceRep } from '../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import { spaceRelativeUrl } from '../floem/floem'
 import { useAppContext } from '../layout/appProvider'
 import Redirect from '../shared/redirect'
 import { FloemCard } from './floemCard'
 
-export const Dashboard = ({ rep }: { rep: Rep }) => {
+export const Dashboard = ({ rep }: { rep: WorkspaceRep }) => {
   let workspace: RepWorkspace | null = null
   try {
     workspace = useAppContext().workspace
   } catch (e) {
-    logger.log('Dashboard: no workspace context')
+    logger.debug('Dashboard: no workspace context')
   }
   const floems = useSubscribe(rep, listFloems, [], [rep])
 

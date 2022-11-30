@@ -47,6 +47,31 @@ export default ({
   const [auth, setAuth] = useState<Auth>({
     state: AuthState.Loading,
   })
+
+  async function handleAuthChange(event: string, session: Session | null) {
+    await fetch('/api/auth', {
+      method: 'POST',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+      body: JSON.stringify({ event, session }),
+    })
+  }
+
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
+      handleAuthChange(event, session)
+      if (event === 'SIGNED_IN' && session) {
+        setAuth({ state: AuthState.SignedIn, session })
+      } else if (event === 'SIGNED_OUT') {
+        setAuth({ state: AuthState.SignedOut })
+      }
+    })
+    return () => {
+      authListener?.subscription.unsubscribe()
+    }
+  })
+
+  // maybe unnecessary due to the above "onAuthStateChange" listener
   useEffect(() => {
     async function checkSession() {
       if (supabase) {
@@ -62,6 +87,7 @@ export default ({
     }
     checkSession()
   }, [supabase])
+
   if (!supabase || auth.state === AuthState.Loading) {
     return <Loading />
   }
@@ -88,6 +114,7 @@ export default ({
   return <Redirect to='/signin' />
 }
 
+// assumptions for use: user is not signed in
 export const useSupaAnon = () => {
   const supa = React.useContext(supaAnonContext)
   if (!supa) {
@@ -96,6 +123,7 @@ export const useSupaAnon = () => {
   return supa
 }
 
+// assumptions for use: user is signed in
 export const useSupaAuthed = () => {
   const supa = React.useContext(supaAuthedContext)
   if (!supa) {

@@ -4,14 +4,10 @@ import { findParentNodeOfType } from 'prosemirror-utils'
 import { useEffect, useRef } from 'react'
 import { Handle, Position } from 'reactflow'
 import { logger } from '../../../logger'
-import { DataFloem } from '../../../model/replicache-spaces/workspace-[id]/floem'
-import { DataFlow, DEFAULT_FLOWTEXT } from '../../../model/replicache-spaces/workspace-[id]/flow'
-import {
-  CASE_DEFAULT_ID,
-  genDartId,
-  genFlowId,
-} from '../../../model/replicache-spaces/workspace-[id]/ids'
-import { Mutate } from '../../../model/replicache-spaces/workspace-[id]/mutators'
+import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/floem'
+import { DataFlow, DEFAULT_FLOWTEXT } from '../../../model/replicache-spaces/ws-[id]/flow'
+import { CASE_DEFAULT_ID, genDartId, genFlowId } from '../../../model/replicache-spaces/ws-[id]/ids'
+import { WorkspaceMutate } from '../../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import FlowtextExtension from '../../../model/tiptap/flowtextExtension'
 import FlowtextProvider, { View } from '../flowtextProvider'
 import { useFlowchartContext } from './flowchartProvider'
@@ -19,7 +15,7 @@ import { useFlowchartContext } from './flowchartProvider'
 export interface FlowtextEditorProps {
   flow: DataFlow
   floem: DataFloem
-  mutate: Mutate
+  mutate: WorkspaceMutate
   isTop: boolean
   isBottom: boolean
   isStart: boolean

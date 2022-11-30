@@ -4,7 +4,7 @@ import { spaceExists } from 'replicache-nextjs/lib/backend'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { FloemInjector } from '../../../../src/components/floem/floem'
 import Flowchart from '../../../../src/components/floem/flowchart/flowchart'
-import { floemMutators } from '../../../../src/model/replicache-spaces/workspace-[id]/mutators'
+import { workspaceMutators } from '../../../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const { params } = context
@@ -32,7 +32,7 @@ export const getServerSideProps: GetServerSideProps = async context => {
 }
 
 const PageChart = ({ spaceId, floemId }: { spaceId: string; floemId: string }) => {
-  const rep = useReplicache({ name: spaceId, mutators: floemMutators })
+  const rep = useReplicache({ name: spaceId, mutators: workspaceMutators })
   if (!rep) {
     return null
   }

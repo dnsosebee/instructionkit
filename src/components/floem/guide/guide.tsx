@@ -1,15 +1,15 @@
 import { List, Map } from 'immutable'
 import { useEffect, useState } from 'react'
 import { logger } from '../../../logger'
-import { DataFloem } from '../../../model/replicache-spaces/workspace-[id]/floem'
-import { DataFlow } from '../../../model/replicache-spaces/workspace-[id]/flow'
-import { FLOW_START_ID } from '../../../model/replicache-spaces/workspace-[id]/ids'
-import { Mutate } from '../../../model/replicache-spaces/workspace-[id]/mutators'
+import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/floem'
+import { DataFlow } from '../../../model/replicache-spaces/ws-[id]/flow'
+import { FLOW_START_ID } from '../../../model/replicache-spaces/ws-[id]/ids'
+import { WorkspaceMutate } from '../../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import { riverStoneAt as guideStepAt } from './boat'
 import { StoneView as StepView } from './stone'
 
 export interface GuideProps {
-  mutate: Mutate
+  mutate: WorkspaceMutate
   floem: DataFloem
 }
 

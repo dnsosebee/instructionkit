@@ -22,3 +22,6 @@ export const listMemberships = async (tx: ReadTransaction): Promise<RepMembershi
     }
   }) as RepMembership[]
 }
+
+export const genMembershipDBKey = (workspaceId: string, userId: string) =>
+  `${MEMBERSHIP_ID_PREFIX}${workspaceId}/${userId}`

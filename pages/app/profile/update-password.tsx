@@ -1,7 +1,7 @@
 // TODO this file not to be used!
 import { SupabaseClient, User, useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import { useEffect, useState } from 'react'
-import Loading from '../../src/components/shared/loading'
+import Loading from '../../../src/components/shared/loading'
 
 const UpdatePasswordPage = () => {
   const [loading, setLoading] = useState(true)

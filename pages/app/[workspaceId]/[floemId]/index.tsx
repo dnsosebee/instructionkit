@@ -1,0 +1,50 @@
+// flowchart / designer page
+import { GetServerSideProps } from 'next'
+import { FloemInjector } from '../../../../src/components/floem/floem'
+import Flowchart from '../../../../src/components/floem/flowchart/flowchart'
+import AppProvider from '../../../../src/components/layout/appProvider'
+import SupaProvider, { AuthState } from '../../../../src/components/layout/supaProvider'
+import Loading from '../../../../src/components/shared/loading'
+import UnableToLoad from '../../../../src/components/shared/unableToLoad'
+import { useWorkspaceRep } from '../../../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
+import {
+  getOrCreateWorkspace,
+  WorkspaceIdIfExists,
+} from '../../../../src/server/getOrCreateWorkspace'
+
+export const getServerSideProps: GetServerSideProps = async context => {
+  const { floemId } = context.query
+  const workspaceProps = await getOrCreateWorkspace(context)
+  if ('redirect' in workspaceProps || 'notFound' in workspaceProps) {
+    return workspaceProps
+  }
+  return {
+    props: {
+      ...workspaceProps.props,
+      floemId,
+    },
+  }
+}
+
+export default ({ workspaceId, floemId }: WorkspaceIdIfExists & { floemId: string }) => {
+  if (!workspaceId) {
+    return <UnableToLoad reason='Workspace not found' />
+  }
+
+  return <FlowchartPage {...{ workspaceId, floemId }} />
+}
+
+const FlowchartPage = ({ workspaceId, floemId }: { workspaceId: string; floemId: string }) => {
+  const workspaceRep = useWorkspaceRep(workspaceId)
+  if (!workspaceRep) {
+    return <Loading />
+  }
+
+  return (
+    <SupaProvider intendedAuthState={AuthState.SignedIn}>
+      <AppProvider workspaceId={workspaceId} selectedPage={null}>
+        <FloemInjector rep={workspaceRep} id={floemId} view={Flowchart} />
+      </AppProvider>
+    </SupaProvider>
+  )
+}

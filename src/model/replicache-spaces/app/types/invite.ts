@@ -24,3 +24,6 @@ export const listInvites = async (tx: ReadTransaction): Promise<RepInvite[]> => 
 }
 
 export type AcceptInvite = { invite: RepInvite; userId: string }
+
+export const genInviteDBKey = (workspaceId: string, email: string) =>
+  `${INVITE_ID_PREFIX}${workspaceId}/${email}`

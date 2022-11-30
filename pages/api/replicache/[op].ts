@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { handleRequest } from 'replicache-nextjs/lib/backend'
 import { appMutators, APP_SPACE_ID } from '../../../src/model/replicache-spaces/app/appMutators'
-import { floemMutators } from '../../../src/model/replicache-spaces/workspace-[id]/mutators'
+import { workspaceMutators } from '../../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
 
 // Next.js runs this function server-side when /api/replicache/[anything].ts is
 // requested.
@@ -20,6 +20,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (spaceID === APP_SPACE_ID) {
     await handleRequest(req, res, appMutators)
   } else {
-    await handleRequest(req, res, floemMutators)
+    await handleRequest(req, res, workspaceMutators)
   }
 }

@@ -1,13 +1,14 @@
+import { User } from '@supabase/auth-helpers-nextjs'
 import { createContext, useContext } from 'react'
 import { useSubscribe } from 'replicache-react'
-import { AppRep, useAppReplicache } from '../../model/replicache-spaces/app/appMutators'
+import { AppRep as AppRepProvider, useAppRep } from '../../model/replicache-spaces/app/appMutators'
 import { listInvites, RepInvite } from '../../model/replicache-spaces/app/types/invite'
 import { listMemberships } from '../../model/replicache-spaces/app/types/membership'
 import { listWorkspaces, RepWorkspace } from '../../model/replicache-spaces/app/types/workspace'
 import Loading from '../shared/loading'
 import Redirect from '../shared/redirect'
 import { AppPage } from './appLayout'
-import SupaProvider, { AuthState, useSupaAuthed } from './supaProvider'
+import { useSupaAuthed } from './supaProvider'
 
 export type AppContext = {
   workspace: RepWorkspace
@@ -15,7 +16,7 @@ export type AppContext = {
     // accessPolicy: 'owner' | 'member'
     acceptedInvite: boolean
   }
-  appRep: AppRep
+  appRep: AppRepProvider
   userInvites: RepInvite[]
   userWorkspaces: RepWorkspace[]
   userInviteWorkspaces: RepWorkspace[]
@@ -25,21 +26,32 @@ export type AppContext = {
 
 const appContext = createContext<AppContext | null>(null)
 
-export default ({
-  workspaceId,
-  selectedPage = null,
-  children,
-}: {
+export default (props: {
   workspaceId: string | null
   selectedPage: AppPage | null
   children: React.ReactNode
 }) => {
   const { user } = useSupaAuthed()
-  const appRep = useAppReplicache()
+  const appRep = useAppRep()
   if (!appRep) {
     return <Loading />
   }
+  return <AppProvider {...{ ...props, appRep, user }} />
+}
 
+const AppProvider = ({
+  workspaceId,
+  selectedPage = null,
+  children,
+  appRep,
+  user,
+}: {
+  workspaceId: string | null
+  selectedPage: AppPage | null
+  children: React.ReactNode
+  appRep: AppRepProvider
+  user: User
+}) => {
   const memberships = useSubscribe(appRep, listMemberships, null, [appRep])
   const invites = useSubscribe(appRep, listInvites, null, [appRep])
   const workspaces = useSubscribe(appRep, listWorkspaces, null, [appRep])
@@ -91,25 +103,24 @@ export default ({
   }
 
   return (
-    <SupaProvider intendedAuthState={AuthState.SignedIn}>
-      <appContext.Provider
-        value={{
-          workspace,
-          memberStatus,
-          appRep,
-          userInvites,
-          isSelectedWorkspace,
-          userWorkspacesAndInviteWorkspaces,
-          userWorkspaces,
-          userInviteWorkspaces,
-        }}
-      >
-        {children}
-      </appContext.Provider>
-    </SupaProvider>
+    <appContext.Provider
+      value={{
+        workspace,
+        memberStatus,
+        appRep,
+        userInvites,
+        isSelectedWorkspace,
+        userWorkspacesAndInviteWorkspaces,
+        userWorkspaces,
+        userInviteWorkspaces,
+      }}
+    >
+      {children}
+    </appContext.Provider>
   )
 }
 
+// assumptions for use: useSupaAuthed + user is member or invitee of the workspace (or is owner)
 export const useAppContext = () => {
   const context = useContext(appContext)
   if (context === null) {

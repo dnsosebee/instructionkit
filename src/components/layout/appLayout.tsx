@@ -9,7 +9,7 @@ import { logger as parentLogger } from '../../logger'
 import { Icon } from '../shared/icons'
 import Logo from '../shared/logo'
 import AppProvider, { useAppContext } from './appProvider'
-import { useSupaAuthed } from './supaProvider'
+import SupaProvider, { AuthState, useSupaAuthed } from './supaProvider'
 
 const logger = parentLogger.child({ component: 'AppLayout' })
 
@@ -29,9 +29,11 @@ export default ({
   selectedPage: AppPage
 }) => {
   return (
-    <AppProvider {...{ workspaceId, selectedPage }}>
-      <AppLayout {...{ selectedPage }}>{children}</AppLayout>
-    </AppProvider>
+    <SupaProvider intendedAuthState={AuthState.SignedIn}>
+      <AppProvider {...{ workspaceId, selectedPage }}>
+        <AppLayout {...{ selectedPage }}>{children}</AppLayout>
+      </AppProvider>
+    </SupaProvider>
   )
 }
 
@@ -198,7 +200,7 @@ const AppLayout = ({
                         <Menu.Item>
                           {({ active }) => (
                             <Link
-                              href='/profile'
+                              href='/app/profile'
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700 w-full',
@@ -330,7 +332,7 @@ const AppLayout = ({
                       </div>
                       <div className='max-w-8xl mx-auto mt-3 space-y-1 px-2 sm:px-4'>
                         <Link
-                          href={'/profile'}
+                          href={'/app/profile'}
                           className='block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-50'
                         >
                           Your Profile

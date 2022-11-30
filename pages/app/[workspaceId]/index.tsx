@@ -1,23 +1,17 @@
 import { GetServerSideProps } from 'next'
-import { createSpace, spaceExists } from 'replicache-nextjs/lib/backend'
-import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { Dashboard } from '../../../src/components/dashboard/dashboard'
 import AppLayout, { AppPage } from '../../../src/components/layout/appLayout'
-import { floemMutators } from '../../../src/model/replicache-spaces/workspace-[id]/mutators'
+import Loading from '../../../src/components/shared/loading'
+import UnableToLoad from '../../../src/components/shared/unableToLoad'
+import { useWorkspaceRep } from '../../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
+import { getOrCreateWorkspace, WorkspaceIdIfExists } from '../../../src/server/getOrCreateWorkspace'
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const workspaceId = params?.workspaceId as string
-  if (!(await spaceExists(workspaceId))) {
-    await createSpace(workspaceId)
-  }
-  return {
-    props: {
-      workspaceId,
-    },
-  }
-}
+export const getServerSideProps: GetServerSideProps = getOrCreateWorkspace
 
-export default ({ workspaceId }: { workspaceId: string }) => {
+export default ({ workspaceId }: WorkspaceIdIfExists) => {
+  if (!workspaceId) {
+    return <UnableToLoad reason='Workspace not found' />
+  }
   return (
     <AppLayout workspaceId={workspaceId} selectedPage={AppPage.Projects}>
       <Dash workspaceId={workspaceId} />
@@ -26,11 +20,9 @@ export default ({ workspaceId }: { workspaceId: string }) => {
 }
 
 const Dash = ({ workspaceId }: { workspaceId: string }) => {
-  const rep = useReplicache({ name: workspaceId, mutators: floemMutators })
-
-  if (!rep) {
-    return null
+  const workspaceRep = useWorkspaceRep(workspaceId)
+  if (!workspaceRep) {
+    return <Loading />
   }
-
-  return <Dashboard rep={rep} />
+  return <Dashboard rep={workspaceRep} />
 }
