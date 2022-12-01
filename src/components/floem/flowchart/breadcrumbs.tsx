@@ -1,7 +1,10 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
+import { logger } from '../../../logger'
+import { RepWorkspace } from '../../../model/replicache-spaces/app/types/workspace'
 import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/floem'
 import { WorkspaceMutate } from '../../../model/replicache-spaces/ws-[id]/workspaceMutators'
+import { useAppContext } from '../../layout/appProvider'
 import { TitleEditor } from './titleEditor'
 
 export interface BreadcrumbsProps {
@@ -10,12 +13,22 @@ export interface BreadcrumbsProps {
 }
 
 export default function Breadcrumbs({ floem, mutate }: BreadcrumbsProps) {
+  let workspace: RepWorkspace | null = null
+  try {
+    workspace = useAppContext().workspace
+  } catch (e) {
+    logger.debug('Breaedcrumbs: no workspace context')
+  }
+
   return (
     <nav className='flex p-2 rounded-br-lg bg-white shadow' aria-label='Breadcrumb'>
       <ol role='list' className='flex items-center space-x-4'>
         <li>
           <div>
-            <Link href={mutate.spaceRelativeUrl('')} className='text-gray-400 hover:text-gray-500'>
+            <Link
+              href={workspace ? `/app/${workspace.id}` : mutate.spaceRelativeUrl('')}
+              className='text-gray-400 hover:text-gray-500'
+            >
               {/* an icon with /favicon.svg */}
               <motion.img
                 src='/dark.svg'

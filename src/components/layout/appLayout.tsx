@@ -140,7 +140,7 @@ const AppLayout = ({
             <div className='ml-10 flex flex-shrink-0 items-center space-x-10 pr-4'>
               <nav aria-label='Global' className='flex space-x-10'>
                 <Link
-                  href='/app'
+                  href={`/app/${selectedWorkspace.id}`}
                   className={classNames(
                     selectedPage === AppPage.Projects
                       ? 'bg-indigo-800 text-white'

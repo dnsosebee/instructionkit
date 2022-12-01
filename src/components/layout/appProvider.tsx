@@ -95,6 +95,8 @@ const AppProvider = ({
     )
     return <Redirect to={`/app/${userWorkspacesAndInviteWorkspaces[0].id}`} />
   }
+
+  // redirections for invites
   let acceptedInvite = true
   if (userInviteWorkspaces.some(w => w.id === workspaceId)) {
     acceptedInvite = false
@@ -107,6 +109,14 @@ const AppProvider = ({
   } else if (selectedPage === AppPage.AcceptInvite) {
     logger.debug('user has accepted invite and is on the accept-invite page, redirect to workspace')
     return <Redirect to={`/app/${workspaceId}`} />
+  }
+
+  // redirections for setting workspace name
+  if (workspace.name === '') {
+    if (selectedPage !== AppPage.Settings) {
+      logger.debug('workspace has no name and is not on the settings page, redirect to settings')
+      return <Redirect to={`/app/${workspaceId}/settings`} />
+    }
   }
 
   const isSelectedWorkspace = (workspace: RepWorkspace) => {
