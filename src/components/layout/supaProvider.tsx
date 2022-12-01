@@ -48,29 +48,6 @@ export default ({
     state: AuthState.Loading,
   })
 
-  async function handleAuthChange(event: string, session: Session | null) {
-    await fetch('/api/auth', {
-      method: 'POST',
-      headers: new Headers({ 'Content-Type': 'application/json' }),
-      credentials: 'same-origin',
-      body: JSON.stringify({ event, session }),
-    })
-  }
-
-  useEffect(() => {
-    const { data: authListener } = supabase.auth.onAuthStateChange(async (event, session) => {
-      handleAuthChange(event, session)
-      if (event === 'SIGNED_IN' && session) {
-        setAuth({ state: AuthState.SignedIn, session })
-      } else if (event === 'SIGNED_OUT') {
-        setAuth({ state: AuthState.SignedOut })
-      }
-    })
-    return () => {
-      authListener?.subscription.unsubscribe()
-    }
-  })
-
   // maybe unnecessary due to the above "onAuthStateChange" listener
   useEffect(() => {
     async function checkSession() {

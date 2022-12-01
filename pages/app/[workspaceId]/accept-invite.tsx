@@ -5,6 +5,7 @@ import AppLayout, { AppPage } from '../../../src/components/layout/appLayout'
 import { useAppContext } from '../../../src/components/layout/appProvider'
 import { useSupaAuthed } from '../../../src/components/layout/supaProvider'
 import { Icon } from '../../../src/components/shared/icons'
+import { redirectTo } from '../../../src/components/shared/redirect'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -38,13 +39,13 @@ const AcceptInvite = () => {
       userId: user.id,
     })
     setOpen(false)
-    window.location.href = `/app/${workspace.id}`
+    redirectTo(`/app/${workspace.id}`)
   }
 
   const handleDecline = () => {
     appRep.mutate.deleteInvite(invite)
     setOpen(false)
-    window.location.href = `/app`
+    redirectTo(`/app`)
   }
 
   return (

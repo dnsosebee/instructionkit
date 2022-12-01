@@ -1,6 +1,7 @@
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import Image from 'next/image'
 import { useEffect } from 'react'
+import { redirectTo } from '../src/components/shared/redirect'
 import { Database } from '../src/lib/database.types'
 
 export default () => {
@@ -25,7 +26,7 @@ export default () => {
 
     const registered = data.registered
     if (registered) {
-      window.location.href = '/app/profile'
+      redirectTo('/app/profile')
     }
   }
 
@@ -49,7 +50,7 @@ export default () => {
       console.log(error)
       return
     }
-    window.location.href = '/app'
+    redirectTo('/app')
   }
 
   useEffect(() => {

@@ -2,7 +2,10 @@ import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { GetServerSideProps } from 'next'
 import { createSpace, spaceExists } from 'replicache-nextjs/lib/backend'
 import { Database } from '../lib/database.types'
-import { genMembershipDBKey } from '../model/replicache-spaces/app/types/membership'
+import { logger as parentLogger } from '../logger'
+import { getMembershipDBKey } from '../model/replicache-spaces/app/types/membership'
+
+const logger = parentLogger.child({ module: 'getOrCreateWorkspaceSpace.ts' })
 
 export const signinRedirect = {
   redirect: {
@@ -16,10 +19,11 @@ export type WorkspaceIdIfExists = {
 }
 
 // only use in routes that specify workspaceId
-export const getOrCreateWorkspace: GetServerSideProps<WorkspaceIdIfExists> = async context => {
+export const getOrCreateWorkspaceSpace: GetServerSideProps<WorkspaceIdIfExists> = async context => {
   const { workspaceId } = context.query as { workspaceId: string }
 
   if (await spaceExists(workspaceId)) {
+    logger.info('space exists')
     return { props: { workspaceId } }
   }
 
@@ -27,27 +31,34 @@ export const getOrCreateWorkspace: GetServerSideProps<WorkspaceIdIfExists> = asy
   const supabase = createServerSupabaseClient<Database>(context)
   const { data, error } = await supabase.auth.getSession()
   if (error || !data || !data.session) {
+    logger.info('getOrCreateWorkspaceSpace: no session')
     return signinRedirect
   }
 
   const userId = data.session.user.id
-  const membershipDBKey = genMembershipDBKey(workspaceId as string, userId)
+  const membershipDBKey = getMembershipDBKey(workspaceId as string, userId)
 
   const { data: membershipData, error: membershipError } = await supabase
+    // get the value of the row in entry table that has key = membershipDBKey
     .from('entry')
     .select('value')
     .eq('key', membershipDBKey)
     .single()
 
   if (membershipError || !membershipData) {
+    if (membershipError) {
+      logger.info(`For membership ${membershipDBKey} got error ${membershipError.message}`)
+    } else {
+      logger.info('getOrCreateWorkspaceSpace: no membership')
+    }
     return {
       props: {
         workspaceId: null,
       },
     }
   }
-
   await createSpace(workspaceId as string)
+  logger.info('getOrCreateWorkspaceSpace: created space', { workspaceId })
   return {
     props: {
       workspaceId,

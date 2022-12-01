@@ -8,6 +8,7 @@ import React, { Fragment, useState } from 'react'
 import { logger as parentLogger } from '../../logger'
 import { Icon } from '../shared/icons'
 import Logo from '../shared/logo'
+import { redirectTo } from '../shared/redirect'
 import AppProvider, { useAppContext } from './appProvider'
 import SupaProvider, { AuthState, useSupaAuthed } from './supaProvider'
 
@@ -57,13 +58,13 @@ const AppLayout = ({
 
   const handleSignOut = async () => {
     await supabase.auth.signOut()
-    window.location.href = '/signin'
+    redirectTo('/signin')
   }
 
   const handlePickerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value
     logger.debug('handlePickerChange', { id })
-    window.location.href = `/app/${id}`
+    redirectTo(`/app/${id}`)
   }
 
   return (

@@ -2,6 +2,7 @@ import { LockClosedIcon } from '@heroicons/react/20/solid'
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import Image from 'next/image'
 import MarketingNav from '../src/components/layout/marketingNav'
+import { redirectTo } from '../src/components/shared/redirect'
 import { logger } from '../src/logger'
 
 const Join = () => {
@@ -26,7 +27,7 @@ const Join = () => {
 
     // if success, redirect to account page
     if (authResponse.data.user) {
-      window.location.href = '/check-email'
+      redirectTo('/check-email')
     }
   }
 

@@ -5,7 +5,7 @@ import {
   WorkspaceRep,
 } from '../../model/replicache-spaces/ws-[id]/workspaceMutators'
 
-export const spaceRelativeUrl = (spaceId: string) => (path: string) => `/space/${spaceId}/${path}`
+export const spaceRelativeUrl = (spaceId: string) => (path: string) => `/space/${spaceId}${path}`
 
 interface FloemInjectorProps {
   rep: WorkspaceRep

@@ -1,22 +1,26 @@
 import { useEffect, useState } from 'react'
-import AppProvider, { useAppContext } from '../../src/components/layout/appProvider'
 import SupaProvider, { AuthState, useSupaAuthed } from '../../src/components/layout/supaProvider'
+import Loading from '../../src/components/shared/loading'
 import Redirect from '../../src/components/shared/redirect'
+import { logger } from '../../src/logger'
+import { AppRep, useAppRep } from '../../src/model/replicache-spaces/app/appMutators'
 import { genWorkspaceId } from '../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
 
 export default () => {
+  const appRep = useAppRep()
+  if (!appRep) {
+    return <Loading />
+  }
   return (
     <SupaProvider intendedAuthState={AuthState.SignedIn}>
-      <AppProvider workspaceId={null} selectedPage={null}>
-        <CreateWorkspace />
-      </AppProvider>
+      <CreateWorkspace {...{ appRep }} />
     </SupaProvider>
   )
 }
 
-export const CreateWorkspace = () => {
+export const CreateWorkspace = ({ appRep }: { appRep: AppRep }) => {
+  logger.debug('CreateWorkspace')
   const { user } = useSupaAuthed()
-  const { appRep } = useAppContext()
   const [resolvedNewWorkspaceId, setResolvedNewWorkspaceId] = useState<string | null>(null)
   useEffect(() => {
     const create = async () => {
@@ -31,17 +35,16 @@ export const CreateWorkspace = () => {
         },
         userId: user.id,
       })
-
-      // see whether successful
-      fetch(`/api/replicache/create-workspace?workspaceId=${newWorkspaceId}`).then(res =>
-        res.json(),
-      )
+      alert('Created workspace ' + newWorkspaceId)
 
       setResolvedNewWorkspaceId(newWorkspaceId)
     }
     create()
-  }, [appRep, user.id])
+  }, [])
 
-  // redirect to the new workspace
+  if (!resolvedNewWorkspaceId) {
+    return <Loading />
+  }
+
   return <Redirect to={`/app/${resolvedNewWorkspaceId}/settings`} />
 }

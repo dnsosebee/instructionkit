@@ -4,9 +4,12 @@ import AppLayout, { AppPage } from '../../../src/components/layout/appLayout'
 import Loading from '../../../src/components/shared/loading'
 import UnableToLoad from '../../../src/components/shared/unableToLoad'
 import { useWorkspaceRep } from '../../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
-import { getOrCreateWorkspace, WorkspaceIdIfExists } from '../../../src/server/getOrCreateWorkspace'
+import {
+  getOrCreateWorkspaceSpace,
+  WorkspaceIdIfExists,
+} from '../../../src/server/getOrCreateWorkspaceSpace'
 
-export const getServerSideProps: GetServerSideProps = getOrCreateWorkspace
+export const getServerSideProps: GetServerSideProps = getOrCreateWorkspaceSpace
 
 export default ({ workspaceId }: WorkspaceIdIfExists) => {
   if (!workspaceId) {

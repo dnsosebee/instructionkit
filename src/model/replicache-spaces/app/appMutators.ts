@@ -1,9 +1,9 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { logger as parentLogger } from '../../../logger'
-import { AcceptInvite, genInviteDBKey, inviteSchema, RepInvite } from './types/invite'
+import { AcceptInvite, getInviteDBKey, inviteSchema, RepInvite } from './types/invite'
 import {
-  genMembershipDBKey,
+  getMembershipDBKey,
   membershipSchema,
   MEMBERSHIP_ID_PREFIX,
   RepMembership,
@@ -21,17 +21,17 @@ const inviteMutators = {
   async createOrUpdateInvite(tx: WriteTransaction, invite: RepInvite) {
     logger.info('createOrUpdateInvite', invite)
     inviteSchema.parse(invite)
-    await tx.put(genInviteDBKey(invite.workspaceId, invite.email), invite.accessPolicy)
+    await tx.put(getInviteDBKey(invite.workspaceId, invite.email), invite.accessPolicy)
   },
   async deleteInvite(tx: WriteTransaction, invite: RepInvite) {
     logger.info('deleteInvite', invite)
-    await tx.del(genInviteDBKey(invite.workspaceId, invite.email))
+    await tx.del(getInviteDBKey(invite.workspaceId, invite.email))
   },
   async acceptInvite(tx: WriteTransaction, acceptInvite: AcceptInvite) {
     logger.info('acceptInvite', acceptInvite)
     const { invite, userId } = acceptInvite
-    await tx.del(genInviteDBKey(invite.workspaceId, invite.email))
-    await tx.put(genMembershipDBKey(invite.workspaceId, userId), invite.accessPolicy)
+    await tx.del(getInviteDBKey(invite.workspaceId, invite.email))
+    await tx.put(getMembershipDBKey(invite.workspaceId, userId), invite.accessPolicy)
   },
 }
 
@@ -47,7 +47,7 @@ const membershipMutators = {
   // },
   async deleteMembership(tx: WriteTransaction, membership: RepMembership) {
     logger.info('deleteMembership', membership)
-    await tx.del(genMembershipDBKey(membership.workspaceId, membership.userId))
+    await tx.del(getMembershipDBKey(membership.workspaceId, membership.userId))
   },
 }
 

@@ -8,13 +8,13 @@ import Loading from '../../../../src/components/shared/loading'
 import UnableToLoad from '../../../../src/components/shared/unableToLoad'
 import { useWorkspaceRep } from '../../../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
 import {
-  getOrCreateWorkspace,
+  getOrCreateWorkspaceSpace,
   WorkspaceIdIfExists,
-} from '../../../../src/server/getOrCreateWorkspace'
+} from '../../../../src/server/getOrCreateWorkspaceSpace'
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const { floemId } = context.query
-  const workspaceProps = await getOrCreateWorkspace(context)
+  const workspaceProps = await getOrCreateWorkspaceSpace(context)
   if ('redirect' in workspaceProps || 'notFound' in workspaceProps) {
     return workspaceProps
   }
