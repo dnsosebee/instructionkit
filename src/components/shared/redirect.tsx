@@ -1,8 +1,13 @@
 import { logger as parentLogger } from '../../logger'
+import Loading from './loading'
 
 const logger = parentLogger.child({ component: 'redirect' })
 
-export default ({ to, dueToUnallowed = true }: { to: string; dueToUnallowed?: boolean }) => {
+// if doneSyncing is not defined, assume we don't care to sync before triggering a redirect.
+export default ({ to, doneSyncing = true }: { to: string; doneSyncing?: boolean }) => {
+  if (!doneSyncing) {
+    return <Loading />
+  }
   redirectTo(to)
   return null
 }
