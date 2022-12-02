@@ -91,10 +91,10 @@ const AppProvider = ({
   const workspace = userWorkspacesAndInviteWorkspaces.find(w => w.id === workspaceId)
   if (workspace === undefined) {
     logger.debug(
-      `workspace with id ${workspaceId} not found among user's memberships, redirect to first workspace that exists`,
-      userWorkspaces,
+      `workspace with id ${workspaceId} not found among user's memberships, redirect to first workspace that exists (actually, just loading page for now)`,
     )
-    return <Redirect to={`/app/${userWorkspacesAndInviteWorkspaces[0].id}`} />
+    return <Loading />
+    // return <Redirect to={`/app/${userWorkspacesAndInviteWorkspaces[0].id}`} />
   }
 
   // redirections for invites
