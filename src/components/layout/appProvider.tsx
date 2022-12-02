@@ -83,7 +83,7 @@ const AppProvider = ({
   if (!userWorkspaces.length) {
     if (!userInviteWorkspaces.length) {
       logger.debug('user has no memberships and no invites, redirect to create workspace')
-      return <Redirect to='/app/create-workspace' />
+      return <Redirect to='/app/create-workspace' doneSyncing={doneSyncing} />
     } else {
       if (!workspaceId) {
         logger.debug(

@@ -1,6 +1,7 @@
 import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
 import { GetServerSideProps } from 'next'
+import Link from 'next/link'
 import AppLayout, { AppPage } from '../../../src/components/layout/appLayout'
 import { useAppContext } from '../../../src/components/layout/appProvider'
 import { ICONS } from '../../../src/components/shared/icons'
@@ -61,7 +62,7 @@ const Settings = () => {
 
         <div>
           <label htmlFor='workspace-name' className='block text-sm font-medium text-gray-100'>
-            Name
+            Workspace Name
           </label>
           <div className='mt-1'>
             <input
@@ -172,6 +173,17 @@ const Settings = () => {
               ))}
             </div>
           </RadioGroup>
+        </div>
+
+        <div>
+          {/* done button */}
+          <Link
+            type='button'
+            className='inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+            href={`/app/${workspace.id}`}
+          >
+            Done
+          </Link>
         </div>
       </div>
     </div>
