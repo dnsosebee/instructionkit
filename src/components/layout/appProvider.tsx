@@ -92,6 +92,7 @@ const AppProvider = ({
   if (workspace === undefined) {
     logger.debug(
       `workspace with id ${workspaceId} not found among user's memberships, redirect to first workspace that exists`,
+      userWorkspaces,
     )
     return <Redirect to={`/app/${userWorkspacesAndInviteWorkspaces[0].id}`} />
   }
