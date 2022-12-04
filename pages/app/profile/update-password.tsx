@@ -1,7 +1,8 @@
 // TODO this file not to be used!
 import { SupabaseClient, User, useSupabaseClient, useUser } from '@supabase/auth-helpers-react'
 import { useEffect, useState } from 'react'
-import Loading from '../../src/components/shared/loading'
+import Loading from '../../../src/components/shared/loading'
+import { redirectTo } from '../../../src/components/shared/redirect'
 
 const UpdatePasswordPage = () => {
   const [loading, setLoading] = useState(true)
@@ -45,7 +46,7 @@ export const UpdatePassword = ({ user, supabase, setLoading }: UpdatePasswordPro
       })
       if (error) throw error
       alert('Password updated!')
-      window.location.href = '/settings'
+      redirectTo('/settings')
     } catch (error) {
       alert('Error updating the password!')
       console.log(error)

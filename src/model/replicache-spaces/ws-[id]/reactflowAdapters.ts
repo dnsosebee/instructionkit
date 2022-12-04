@@ -1,14 +1,14 @@
-import { FlowchartEdge } from '../../components/floem/flowchart/flowchartDart'
-import { FlowchartNode } from '../../components/floem/flowchart/flowchartFlow'
+import { FlowchartEdge } from '../../../components/floem/flowchart/flowchartDart'
+import { FlowchartNode } from '../../../components/floem/flowchart/flowchartFlow'
 import { DataDart } from './dart'
 import { DataFloem } from './floem'
 import { DataFlow } from './flow'
-import { Mutate } from './mutators'
+import { WorkspaceMutate } from './workspaceMutators'
 
 // adapters from Floem to React Flow nodes and edges
 
 export const toFlowchartNodes = (
-  mutate: Mutate,
+  mutate: WorkspaceMutate,
   floem: DataFloem,
   selections: boolean[],
 ): FlowchartNode[] => {
@@ -28,7 +28,7 @@ export const toFlowchartNodes = (
 }
 
 export const toFlowchartEdges = (
-  mutate: Mutate,
+  mutate: WorkspaceMutate,
   floem: DataFloem,
   selections: boolean[],
 ): FlowchartEdge[] => {

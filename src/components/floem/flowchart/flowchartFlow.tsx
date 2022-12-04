@@ -1,12 +1,12 @@
 import { Node, NodeProps } from 'reactflow'
-import { DataFloem } from '../../../model/core/floem'
-import { DataFlow } from '../../../model/core/flow'
-import { FLOW_START_ID } from '../../../model/core/ids'
-import { Mutate } from '../../../model/core/mutators'
+import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/floem'
+import { DataFlow } from '../../../model/replicache-spaces/ws-[id]/flow'
+import { FLOW_START_ID } from '../../../model/replicache-spaces/ws-[id]/ids'
+import { WorkspaceMutate } from '../../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import { FlowtextEditor } from './flowtextEditor'
 
 type Data = {
-  mutate: Mutate
+  mutate: WorkspaceMutate
   flow: DataFlow
   floem: DataFloem
 }

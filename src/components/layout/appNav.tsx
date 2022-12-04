@@ -4,6 +4,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Fragment } from 'react'
+import { redirectTo } from '../shared/redirect'
 
 const navigation = [{ name: 'Home', href: '#', current: false }]
 
@@ -16,7 +17,7 @@ export default ({ children }: { children: JSX.Element }) => {
 
   const handleSignOut = async () => {
     await supabaseClient.auth.signOut()
-    window.location.href = '/signin'
+    redirectTo('/signin')
   }
   return (
     <div>

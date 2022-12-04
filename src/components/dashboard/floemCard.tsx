@@ -1,14 +1,23 @@
 import Link from 'next/link'
-import { DataFloem } from '../../model/core/floem'
-import { Mutate } from '../../model/core/mutators'
+import { logger } from '../../logger'
+import { RepWorkspace } from '../../model/replicache-spaces/app/types/workspace'
+import { DataFloem } from '../../model/replicache-spaces/ws-[id]/floem'
+import { WorkspaceMutate } from '../../model/replicache-spaces/ws-[id]/workspaceMutators'
+import { useAppContext } from '../layout/appProvider'
 import ContextMenu from './contextMenu'
 
 export interface FloemCardProps {
   floem: DataFloem
-  mutate: Mutate
+  mutate: WorkspaceMutate
 }
 
 export const FloemCard = ({ floem, mutate }: FloemCardProps) => {
+  let workspace: RepWorkspace | null = null
+  try {
+    workspace = useAppContext().workspace
+  } catch (e) {
+    logger.debug('FloemCard: no workspace context')
+  }
   const date = new Date(floem.createdAt)
   return (
     <div
@@ -19,7 +28,14 @@ export const FloemCard = ({ floem, mutate }: FloemCardProps) => {
             <img className="h-10 w-10 rounded-full" src={floem.imageUrl} alt="" />
           </div> */}
       <div className='min-w-0 flex-1'>
-        <Link href={mutate.spaceRelativeUrl(`/chart/${floem.id}`)} className='focus:outline-none'>
+        <Link
+          href={
+            workspace
+              ? `/app/${workspace.id}/${floem.id}`
+              : mutate.spaceRelativeUrl(`/chart/${floem.id}`)
+          }
+          className='focus:outline-none'
+        >
           <span className='absolute inset-0' aria-hidden='true' />
           <p className='text-sm font-medium text-gray-900'>{floem.title}</p>
           <p className='truncate text-sm text-gray-500'>

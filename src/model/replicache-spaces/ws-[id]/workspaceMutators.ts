@@ -1,23 +1,32 @@
-import {} from 'nanoid'
+import { customAlphabet } from 'nanoid'
 import { Replicache, WriteTransaction } from 'replicache'
-import { logger as parentLogger } from '../../logger'
+import { useReplicache } from 'replicache-nextjs/lib/frontend'
+import { logger as parentLogger } from '../../../logger'
+import { WORKSPACE_ID_PREFIX } from '../app/types/workspace'
 import { DartUpdate, DataDart } from './dart'
 import { DataFloem, floemSchema, FloemUpdate } from './floem'
 import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate } from './flow'
-import { DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './ids'
+import { ALPHABET, DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './ids'
 
 const logger = parentLogger.child({ module: 'mutators' })
 
-export type M = typeof floemMutators
-export type Rep = Replicache<M>
-export type Mutate = Rep['mutate'] & { spaceRelativeUrl: (path: string) => string }
+export const SPACE_WORKSPACE_ID_PREFIX = WORKSPACE_ID_PREFIX
+export const WORKSPACE_UUID_LENGTH = 10
+export const genWorkspaceUuid = customAlphabet(ALPHABET, WORKSPACE_UUID_LENGTH)
+export const genWorkspaceId = () => SPACE_WORKSPACE_ID_PREFIX + genWorkspaceUuid()
+
+export type WorkspaceMutators = typeof workspaceMutators
+export type WorkspaceRep = Replicache<WorkspaceMutators>
+export type WorkspaceMutate = WorkspaceRep['mutate'] & {
+  spaceRelativeUrl: (path: string) => string
+}
 
 const parseOrSkip = <T>(schema: any, data: any, parse = true): T => {
   logger.info(parse ? 'parsing data: ' : 'skipped parsing data: ', data)
   return parse ? schema.parse(data) : data
 }
 
-export const floemMutators = {
+export const workspaceMutators = {
   // Floem
   async createFloem(tx: WriteTransaction, floem: DataFloem) {
     await tx.put(floem.id, parseOrSkip(floemSchema, floem))
@@ -95,4 +104,8 @@ export const floemMutators = {
     const darts = prev.darts.map(d => (d.id === dartUpdate.id ? { ...d, ...dartUpdate } : d))
     await tx.put(dartUpdate.floem, parseOrSkip(floemSchema, { ...prev, darts }))
   },
+}
+
+export const useWorkspaceRep = (id: string) => {
+  return useReplicache<WorkspaceMutators>({ name: id, mutators: workspaceMutators })
 }

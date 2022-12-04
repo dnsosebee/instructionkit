@@ -1,13 +1,16 @@
 import { useSubscribe } from 'replicache-react'
-import { DataFloem, listFloems } from '../../model/core/floem'
-import { Mutate, Rep } from '../../model/core/mutators'
+import { DataFloem, listFloems } from '../../model/replicache-spaces/ws-[id]/floem'
+import {
+  WorkspaceMutate,
+  WorkspaceRep,
+} from '../../model/replicache-spaces/ws-[id]/workspaceMutators'
 
-export const spaceRelativeUrl = (spaceId: string) => (path: string) => `/space/${spaceId}/${path}`
+export const spaceRelativeUrl = (spaceId: string) => (path: string) => `/space/${spaceId}${path}`
 
 interface FloemInjectorProps {
-  rep: Rep
+  rep: WorkspaceRep
   id: string
-  view: React.FC<{ floem: DataFloem; mutate: Mutate }>
+  view: React.FC<{ floem: DataFloem; mutate: WorkspaceMutate }>
 }
 
 export const FloemInjector = ({ rep, id, view: View }: FloemInjectorProps) => {
