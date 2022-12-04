@@ -8,15 +8,21 @@ import AssigneeNode from './assigneeNode'
 import CaseNode from './caseNode'
 import { createImageExtension } from './imageNode'
 import SwitchNode from './switchNode'
+import RowNode from './rowNode'
+import ColumnNode from './columnNode'
 import { uploadBlob } from './uploadBlob'
+import { Gapcursor } from '@tiptap/extension-gapcursor'
 
 const FlowtextExtension = Extension.create({
   addExtensions() {
     return [
       StarterKit.configure({ dropcursor: false, codeBlock: false }),
+      Gapcursor,
       CodeBlockLowlight.configure({ lowlight, defaultLanguage: 'javascript' }),
       UniqueID.configure({ types: ['case'], generateID: genCaseId }),
       SwitchNode,
+      RowNode,
+      ColumnNode,
       CaseNode,
       AssigneeNode,
       createImageExtension(uploadBlob),
