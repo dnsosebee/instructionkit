@@ -8,7 +8,7 @@ import { genFloemId } from '../../model/replicache-spaces/ws-[id]/ids'
 import { WorkspaceRep } from '../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import { spaceRelativeUrl } from '../floem/floem'
 import { useAppContext } from '../layout/appProvider'
-import Redirect from '../shared/redirect'
+import { redirectTo } from '../shared/redirect'
 import { FloemCard } from './floemCard'
 
 export const Dashboard = ({ rep }: { rep: WorkspaceRep }) => {
@@ -29,9 +29,9 @@ export const Dashboard = ({ rep }: { rep: WorkspaceRep }) => {
     setCreatingNew(true)
     await rep.mutate.createFloem(STARTER_FLOEM(id))
     if (workspace) {
-      return <Redirect to={`/space/${workspace.id}/chart/${id}`} />
+      redirectTo(`/app/${workspace.id}/${id}`)
     } else {
-      return <Redirect to={`/space/${rep.name}/chart/${id}`} />
+      return redirectTo(`/space/${rep.name}/chart/${id}`)
     }
   }
 

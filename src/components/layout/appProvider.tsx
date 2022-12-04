@@ -1,5 +1,5 @@
 import { User } from '@supabase/auth-helpers-nextjs'
-import { createContext, useContext } from 'react'
+import { createContext, useContext, useState } from 'react'
 import { useSubscribe } from 'replicache-react'
 import { logger } from '../../logger'
 import { AppRep as AppRepProvider, useAppRep } from '../../model/replicache-spaces/app/appMutators'
@@ -53,10 +53,22 @@ const AppProvider = ({
   appRep: AppRepProvider
   user: User
 }) => {
+  const [sync, setSync] = useState({
+    started: false,
+    done: false,
+  })
+  appRep.onSync = v => {
+    if (v && !sync.started) {
+      setSync(sync => ({ ...sync, started: true }))
+    } else if (!v && !sync.done) {
+      setSync(sync => ({ ...sync, done: true }))
+    }
+  }
   const memberships = useSubscribe(appRep, listMemberships, null, [appRep])
   const invites = useSubscribe(appRep, listInvites, null, [appRep])
   const workspaces = useSubscribe(appRep, listWorkspaces, null, [appRep])
 
+  const doneSyncing = sync.started && sync.done
   if (!workspaces || !memberships || !invites) {
     return <Loading />
   }
@@ -71,13 +83,13 @@ const AppProvider = ({
   if (!userWorkspaces.length) {
     if (!userInviteWorkspaces.length) {
       logger.debug('user has no memberships and no invites, redirect to create workspace')
-      return <Redirect to='/app/create-workspace' />
+      return <Redirect to='/app/create-workspace' doneSyncing={doneSyncing} />
     } else {
       if (!workspaceId) {
         logger.debug(
           'user has no memberships and no workspaceId is selected but has invites, redirect to the first invite',
         )
-        return <Redirect to={`/app/${userInviteWorkspaces[0].id}`} />
+        return <Redirect to={`/app/${userInviteWorkspaces[0].id}`} doneSyncing={doneSyncing} />
       }
     }
   } else {
@@ -85,7 +97,7 @@ const AppProvider = ({
       logger.debug(
         'user has memberships and no workspaceId is selected, redirect to the first membership',
       )
-      return <Redirect to={`/app/${userWorkspaces[0].id}`} />
+      return <Redirect to={`/app/${userWorkspaces[0].id}`} doneSyncing={doneSyncing} />
     }
   }
   const workspace = userWorkspacesAndInviteWorkspaces.find(w => w.id === workspaceId)
@@ -93,8 +105,10 @@ const AppProvider = ({
     logger.debug(
       `workspace with id ${workspaceId} not found among user's memberships, redirect to first workspace that exists (actually, just loading page for now)`,
     )
-    return <Loading />
-    // return <Redirect to={`/app/${userWorkspacesAndInviteWorkspaces[0].id}`} />
+    // return <Loading />
+    return (
+      <Redirect to={`/app/${userWorkspacesAndInviteWorkspaces[0].id}`} doneSyncing={doneSyncing} />
+    )
   }
 
   // redirections for invites
@@ -105,18 +119,18 @@ const AppProvider = ({
       logger.debug(
         'user has not accepted invite and is not on the accept-invite page, redirect to accept invite',
       )
-      return <Redirect to={`/app/${workspaceId}/accept-invite`} />
+      return <Redirect to={`/app/${workspaceId}/accept-invite`} doneSyncing={doneSyncing} />
     }
   } else if (selectedPage === AppPage.AcceptInvite) {
     logger.debug('user has accepted invite and is on the accept-invite page, redirect to workspace')
-    return <Redirect to={`/app/${workspaceId}`} />
+    return <Redirect to={`/app/${workspaceId}`} doneSyncing={doneSyncing} />
   }
 
   // redirections for setting workspace name
   if (workspace.name === '') {
     if (selectedPage !== AppPage.Settings) {
       logger.debug('workspace has no name and is not on the settings page, redirect to settings')
-      return <Redirect to={`/app/${workspaceId}/settings`} />
+      return <Redirect to={`/app/${workspaceId}/settings`} doneSyncing={doneSyncing} />
     }
   }
 
