@@ -26,7 +26,7 @@ export default ({ workspaceId }: { workspaceId: string }) => {
 }
 
 const Settings = () => {
-  const { workspace, appRep } = useAppContext()
+  const { workspace, appRep, userMemberships } = useAppContext()
 
   const handleIconChange = (icon: string) => {
     appRep.mutate.updateWorkspace({
@@ -54,8 +54,15 @@ const Settings = () => {
     alert('Invite sent!')
   }
 
+  const handleLeave = () => {
+    if (confirm(`Are you sure you want to leave ${workspace.name}?`)) {
+      appRep.mutate.deleteMembership(userMemberships.find(m => m.workspaceId === workspace.id)!)
+      redirectTo('/app')
+    }
+  }
+
   const handleDelete = () => {
-    if (confirm('Are you sure you want to delete this workspace?')) {
+    if (confirm(`Are you sure you want to delete ${workspace.name}?`)) {
       appRep.mutate.deleteWorkspace(workspace.id)
       redirectTo('/app')
     }
@@ -192,6 +199,18 @@ const Settings = () => {
           >
             Done
           </Link>
+        </div>
+
+        {/* leave workspace button, secondary red */}
+        <div>
+          {/* leave button */}
+          <button
+            type='button'
+            className='inline-flex items-center px-4 py-2 border border-red-600 text-sm font-medium rounded-md shadow-sm text-white bg-transparent hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+            onClick={handleLeave}
+          >
+            Leave Workspace
+          </button>
         </div>
 
         <div>

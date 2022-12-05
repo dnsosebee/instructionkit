@@ -126,7 +126,7 @@ export default ({ children }: { children: JSX.Element }) => {
         </Transition>
       </Popover>
       <motion.div
-        className='w-full flex flex-col'
+        className='w-full h-full flex flex-col'
         animate={{ opacity: 1 }}
         initial={{ opacity: 0 }}
       >

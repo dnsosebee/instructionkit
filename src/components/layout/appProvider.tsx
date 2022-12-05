@@ -4,7 +4,7 @@ import { useSubscribe } from 'replicache-react'
 import { logger } from '../../logger'
 import { AppRep as AppRepProvider, useAppRep } from '../../model/replicache-spaces/app/appMutators'
 import { listInvites, RepInvite } from '../../model/replicache-spaces/app/types/invite'
-import { listMemberships } from '../../model/replicache-spaces/app/types/membership'
+import { listMemberships, RepMembership } from '../../model/replicache-spaces/app/types/membership'
 import { listWorkspaces, RepWorkspace } from '../../model/replicache-spaces/app/types/workspace'
 import Loading from '../shared/loading'
 import Redirect from '../shared/redirect'
@@ -19,6 +19,7 @@ export type AppContext = {
   }
   appRep: AppRepProvider
   userInvites: RepInvite[]
+  userMemberships: RepMembership[]
   userWorkspaces: RepWorkspace[]
   userInviteWorkspaces: RepWorkspace[]
   userWorkspacesAndInviteWorkspaces: RepWorkspace[]
@@ -153,6 +154,7 @@ const AppProvider = ({
         userWorkspacesAndInviteWorkspaces,
         userWorkspaces,
         userInviteWorkspaces,
+        userMemberships,
       }}
     >
       {children}
