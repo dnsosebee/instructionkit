@@ -17,8 +17,8 @@ export const TitleEditor = ({ mutate, classNames, floem }: TitleEditorProps) => 
     extensions: [
       Document.extend({
         addKeyboardShortcuts: () => ({
-          enter: () => {
-            return false
+          Enter: () => {
+            return true
           },
         }),
       }),

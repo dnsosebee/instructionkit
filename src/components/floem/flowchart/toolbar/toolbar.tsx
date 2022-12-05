@@ -1,4 +1,6 @@
 import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon } from '@heroicons/react/20/solid'
+import { DocumentArrowDownIcon } from '@heroicons/react/24/solid'
+import { handleDownloadFloem } from '../../../../model/filesystem/filesystem'
 import { DataFloem } from '../../../../model/replicache-spaces/ws-[id]/floem'
 import { DEFAULT_FLOWTEXT } from '../../../../model/replicache-spaces/ws-[id]/flow'
 import { FLOW_START_ID, genFlowId } from '../../../../model/replicache-spaces/ws-[id]/ids'
@@ -44,16 +46,9 @@ export const Toolbar = ({ mutate, floem, nodeSelections, edgeSelections }: Toolb
         />
         {/* save button */}
         <IconButton
-          Icon={PlayIcon}
-          onClick={() =>
-            mutate.updateFloem({
-              id: floem.id,
-              flows: floem.flows.filter((_, i) => !nodeSelections[i]),
-              darts: floem.darts.filter((_, i) => !edgeSelections[i]),
-            })
-          }
-          title='Delete'
-          disabled={disableDelete}
+          Icon={DocumentArrowDownIcon}
+          onClick={() => handleDownloadFloem(floem)}
+          title='Download'
         />
         <a href={mutate.spaceRelativeUrl(`/river/${floem.id}`)} target='_blank'>
           <IconButton Icon={PlayIcon} onClick={() => null} title='Embark' />

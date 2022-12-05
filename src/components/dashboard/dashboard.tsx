@@ -1,7 +1,10 @@
 import { PlusCircleIcon, PlusIcon } from '@heroicons/react/20/solid'
-import React from 'react'
+import classNames from 'classnames'
+import React, { useCallback } from 'react'
+import { useDropzone } from 'react-dropzone'
 import { useSubscribe } from 'replicache-react'
 import { logger } from '../../logger'
+import { handleUploadFloem } from '../../model/filesystem/filesystem'
 import { RepWorkspace } from '../../model/replicache-spaces/app/types/workspace'
 import { listFloems, STARTER_FLOEM } from '../../model/replicache-spaces/ws-[id]/floem'
 import { genFloemId } from '../../model/replicache-spaces/ws-[id]/ids'
@@ -21,6 +24,19 @@ export const Dashboard = ({ rep }: { rep: WorkspaceRep }) => {
   const floems = useSubscribe(rep, listFloems, [], [rep])
 
   const [creatingNew, setCreatingNew] = React.useState(false)
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length === 0) {
+      return
+    }
+    acceptedFiles.forEach(async file => {
+      const floemId = genFloemId()
+      const floem = await handleUploadFloem(file)
+      mutate.createFloem({ ...floem, id: floemId })
+    })
+  }, [])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, noClick: true })
 
   const relativeUrl = spaceRelativeUrl(rep.name)
 
@@ -46,29 +62,38 @@ export const Dashboard = ({ rep }: { rep: WorkspaceRep }) => {
           </h1>
         </div>
       </header>
-      <div className='pt-6 pb-8'>
-        {creatingNew ? (
-          <p>Creating Floem...</p>
-        ) : floems.length > 0 ? (
-          <div className='mx-auto max-w-7xl sm:px-6 lg:px-8'>
-            <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
-              {floems.map(floem => (
-                <FloemCard key={floem.id} floem={floem} mutate={mutate} />
-              ))}
-              <NewFloemButton onClickNewFloemButton={onClickNewFloemButton} />
+      {creatingNew ? (
+        <p className='pt-6 pb-8'>Creating Floem...</p>
+      ) : (
+        <div
+          {...getRootProps()}
+          className={classNames(
+            isDragActive ? 'rounded-lg border-2 border-dashed border-gray-300' : '',
+            'pt-6 pb-8',
+          )}
+        >
+          <input {...getInputProps()} />
+          {floems.length > 0 ? (
+            <div className='mx-auto max-w-7xl sm:px-6 lg:px-8'>
+              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+                {floems.map(floem => (
+                  <FloemCard key={floem.id} floem={floem} mutate={mutate} />
+                ))}
+                <NewFloemButton onClickNewFloemButton={onClickNewFloemButton} />
+              </div>
             </div>
-          </div>
-        ) : (
-          <div className='text-center'>
-            <PlusCircleIcon className='mx-auto h-12 w-12 text-gray-400' aria-hidden='true' />
-            <h3 className='mt-2 text-sm font-medium text-gray-900'>No floems</h3>
-            <p className='mt-1 text-sm text-gray-500'>Get started by creating a new floem.</p>
-            <div className='mt-6'>
-              <NewFloemButton onClickNewFloemButton={onClickNewFloemButton} />
+          ) : (
+            <div className='text-center'>
+              <PlusCircleIcon className='mx-auto h-12 w-12 text-gray-400' aria-hidden='true' />
+              <h3 className='mt-2 text-sm font-medium text-gray-900'>No floems</h3>
+              <p className='mt-1 text-sm text-gray-500'>Get started by creating a new floem.</p>
+              <div className='mt-6'>
+                <NewFloemButton onClickNewFloemButton={onClickNewFloemButton} />
+              </div>
             </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </>
   )
 }
