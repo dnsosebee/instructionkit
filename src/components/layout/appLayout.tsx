@@ -383,7 +383,7 @@ const AppLayout = ({
                     )}
                     aria-hidden='true'
                   />
-                  <span className='mt-2'>{workspace.name}</span>
+                  <span className='mt-2 text-center'>{workspace.name}</span>
                 </Link>
               ))}
               {userInviteWorkspaces.length ? <div className='border-t border-indigo-700' /> : null}

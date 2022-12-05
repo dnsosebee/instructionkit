@@ -1,8 +1,19 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { logger as parentLogger } from '../../../logger'
-import { AcceptInvite, getInviteDBKey, inviteSchema, RepInvite } from './types/invite'
-import { getMembershipDBKey, membershipSchema, RepMembership } from './types/membership'
+import {
+  AcceptInvite,
+  getInviteDBKey,
+  inviteSchema,
+  INVITE_ID_PREFIX,
+  RepInvite,
+} from './types/invite'
+import {
+  getMembershipDBKey,
+  membershipSchema,
+  MEMBERSHIP_ID_PREFIX,
+  RepMembership,
+} from './types/membership'
 import { RepWorkspace, workspaceSchema, WorkspaceUpdate } from './types/workspace'
 const logger = parentLogger.child({ module: 'model/memberships/mutators' })
 
@@ -32,18 +43,18 @@ const inviteMutators = {
 
 // memberships
 const membershipMutators = {
-  async createOrUpdateMembership(tx: WriteTransaction, membership: RepMembership) {
-    logger.info('createOrUpdateMembership', membership)
-    membershipSchema.parse(membership)
-    const workspace = await tx.get(membership.workspaceId)
-    if (!workspace) {
-      throw new Error(`No workspace with id ${membership.workspaceId}`)
-    }
-    await tx.put(
-      getMembershipDBKey(membership.workspaceId, membership.userId),
-      membership.accessPolicy,
-    )
-  },
+  // async createOrUpdateMembership(tx: WriteTransaction, membership: RepMembership) {
+  //   logger.info('createOrUpdateMembership', membership)
+  //   membershipSchema.parse(membership)
+  //   const workspace = await tx.get(membership.workspaceId)
+  //   if (!workspace) {
+  //     throw new Error(`No workspace with id ${membership.workspaceId}`)
+  //   }
+  //   await tx.put(
+  //     getMembershipDBKey(membership.workspaceId, membership.userId),
+  //     membership.accessPolicy,
+  //   )
+  // },
   async deleteMembership(tx: WriteTransaction, membership: RepMembership) {
     logger.info('deleteMembership', membership)
     await tx.del(getMembershipDBKey(membership.workspaceId, membership.userId))
@@ -52,44 +63,56 @@ const membershipMutators = {
 
 // workspaces
 const workspaceMutators = {
-  async createWorkspace(tx: WriteTransaction, workspace: RepWorkspace) {
-    logger.info('createWorkspace', workspace)
-    workspaceSchema.parse(workspace)
-    const existing = await tx.get(workspace.id)
-    if (existing) {
-      throw new Error(`Workspace with id ${workspace.id} already exists`)
-    }
-    await tx.put(workspace.id, workspace)
-  },
-
-  // async createWorkspaceWithOwner(
-  //   tx: WriteTransaction,
-  //   data: { workspace: RepWorkspace; userId: string },
-  // ) {
-  //   logger.info('createWorkspaceWithOwner', data)
-  //   const { workspace, userId } = data
-  //   const membership = {
-  //     workspaceId: workspace.id,
-  //     userId,
-  //     accessPolicy: 'owner',
-  //   }
+  // async createWorkspace(tx: WriteTransaction, workspace: RepWorkspace) {
+  //   logger.info('createWorkspace', workspace)
   //   workspaceSchema.parse(workspace)
-  //   membershipSchema.parse(membership)
-  //   // ensure workspace doesn't already exist
-  //   const existingWorkspace = await tx.get(workspace.id)
-  //   if (existingWorkspace) {
-  //     throw new Error(`Workspace ${workspace.id} already exists`)
+  //   const existing = await tx.get(workspace.id)
+  //   if (existing) {
+  //     throw new Error(`Workspace with id ${workspace.id} already exists`)
   //   }
-  //   // await all writes
-  //   await Promise.all([
-  //     tx.put(workspace.id, workspace),
-  //     tx.put(getMembershipDBKey(workspace.id, userId), membership.accessPolicy),
-  //   ])
+  //   await tx.put(workspace.id, workspace)
   // },
+
+  async createWorkspaceWithOwner(
+    tx: WriteTransaction,
+    data: { workspace: RepWorkspace; userId: string },
+  ) {
+    logger.info('createWorkspaceWithOwner', data)
+    const { workspace, userId } = data
+    const membership = {
+      workspaceId: workspace.id,
+      userId,
+      accessPolicy: 'owner',
+    }
+    workspaceSchema.parse(workspace)
+    membershipSchema.parse(membership)
+    // ensure workspace doesn't already exist
+    const existingWorkspace = await tx.get(workspace.id)
+    if (existingWorkspace) {
+      throw new Error(`Workspace ${workspace.id} already exists`)
+    }
+    // await all writes
+    await Promise.all([
+      tx.put(workspace.id, workspace),
+      tx.put(getMembershipDBKey(workspace.id, userId), membership.accessPolicy),
+    ])
+  },
 
   async deleteWorkspace(tx: WriteTransaction, workspaceId: string) {
     logger.info('deleteWorkspace', workspaceId)
-    await tx.del(workspaceId)
+    const invites = await tx
+      .scan({ prefix: `${INVITE_ID_PREFIX}${workspaceId}` })
+      .keys()
+      .toArray()
+    const memberships = await tx
+      .scan({ prefix: `${MEMBERSHIP_ID_PREFIX}${workspaceId}` })
+      .keys()
+      .toArray()
+    await Promise.all([
+      tx.del(workspaceId),
+      ...invites.map(invite => tx.del(invite)),
+      ...memberships.map(membership => tx.del(membership)),
+    ])
   },
 
   async updateWorkspace(tx: WriteTransaction, workspaceUpdate: WorkspaceUpdate) {

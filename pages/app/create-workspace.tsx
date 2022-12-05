@@ -27,16 +27,14 @@ export const CreateWorkspace = ({ appRep }: { appRep: AppRep }) => {
   useEffect(() => {
     const create = async () => {
       const newWorkspaceId = genWorkspaceId()
-      await appRep.mutate.createWorkspace({
-        id: newWorkspaceId,
-        name: 'Untitled',
-        icon: 'folder',
-        createdAt: Date.now(),
-      })
-      await appRep.mutate.createOrUpdateMembership({
+      await appRep.mutate.createWorkspaceWithOwner({
+        workspace: {
+          id: newWorkspaceId,
+          name: 'New Workspace',
+          icon: 'folder',
+          createdAt: Date.now(),
+        },
         userId: user.id,
-        workspaceId: newWorkspaceId,
-        accessPolicy: 'owner',
       })
       setResolvedNewWorkspaceId(newWorkspaceId)
     }

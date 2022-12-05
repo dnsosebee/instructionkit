@@ -5,6 +5,7 @@ import Link from 'next/link'
 import AppLayout, { AppPage } from '../../../src/components/layout/appLayout'
 import { useAppContext } from '../../../src/components/layout/appProvider'
 import { ICONS } from '../../../src/components/shared/icons'
+import { redirectTo } from '../../../src/components/shared/redirect'
 
 // get workspaceId from routes
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
@@ -51,6 +52,13 @@ const Settings = () => {
       accessPolicy: 'editor',
     })
     alert('Invite sent!')
+  }
+
+  const handleDelete = () => {
+    if (confirm('Are you sure you want to delete this workspace?')) {
+      appRep.mutate.deleteWorkspace(workspace.id)
+      redirectTo('/app')
+    }
   }
 
   return (
@@ -184,6 +192,17 @@ const Settings = () => {
           >
             Done
           </Link>
+        </div>
+
+        <div>
+          {/* delete button */}
+          <button
+            type='button'
+            className='inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
+            onClick={handleDelete}
+          >
+            Delete Workspace
+          </button>
         </div>
       </div>
     </div>
