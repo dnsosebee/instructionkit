@@ -83,13 +83,13 @@ const AppProvider = ({
   if (!userWorkspaces.length) {
     if (!userInviteWorkspaces.length) {
       logger.debug('user has no memberships and no invites, redirect to create workspace')
-      return <Redirect to='/app/create-workspace' doneSyncing={doneSyncing} />
+      return <Redirect to='/app/create-workspace' butOnlyIf={doneSyncing} />
     } else {
       if (!workspaceId) {
         logger.debug(
           'user has no memberships and no workspaceId is selected but has invites, redirect to the first invite',
         )
-        return <Redirect to={`/app/${userInviteWorkspaces[0].id}`} doneSyncing={doneSyncing} />
+        return <Redirect to={`/app/${userInviteWorkspaces[0].id}`} butOnlyIf={doneSyncing} />
       }
     }
   } else {
@@ -97,7 +97,7 @@ const AppProvider = ({
       logger.debug(
         'user has memberships and no workspaceId is selected, redirect to the first membership',
       )
-      return <Redirect to={`/app/${userWorkspaces[0].id}`} doneSyncing={doneSyncing} />
+      return <Redirect to={`/app/${userWorkspaces[0].id}`} butOnlyIf={doneSyncing} />
     }
   }
   const workspace = userWorkspacesAndInviteWorkspaces.find(w => w.id === workspaceId)
@@ -107,7 +107,7 @@ const AppProvider = ({
     )
     // return <Loading />
     return (
-      <Redirect to={`/app/${userWorkspacesAndInviteWorkspaces[0].id}`} doneSyncing={doneSyncing} />
+      <Redirect to={`/app/${userWorkspacesAndInviteWorkspaces[0].id}`} butOnlyIf={doneSyncing} />
     )
   }
 
@@ -119,18 +119,18 @@ const AppProvider = ({
       logger.debug(
         'user has not accepted invite and is not on the accept-invite page, redirect to accept invite',
       )
-      return <Redirect to={`/app/${workspaceId}/accept-invite`} doneSyncing={doneSyncing} />
+      return <Redirect to={`/app/${workspaceId}/accept-invite`} butOnlyIf={doneSyncing} />
     }
   } else if (selectedPage === AppPage.AcceptInvite) {
     logger.debug('user has accepted invite and is on the accept-invite page, redirect to workspace')
-    return <Redirect to={`/app/${workspaceId}`} doneSyncing={doneSyncing} />
+    return <Redirect to={`/app/${workspaceId}`} butOnlyIf={doneSyncing} />
   }
 
   // redirections for setting workspace name
   if (workspace.name === '') {
     if (selectedPage !== AppPage.Settings) {
       logger.debug('workspace has no name and is not on the settings page, redirect to settings')
-      return <Redirect to={`/app/${workspaceId}/settings`} doneSyncing={doneSyncing} />
+      return <Redirect to={`/app/${workspaceId}/settings`} butOnlyIf={doneSyncing} />
     }
   }
 

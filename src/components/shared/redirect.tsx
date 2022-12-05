@@ -3,9 +3,9 @@ import Loading from './loading'
 
 const logger = parentLogger.child({ component: 'redirect' })
 
-// if doneSyncing is not defined, assume we don't care to sync before triggering a redirect.
-export default ({ to, doneSyncing = true }: { to: string; doneSyncing?: boolean }) => {
-  if (!doneSyncing) {
+// butOnlyIf
+export default ({ to, butOnlyIf = true }: { to: string; butOnlyIf?: boolean }) => {
+  if (!butOnlyIf) {
     return <Loading />
   }
   redirectTo(to)

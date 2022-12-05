@@ -42,6 +42,19 @@ export const Toolbar = ({ mutate, floem, nodeSelections, edgeSelections }: Toolb
           title='Delete'
           disabled={disableDelete}
         />
+        {/* save button */}
+        <IconButton
+          Icon={PlayIcon}
+          onClick={() =>
+            mutate.updateFloem({
+              id: floem.id,
+              flows: floem.flows.filter((_, i) => !nodeSelections[i]),
+              darts: floem.darts.filter((_, i) => !edgeSelections[i]),
+            })
+          }
+          title='Delete'
+          disabled={disableDelete}
+        />
         <a href={mutate.spaceRelativeUrl(`/river/${floem.id}`)} target='_blank'>
           <IconButton Icon={PlayIcon} onClick={() => null} title='Embark' />
         </a>
