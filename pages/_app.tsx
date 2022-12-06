@@ -18,6 +18,7 @@ export default function MyApp({
     <SessionContextProvider supabaseClient={supabase} initialSession={pageProps.session}>
       <Head>
         <title>InstructionKit</title>
+        <link rel='manifest' href='/site.webmanifest' />
       </Head>
       <Component {...pageProps} />
     </SessionContextProvider>
