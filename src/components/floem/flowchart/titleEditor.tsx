@@ -3,7 +3,7 @@ import Paragraph from '@tiptap/extension-paragraph'
 import Text from '@tiptap/extension-text'
 import { EditorContent, useEditor } from '@tiptap/react'
 import { useEffect } from 'react'
-import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/floem'
+import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/keys/floem/floem'
 import { WorkspaceMutate } from '../../../model/replicache-spaces/ws-[id]/workspaceMutators'
 
 interface TitleEditorProps {
@@ -27,7 +27,7 @@ export const TitleEditor = ({ mutate, classNames, floem }: TitleEditorProps) => 
     ],
     content: `${floem.title}`,
     onUpdate: ({ editor }) => {
-      mutate.updateFloem({ id: floem.id, title: editor.getText() })
+      mutate.updateFloem({ id: floem.id, title: editor.getText(), updatedAt: Date.now() })
     },
 
     editorProps: {

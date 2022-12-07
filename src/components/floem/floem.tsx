@@ -1,5 +1,5 @@
 import { useSubscribe } from 'replicache-react'
-import { DataFloem, listFloems } from '../../model/replicache-spaces/ws-[id]/floem'
+import { DataFloem, listFloems } from '../../model/replicache-spaces/ws-[id]/keys/floem/floem'
 import {
   WorkspaceMutate,
   WorkspaceRep,

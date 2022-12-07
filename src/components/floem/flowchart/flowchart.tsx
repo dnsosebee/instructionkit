@@ -7,19 +7,19 @@ import ReactFlow, {
   ReactFlowProvider,
   useReactFlow,
 } from 'reactflow'
-import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/floem'
+import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/keys/floem/floem'
 import {
   toDataDarts,
   toDataFlows,
   toFlowchartEdges,
   toFlowchartNodes,
-} from '../../../model/replicache-spaces/ws-[id]/reactflowAdapters'
+} from '../../../model/replicache-spaces/ws-[id]/keys/floem/reactflowAdapters'
 
 import React from 'react'
 import 'reactflow/dist/style.css'
 import { logger as parentLogger } from '../../../logger'
-import { DEFAULT_FLOWTEXT } from '../../../model/replicache-spaces/ws-[id]/flow'
 import { genDartId, genFlowId } from '../../../model/replicache-spaces/ws-[id]/ids'
+import { DEFAULT_FLOWTEXT } from '../../../model/replicache-spaces/ws-[id]/keys/floem/flow'
 import { WorkspaceMutate } from '../../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import Breadcrumbs from './breadcrumbs'
 import FlowchartDart, { FlowchartEdge } from './flowchartDart'
@@ -56,7 +56,7 @@ const InnerFlowchart = ({ floem, mutate }: FlowchartProps) => {
     changes => {
       const newNodes = applyNodeChanges(changes, nodes)
       const { flows, selections } = toDataFlows(newNodes)
-      mutate.updateFloem({ id: floem.id, flows }) // this might be race condition with below
+      mutate.updateFloem({ id: floem.id, flows, updatedAt: Date.now() }) // this might be race condition with below
       setNodeSelections(selections)
     },
     [floem],
@@ -66,7 +66,7 @@ const InnerFlowchart = ({ floem, mutate }: FlowchartProps) => {
     changes => {
       const newEdges = applyEdgeChanges(changes, edges) as FlowchartEdge[]
       const { darts, selections } = toDataDarts(newEdges)
-      mutate.updateFloem({ id: floem.id, darts })
+      mutate.updateFloem({ id: floem.id, darts, updatedAt: Date.now() })
       setEdgeSelections(selections)
     },
     [floem],

@@ -1,4 +1,4 @@
-import { DataFloem, floemSchema } from '../replicache-spaces/ws-[id]/floem'
+import { DataFloem, floemSchema } from '../replicache-spaces/ws-[id]/keys/floem/floem'
 
 export const handleDownloadFloem = async (floem: DataFloem): Promise<void> => {
   try {

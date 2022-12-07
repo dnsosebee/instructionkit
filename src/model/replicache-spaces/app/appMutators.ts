@@ -7,14 +7,14 @@ import {
   inviteSchema,
   INVITE_ID_PREFIX,
   RepInvite,
-} from './types/invite'
+} from './keys/invite'
 import {
   getMembershipDBKey,
   membershipSchema,
   MEMBERSHIP_ID_PREFIX,
   RepMembership,
-} from './types/membership'
-import { RepWorkspace, workspaceSchema, WorkspaceUpdate } from './types/workspace'
+} from './keys/membership'
+import { RepWorkspace, workspaceSchema, WorkspaceUpdate } from './keys/ws'
 const logger = parentLogger.child({ module: 'model/memberships/mutators' })
 
 export const APP_SPACE_ID = 'app'

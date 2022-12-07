@@ -4,15 +4,18 @@
 
 import { ReadTransaction } from 'replicache'
 import { z } from 'zod'
+import { FLOEM_ID_LENGTH, FLOEM_ID_PREFIX, FLOW_START_ID, genFloemId } from '../../ids'
 import { dartSchema } from './dart'
 import { DEFAULT_FLOWTEXT, flowSchema } from './flow'
-import { FLOEM_ID_LENGTH, FLOEM_ID_PREFIX, FLOW_START_ID, genFloemId } from './ids'
+
+export const floemIdSchema = z.string().startsWith(FLOEM_ID_PREFIX).length(FLOEM_ID_LENGTH)
 
 export const floemSchema = z
   .object({
-    id: z.string().startsWith(FLOEM_ID_PREFIX).length(FLOEM_ID_LENGTH),
+    id: floemIdSchema,
     title: z.string(),
     createdAt: z.number(),
+    updatedAt: z.number(),
     flows: z
       .array(flowSchema)
       .refine(
@@ -30,7 +33,8 @@ export const floemSchema = z
 
 export type DataFloem = z.infer<typeof floemSchema>
 
-export type FloemUpdate = Partial<DataFloem> & Pick<DataFloem, 'id'>
+export type FloemUpdate = Omit<Partial<DataFloem>, 'createdAt'> &
+  Pick<DataFloem, 'id' | 'updatedAt'>
 
 export async function listFloems(tx: ReadTransaction) {
   return (await tx.scan().values().toArray()) as DataFloem[]
@@ -41,6 +45,7 @@ export const STARTER_FLOEM = (id: string = genFloemId()): DataFloem => {
     id,
     title: 'My New Floem',
     createdAt: Date.now(),
+    updatedAt: Date.now(),
     flows: [
       {
         id: FLOW_START_ID,

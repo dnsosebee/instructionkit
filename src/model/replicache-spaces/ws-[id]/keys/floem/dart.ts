@@ -1,11 +1,12 @@
 import { z } from 'zod'
-import { CASE_ID_LENGTH, DART_ID_LENGTH, DART_ID_PREFIX, FLOW_ID_PREFIX } from './ids'
+import { CASE_ID_LENGTH, DART_ID_LENGTH, DART_ID_PREFIX } from '../../ids'
+import { flowIdSchema } from './flow'
 
 export const dartSchema = z.object({
   id: z.string().length(DART_ID_LENGTH).startsWith(DART_ID_PREFIX),
-  from: z.string().startsWith(FLOW_ID_PREFIX),
+  from: flowIdSchema,
   case: z.string().length(CASE_ID_LENGTH),
-  to: z.string().startsWith(FLOW_ID_PREFIX),
+  to: flowIdSchema,
 })
 
 export type DataDart = z.infer<typeof dartSchema>

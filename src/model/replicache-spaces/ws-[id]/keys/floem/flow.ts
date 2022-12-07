@@ -1,8 +1,10 @@
 import { z } from 'zod'
-import { FLOW_ID_LENGTH, FLOW_ID_PREFIX } from './ids'
+import { FLOW_ID_LENGTH, FLOW_ID_PREFIX } from '../../ids'
+
+export const flowIdSchema = z.string().startsWith(FLOW_ID_PREFIX).length(FLOW_ID_LENGTH)
 
 export const flowSchema = z.object({
-  id: z.string().startsWith(FLOW_ID_PREFIX).length(FLOW_ID_LENGTH),
+  id: flowIdSchema,
   flowtext: z.string(),
   createdAt: z.number(),
   position: z.object({

@@ -4,9 +4,12 @@ import { findParentNodeOfType } from 'prosemirror-utils'
 import { useEffect, useRef } from 'react'
 import { Handle, Position } from 'reactflow'
 import { logger } from '../../../logger'
-import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/floem'
-import { DataFlow, DEFAULT_FLOWTEXT } from '../../../model/replicache-spaces/ws-[id]/flow'
 import { CASE_DEFAULT_ID, genDartId, genFlowId } from '../../../model/replicache-spaces/ws-[id]/ids'
+import { DataFloem } from '../../../model/replicache-spaces/ws-[id]/keys/floem/floem'
+import {
+  DataFlow,
+  DEFAULT_FLOWTEXT,
+} from '../../../model/replicache-spaces/ws-[id]/keys/floem/flow'
 import { WorkspaceMutate } from '../../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import FlowtextExtension from '../../../model/tiptap/flowtextExtension'
 import FlowtextProvider, { View } from '../flowtextProvider'

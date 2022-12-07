@@ -2,11 +2,13 @@ import { customAlphabet } from 'nanoid'
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { logger as parentLogger } from '../../../logger'
-import { WORKSPACE_ID_PREFIX } from '../app/types/workspace'
-import { DartUpdate, DataDart } from './dart'
-import { DataFloem, floemSchema, FloemUpdate } from './floem'
-import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate } from './flow'
+import { WORKSPACE_ID_PREFIX } from '../app/keys/ws'
 import { ALPHABET, DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './ids'
+import { deploymentSchema, RepDeployment } from './keys/deployment'
+import { DartUpdate, DataDart } from './keys/floem/dart'
+import { DataFloem, floemSchema, FloemUpdate } from './keys/floem/floem'
+import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate } from './keys/floem/flow'
+import { projectSchema, RepProject } from './keys/project'
 
 const logger = parentLogger.child({ module: 'mutators' })
 
@@ -103,6 +105,217 @@ export const workspaceMutators = {
     }
     const darts = prev.darts.map(d => (d.id === dartUpdate.id ? { ...d, ...dartUpdate } : d))
     await tx.put(dartUpdate.floem, parseOrSkip(floemSchema, { ...prev, darts }))
+  },
+
+  // project
+  async createProject(tx: WriteTransaction, project: RepProject) {
+    await tx.put(project.id, parseOrSkip(projectSchema, project))
+  },
+
+  async createVersion(tx: WriteTransaction, data: { projectId: string; newVersionId: string }) {
+    const { projectId, newVersionId } = data
+    const project = (await tx.get(projectId)) as RepProject
+    if (!project) {
+      throw new Error(`No project with id ${projectId}`)
+    }
+    const { draftId } = project
+    const draft = (await tx.get(draftId)) as DataFloem
+    const newVersion = { ...draft, id: newVersionId }
+    const updatedVersionIds = [...project.versionIds, newVersionId]
+    const updatedProject = { ...project, versionIds: updatedVersionIds }
+    await Promise.all([
+      tx.put(projectId, parseOrSkip(projectSchema, updatedProject)),
+      tx.put(newVersionId, parseOrSkip(floemSchema, newVersion)),
+    ])
+  },
+
+  async resetDraftToVersion(tx: WriteTransaction, data: { projectId: string; versionId: string }) {
+    const { projectId, versionId } = data
+    const project = (await tx.get(projectId)) as RepProject
+    if (!project) {
+      throw new Error(`No project with id ${projectId}`)
+    }
+    const { draftId } = project
+    const draft = (await tx.get(draftId)) as DataFloem
+    const version = (await tx.get(versionId)) as DataFloem
+    if (!version) {
+      throw new Error(`No version with id ${versionId}`)
+    }
+    await tx.put(draftId, parseOrSkip(floemSchema, version))
+  },
+
+  async createAndDeploydeploymentFromDraft(
+    tx: WriteTransaction,
+    data: { projectId: string; newDeploymentId: string; newVersionId: string },
+  ) {
+    const { projectId, newDeploymentId, newVersionId } = data
+    const project = (await tx.get(projectId)) as RepProject
+    if (!project) {
+      throw new Error(`No project with id ${projectId}`)
+    }
+    const existingVersion = (await tx.get(newVersionId)) as DataFloem
+    if (existingVersion) {
+      throw new Error(`Version with id ${newVersionId} already exists`)
+    }
+    const existingDeployment = (await tx.get(newDeploymentId)) as RepDeployment
+    if (existingDeployment) {
+      throw new Error(`Live version with id ${newDeploymentId} already exists`)
+    }
+    const { draftId } = project
+    const draft = (await tx.get(draftId)) as DataFloem
+    const newVersion = { ...draft, id: newVersionId }
+    const updatedVersionIds = [...project.versionIds, newVersionId]
+    const updatedProject = {
+      ...project,
+      versionIds: updatedVersionIds,
+      deploymentId: newDeploymentId,
+    }
+    const newDeployment: RepDeployment = {
+      id: newDeploymentId,
+      createdAt: Date.now(),
+      cachedFloem: newVersion,
+      live: true,
+    }
+    await Promise.all([
+      tx.put(projectId, parseOrSkip(projectSchema, updatedProject)),
+      tx.put(newVersionId, parseOrSkip(floemSchema, newVersion)),
+      tx.put(newDeploymentId, parseOrSkip(deploymentSchema, newDeployment)),
+    ])
+  },
+
+  async createAndDeploydeploymentFromVersion(
+    tx: WriteTransaction,
+    data: { projectId: string; newDeploymentId: string; versionId: string },
+  ) {
+    const { projectId, newDeploymentId, versionId } = data
+    const project = (await tx.get(projectId)) as RepProject
+    if (!project) {
+      throw new Error(`No project with id ${projectId}`)
+    }
+    const existingDeployment = (await tx.get(newDeploymentId)) as RepDeployment
+    if (existingDeployment) {
+      throw new Error(`Live version with id ${newDeploymentId} already exists`)
+    }
+    const version = (await tx.get(versionId)) as DataFloem
+    if (!version) {
+      throw new Error(`No version with id ${versionId}`)
+    }
+    if (!project.versionIds.includes(versionId)) {
+      throw new Error(`Version ${versionId} is not part of project ${projectId}`)
+    }
+    const updatedProject = {
+      ...project,
+      deploymentId: newDeploymentId,
+    }
+    const newDeployment: RepDeployment = {
+      id: newDeploymentId,
+      createdAt: Date.now(),
+      cachedFloem: version,
+      live: true,
+    }
+    await Promise.all([
+      tx.put(projectId, parseOrSkip(projectSchema, updatedProject)),
+      tx.put(newDeploymentId, parseOrSkip(deploymentSchema, newDeployment)),
+    ])
+  },
+
+  async updatedeploymentFromDraft(
+    tx: WriteTransaction,
+    data: { projectId: string; newVersionId: string },
+  ) {
+    const { projectId, newVersionId } = data
+    const project = (await tx.get(projectId)) as RepProject
+    if (!project) {
+      throw new Error(`No project with id ${projectId}`)
+    }
+    const { deploymentId } = project
+    if (!deploymentId) {
+      throw new Error(`No live version for project ${projectId}`)
+    }
+    const deployment = (await tx.get(deploymentId)) as RepDeployment
+
+    const existingVersion = (await tx.get(newVersionId)) as DataFloem
+    if (existingVersion) {
+      throw new Error(`Version with id ${newVersionId} already exists`)
+    }
+    const { draftId } = project
+    const draft = (await tx.get(draftId)) as DataFloem
+    const newVersion = { ...draft, id: newVersionId }
+    const updatedVersionIds = [...project.versionIds, newVersionId]
+    const updatedProject = {
+      ...project,
+      versionIds: updatedVersionIds,
+    }
+    const updatedDeployment = {
+      ...deployment,
+      cachedFloem: newVersion,
+      deployed: true,
+    }
+    await Promise.all([
+      tx.put(projectId, parseOrSkip(projectSchema, updatedProject)),
+      tx.put(newVersionId, parseOrSkip(floemSchema, newVersion)),
+      tx.put(deploymentId, parseOrSkip(deploymentSchema, updatedDeployment)),
+    ])
+  },
+
+  async updatedeploymentFromVersion(
+    tx: WriteTransaction,
+    data: { projectId: string; versionId: string },
+  ) {
+    const { projectId, versionId } = data
+    const project = (await tx.get(projectId)) as RepProject
+    if (!project) {
+      throw new Error(`No project with id ${projectId}`)
+    }
+    const { deploymentId, versionIds } = project
+    if (!deploymentId) {
+      throw new Error(`No live version for project ${projectId}`)
+    }
+    if (!versionIds.includes(versionId)) {
+      throw new Error(`Version ${versionId} is not part of project ${projectId}`)
+    }
+    const deployment = (await tx.get(deploymentId)) as RepDeployment
+    const version = (await tx.get(versionId)) as DataFloem
+    if (!version) {
+      throw new Error(`No version with id ${versionId}`)
+    }
+    const updatedDeployment = {
+      ...deployment,
+      cachedFloem: version,
+      deployed: true,
+    }
+    await tx.put(deploymentId, parseOrSkip(deploymentSchema, updatedDeployment))
+  },
+
+  async undeploydeployment(tx: WriteTransaction, projectId: string) {
+    const project = (await tx.get(projectId)) as RepProject
+    if (!project) {
+      throw new Error(`No project with id ${projectId}`)
+    }
+    const { deploymentId } = project
+    if (!deploymentId) {
+      throw new Error(`No live version for project ${projectId}`)
+    }
+    const deployment = (await tx.get(deploymentId)) as RepDeployment
+    const updatedDeployment = {
+      ...deployment,
+      deployed: false,
+    }
+    await tx.put(deploymentId, parseOrSkip(deploymentSchema, updatedDeployment))
+  },
+
+  async deleteProject(tx: WriteTransaction, id: string) {
+    const project = (await tx.get(id)) as RepProject
+    if (!project) {
+      throw new Error(`No project with id ${id}`)
+    }
+    const { draftId, deploymentId, versionIds } = project
+    await Promise.all([
+      tx.del(id),
+      tx.del(draftId),
+      deploymentId && tx.del(deploymentId),
+      ...versionIds.map(versionId => tx.del(versionId)),
+    ])
   },
 }
 

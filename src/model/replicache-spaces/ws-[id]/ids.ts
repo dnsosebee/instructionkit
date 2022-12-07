@@ -34,6 +34,20 @@ export const DART_ID_LENGTH = DART_ID_PREFIX.length + DART_UUID_LENGTH
 const genDartUuid = customAlphabet(ALPHABET, DART_UUID_LENGTH)
 export const genDartId = () => DART_ID_PREFIX + genDartUuid()
 
+// project
+export const PROJECT_ID_PREFIX = 'project-'
+export const PROJECT_UUID_LENGTH = 21
+export const PROJECT_ID_LENGTH = PROJECT_ID_PREFIX.length + PROJECT_UUID_LENGTH
+const genProjectUuid = customAlphabet(ALPHABET, PROJECT_UUID_LENGTH)
+export const genProjectId = () => PROJECT_ID_PREFIX + genProjectUuid()
+
+// live version
+export const DEPLOYMENT_ID_PREFIX = 'deployment-'
+export const DEPLOYMENT_UUID_LENGTH = 21
+export const DEPLOYMENT_ID_LENGTH = DEPLOYMENT_ID_PREFIX.length + DEPLOYMENT_UUID_LENGTH
+const genDeploymentUuid = customAlphabet(ALPHABET, DEPLOYMENT_UUID_LENGTH)
+export const genDeploymentId = () => DEPLOYMENT_ID_PREFIX + genDeploymentUuid()
+
 // rotates through nanoid uuids to prevent collisions
 // might overflow if given a long ID, intending to only use for flow and dart IDs
 export const nextId = (id: string, uuidLength: number) => {

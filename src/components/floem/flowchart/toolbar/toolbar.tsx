@@ -1,9 +1,9 @@
 import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon } from '@heroicons/react/20/solid'
 import { DocumentArrowDownIcon } from '@heroicons/react/24/solid'
 import { handleDownloadFloem } from '../../../../model/filesystem/filesystem'
-import { DataFloem } from '../../../../model/replicache-spaces/ws-[id]/floem'
-import { DEFAULT_FLOWTEXT } from '../../../../model/replicache-spaces/ws-[id]/flow'
 import { FLOW_START_ID, genFlowId } from '../../../../model/replicache-spaces/ws-[id]/ids'
+import { DataFloem } from '../../../../model/replicache-spaces/ws-[id]/keys/floem/floem'
+import { DEFAULT_FLOWTEXT } from '../../../../model/replicache-spaces/ws-[id]/keys/floem/flow'
 import { WorkspaceMutate } from '../../../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import { IconButton } from './iconButton'
 
@@ -39,6 +39,7 @@ export const Toolbar = ({ mutate, floem, nodeSelections, edgeSelections }: Toolb
               id: floem.id,
               flows: floem.flows.filter((_, i) => !nodeSelections[i]),
               darts: floem.darts.filter((_, i) => !edgeSelections[i]),
+              updatedAt: Date.now(),
             })
           }
           title='Delete'

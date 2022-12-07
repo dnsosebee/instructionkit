@@ -5,9 +5,9 @@ import { useDropzone } from 'react-dropzone'
 import { useSubscribe } from 'replicache-react'
 import { logger } from '../../logger'
 import { handleUploadFloem } from '../../model/filesystem/filesystem'
-import { RepWorkspace } from '../../model/replicache-spaces/app/types/workspace'
-import { listFloems, STARTER_FLOEM } from '../../model/replicache-spaces/ws-[id]/floem'
+import { RepWorkspace } from '../../model/replicache-spaces/app/keys/ws'
 import { genFloemId } from '../../model/replicache-spaces/ws-[id]/ids'
+import { listFloems, STARTER_FLOEM } from '../../model/replicache-spaces/ws-[id]/keys/floem/floem'
 import { WorkspaceRep } from '../../model/replicache-spaces/ws-[id]/workspaceMutators'
 import { spaceRelativeUrl } from '../floem/floem'
 import { useAppContext } from '../layout/appProvider'
@@ -32,7 +32,7 @@ export const Dashboard = ({ rep }: { rep: WorkspaceRep }) => {
     acceptedFiles.forEach(async file => {
       const floemId = genFloemId()
       const floem = await handleUploadFloem(file)
-      mutate.createFloem({ ...floem, id: floemId })
+      mutate.createFloem({ ...floem, id: floemId, updatedAt: Date.now() })
     })
   }, [])
 
