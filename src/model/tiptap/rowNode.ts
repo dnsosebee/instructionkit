@@ -33,7 +33,7 @@ const RowNode = Node.create({
     return [
       'row',
       mergeAttributes(HTMLAttributes, {
-        class: 'flex',
+        class: 'flex flex-wrap',
       }),
       0,
     ]
