@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { handleRequest } from 'replicache-nextjs/lib/backend'
 import { appMutators, APP_SPACE_ID } from '../../../src/model/replicache-spaces/app/appMutators'
-import { workspaceMutators } from '../../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
+import { workspaceMutators } from '../../../src/model/replicache-spaces/proj-[id]/projMutators'
 
 // Next.js runs this function server-side when /api/replicache/[anything].ts is
 // requested.

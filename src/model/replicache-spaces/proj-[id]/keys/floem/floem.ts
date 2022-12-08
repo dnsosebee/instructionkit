@@ -4,7 +4,7 @@
 
 import { ReadTransaction } from 'replicache'
 import { z } from 'zod'
-import { FLOEM_ID_LENGTH, FLOEM_ID_PREFIX, FLOW_START_ID, genFloemId } from '../../ids'
+import { FLOEM_ID_LENGTH, FLOEM_ID_PREFIX, FLOW_START_ID, genFloemId } from '../../projIds'
 import { dartSchema } from './dart'
 import { DEFAULT_FLOWTEXT, flowSchema } from './flow'
 
@@ -13,7 +13,7 @@ export const floemIdSchema = z.string().startsWith(FLOEM_ID_PREFIX).length(FLOEM
 export const floemSchema = z
   .object({
     id: floemIdSchema,
-    title: z.string(),
+    title: z.string().optional(), // migration: moving title up to project level
     createdAt: z.number(),
     updatedAt: z.number(),
     flows: z
@@ -43,7 +43,6 @@ export async function listFloems(tx: ReadTransaction) {
 export const STARTER_FLOEM = (id: string = genFloemId()): DataFloem => {
   return {
     id,
-    title: 'My New Floem',
     createdAt: Date.now(),
     updatedAt: Date.now(),
     flows: [

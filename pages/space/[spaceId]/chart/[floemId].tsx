@@ -4,7 +4,7 @@ import { spaceExists } from 'replicache-nextjs/lib/backend'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { FloemInjector } from '../../../../src/components/floem/floem'
 import Flowchart from '../../../../src/components/floem/flowchart/flowchart'
-import { workspaceMutators } from '../../../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
+import { workspaceMutators } from '../../../../src/model/replicache-spaces/proj-[id]/projMutators'
 
 export const getServerSideProps: GetServerSideProps = async context => {
   const { params } = context

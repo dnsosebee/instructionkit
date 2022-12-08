@@ -1,6 +1,5 @@
 import { z } from 'zod'
-import { DEPLOYMENT_ID_LENGTH, DEPLOYMENT_ID_PREFIX } from '../ids'
-import { floemSchema } from './floem/floem'
+import { DEPLOYMENT_ID_LENGTH, DEPLOYMENT_ID_PREFIX } from '../projIds'
 
 // live version is a deployed snapshot of a floem
 // lets optimize for lookup speed and validation speed. In all liklihood access will be through Supabase and not through Replicache
@@ -14,9 +13,10 @@ export const deploymentIdSchema = z
 
 export const deploymentSchema = z.object({
   id: deploymentIdSchema,
-  cachedFloem: floemSchema,
+  versionId: versionIdSchema,
   createdAt: z.number(),
   live: z.boolean(),
+  prettyHref: z.string().optional(),
 })
 
 export type RepDeployment = z.infer<typeof deploymentSchema>

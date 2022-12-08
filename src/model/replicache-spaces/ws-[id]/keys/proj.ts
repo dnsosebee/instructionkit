@@ -1,13 +1,10 @@
 import { z } from 'zod'
-import { genFloemId, PROJECT_ID_LENGTH, PROJECT_ID_PREFIX } from '../ids'
-import { deploymentIdSchema } from './deployment'
-import { DataFloem, floemIdSchema, STARTER_FLOEM } from './floem/floem'
+import { DataFloem, STARTER_FLOEM } from '../../proj-[id]/keys/floem/floem'
+import { genFloemId, PROJECT_ID_LENGTH, PROJECT_ID_PREFIX } from '../../proj-[id]/projIds'
 
 export const projectSchema = z.object({
   id: z.string().startsWith(PROJECT_ID_PREFIX).length(PROJECT_ID_LENGTH),
-  draftId: floemIdSchema,
-  versionIds: z.array(floemIdSchema),
-  deploymentId: deploymentIdSchema.optional(),
+  title: z.string(),
   createdAt: z.number(),
 })
 
@@ -23,8 +20,7 @@ export const STARTER_PROJECT_AND_FLOEM = (
   return {
     project: {
       id,
-      draftId: floemId,
-      versionIds: [],
+      title: 'Untitled Project',
       createdAt: Date.now(),
     },
     floem,

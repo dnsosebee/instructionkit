@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { FLOW_ID_LENGTH, FLOW_ID_PREFIX } from '../../ids'
+import { FLOW_ID_LENGTH, FLOW_ID_PREFIX } from '../../projIds'
 
 export const flowIdSchema = z.string().startsWith(FLOW_ID_PREFIX).length(FLOW_ID_LENGTH)
 

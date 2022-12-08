@@ -3,12 +3,12 @@ import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { logger as parentLogger } from '../../../logger'
 import { WORKSPACE_ID_PREFIX } from '../app/keys/ws'
-import { ALPHABET, DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './ids'
+import { projectSchema, RepProject } from '../ws-[id]/keys/proj'
 import { deploymentSchema, RepDeployment } from './keys/deployment'
 import { DartUpdate, DataDart } from './keys/floem/dart'
 import { DataFloem, floemSchema, FloemUpdate } from './keys/floem/floem'
 import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate } from './keys/floem/flow'
-import { projectSchema, RepProject } from './keys/project'
+import { ALPHABET, DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './projIds'
 
 const logger = parentLogger.child({ module: 'mutators' })
 
@@ -136,7 +136,6 @@ export const workspaceMutators = {
       throw new Error(`No project with id ${projectId}`)
     }
     const { draftId } = project
-    const draft = (await tx.get(draftId)) as DataFloem
     const version = (await tx.get(versionId)) as DataFloem
     if (!version) {
       throw new Error(`No version with id ${versionId}`)

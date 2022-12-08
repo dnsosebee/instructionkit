@@ -6,7 +6,7 @@ import AppProvider from '../../../../src/components/layout/appProvider'
 import SupaProvider, { AuthState } from '../../../../src/components/layout/supaProvider'
 import Loading from '../../../../src/components/shared/loading'
 import UnableToLoad from '../../../../src/components/shared/unableToLoad'
-import { useWorkspaceRep } from '../../../../src/model/replicache-spaces/ws-[id]/workspaceMutators'
+import { useWorkspaceRep } from '../../../../src/model/replicache-spaces/proj-[id]/projMutators'
 import {
   getOrCreateWorkspaceSpace,
   WorkspaceIdIfExists,

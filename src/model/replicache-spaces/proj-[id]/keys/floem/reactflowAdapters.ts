@@ -1,6 +1,6 @@
 import { FlowchartEdge } from '../../../../../components/floem/flowchart/flowchartDart'
 import { FlowchartNode } from '../../../../../components/floem/flowchart/flowchartFlow'
-import { WorkspaceMutate } from '../../workspaceMutators'
+import { WorkspaceMutate } from '../../projMutators'
 import { DataDart } from './dart'
 import { DataFloem } from './floem'
 import { DataFlow } from './flow'

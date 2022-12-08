@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { CASE_ID_LENGTH, DART_ID_LENGTH, DART_ID_PREFIX } from '../../ids'
+import { CASE_ID_LENGTH, DART_ID_LENGTH, DART_ID_PREFIX } from '../../projIds'
 import { flowIdSchema } from './flow'
 
 export const dartSchema = z.object({
