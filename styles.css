@@ -137,6 +137,7 @@ row {
 }
 
 .react-flow row {
+  @apply flex-wrap;
 }
 
 .react-flow row > * {
