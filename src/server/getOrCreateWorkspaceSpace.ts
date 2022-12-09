@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next'
 import { createSpace, spaceExists } from 'replicache-nextjs/lib/backend'
 import { Database } from '../lib/database.types'
 import { logger as parentLogger } from '../logger'
-import { getMembershipDBKey } from '../model/replicache-spaces/app/keys/membership'
+import { getMembershipDBKey } from '../model/replicache/spaces/app/entries/membership'
 
 const logger = parentLogger.child({ module: 'getOrCreateWorkspaceSpace.ts' })
 

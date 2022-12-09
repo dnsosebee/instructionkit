@@ -1,78 +1,59 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
-import { logger as parentLogger } from '../../../logger'
+import { logger as parentLogger } from '../../../../logger'
 import {
   AcceptInvite,
-  getInviteDBKey,
-  inviteSchema,
-  INVITE_ID_PREFIX,
+  inviteKey,
+  inviteSchema_client,
+  INVITE_KEY_PREFIX,
   RepInvite,
-} from './keys/invite'
+} from './entries/invite'
 import {
-  getMembershipDBKey,
-  membershipSchema,
-  MEMBERSHIP_ID_PREFIX,
+  getMembershipDBKey as membershipKey,
+  membershipSchema_client,
+  MEMBERSHIP_KEY_PREFIX,
   RepMembership,
-} from './keys/membership'
-import { RepWorkspace, workspaceSchema, WorkspaceUpdate } from './keys/ws'
-const logger = parentLogger.child({ module: 'model/memberships/mutators' })
+} from './entries/membership'
+import { RepWorkspace, workspaceSchema, WorkspaceUpdate } from './entries/ws'
+const logger = parentLogger.child({ module: 'appMutators' })
 
 export const APP_SPACE_ID = 'app'
 export type AppMutators = typeof appMutators
 export type AppRep = Replicache<AppMutators>
 export type AppMutate = AppRep['mutate']
 
-// invites
-const inviteMutators = {
+const appMutators = {
+  // invites
   async createOrUpdateInvite(tx: WriteTransaction, invite: RepInvite) {
     logger.info('createOrUpdateInvite', invite)
-    inviteSchema.parse(invite)
-    await tx.put(getInviteDBKey(invite.workspaceId, invite.email), invite.accessPolicy)
+    inviteSchema_client.parse(invite)
+    await tx.put(inviteKey(invite.workspaceId, invite.email), invite.accessPolicy)
   },
   async deleteInvite(tx: WriteTransaction, invite: RepInvite) {
     logger.info('deleteInvite', invite)
-    await tx.del(getInviteDBKey(invite.workspaceId, invite.email))
+    inviteSchema_client.parse(invite)
+    await tx.del(inviteKey(invite.workspaceId, invite.email))
   },
+
+  // invites and memberships
   async acceptInvite(tx: WriteTransaction, acceptInvite: AcceptInvite) {
     logger.info('acceptInvite', acceptInvite)
     const { invite, userId } = acceptInvite
-    await tx.del(getInviteDBKey(invite.workspaceId, invite.email))
-    await tx.put(getMembershipDBKey(invite.workspaceId, userId), invite.accessPolicy)
+    inviteSchema_client.parse(invite)
+    await Promise.all([
+      tx.del(inviteKey(invite.workspaceId, invite.email)),
+      tx.put(membershipKey(invite.workspaceId, userId), invite.accessPolicy),
+    ])
   },
-}
 
-// memberships
-const membershipMutators = {
-  // async createOrUpdateMembership(tx: WriteTransaction, membership: RepMembership) {
-  //   logger.info('createOrUpdateMembership', membership)
-  //   membershipSchema.parse(membership)
-  //   const workspace = await tx.get(membership.workspaceId)
-  //   if (!workspace) {
-  //     throw new Error(`No workspace with id ${membership.workspaceId}`)
-  //   }
-  //   await tx.put(
-  //     getMembershipDBKey(membership.workspaceId, membership.userId),
-  //     membership.accessPolicy,
-  //   )
-  // },
+  // memberships
   async deleteMembership(tx: WriteTransaction, membership: RepMembership) {
     logger.info('deleteMembership', membership)
-    await tx.del(getMembershipDBKey(membership.workspaceId, membership.userId))
+    membershipSchema_client.parse(membership)
+    await tx.del(membershipKey(membership.workspaceId, membership.userId))
   },
-}
 
-// workspaces
-const workspaceMutators = {
-  // async createWorkspace(tx: WriteTransaction, workspace: RepWorkspace) {
-  //   logger.info('createWorkspace', workspace)
-  //   workspaceSchema.parse(workspace)
-  //   const existing = await tx.get(workspace.id)
-  //   if (existing) {
-  //     throw new Error(`Workspace with id ${workspace.id} already exists`)
-  //   }
-  //   await tx.put(workspace.id, workspace)
-  // },
-
+  // memberships and workspaces
   async createWorkspaceWithOwner(
     tx: WriteTransaction,
     data: { workspace: RepWorkspace; userId: string },
@@ -85,27 +66,26 @@ const workspaceMutators = {
       accessPolicy: 'owner',
     }
     workspaceSchema.parse(workspace)
-    membershipSchema.parse(membership)
+    membershipSchema_client.parse(membership)
     // ensure workspace doesn't already exist
     const existingWorkspace = await tx.get(workspace.id)
     if (existingWorkspace) {
       throw new Error(`Workspace ${workspace.id} already exists`)
     }
-    // await all writes
     await Promise.all([
       tx.put(workspace.id, workspace),
-      tx.put(getMembershipDBKey(workspace.id, userId), membership.accessPolicy),
+      tx.put(membershipKey(workspace.id, userId), membership.accessPolicy),
     ])
   },
 
   async deleteWorkspace(tx: WriteTransaction, workspaceId: string) {
     logger.info('deleteWorkspace', workspaceId)
     const invites = await tx
-      .scan({ prefix: `${INVITE_ID_PREFIX}${workspaceId}` })
+      .scan({ prefix: `${INVITE_KEY_PREFIX}${workspaceId}` })
       .keys()
       .toArray()
     const memberships = await tx
-      .scan({ prefix: `${MEMBERSHIP_ID_PREFIX}${workspaceId}` })
+      .scan({ prefix: `${MEMBERSHIP_KEY_PREFIX}${workspaceId}` })
       .keys()
       .toArray()
     await Promise.all([
@@ -128,12 +108,6 @@ const workspaceMutators = {
     workspaceSchema.parse(updatedWorkspace)
     await tx.put(workspaceUpdate.id, updatedWorkspace)
   },
-}
-
-export const appMutators = {
-  ...inviteMutators,
-  ...membershipMutators,
-  ...workspaceMutators,
 }
 
 export const useAppRep = () => {

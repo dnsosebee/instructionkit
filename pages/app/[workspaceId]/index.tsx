@@ -3,7 +3,7 @@ import { Dashboard } from '../../../src/components/dashboard/dashboard'
 import AppLayout, { AppPage } from '../../../src/components/layout/appLayout'
 import Loading from '../../../src/components/shared/loading'
 import UnableToLoad from '../../../src/components/shared/unableToLoad'
-import { useWorkspaceRep } from '../../../src/model/replicache-spaces/proj-[id]/projMutators'
+import { useWorkspaceRep } from '../../../src/model/replicache/spaces/proj-[id]/projMutators'
 import {
   getOrCreateWorkspaceSpace,
   WorkspaceIdIfExists,

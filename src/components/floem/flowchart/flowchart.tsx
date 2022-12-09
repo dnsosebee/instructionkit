@@ -7,20 +7,20 @@ import ReactFlow, {
   ReactFlowProvider,
   useReactFlow,
 } from 'reactflow'
-import { DataFloem } from '../../../model/replicache-spaces/proj-[id]/keys/floem/floem'
+import { DataFloem } from '../../../model/replicache/spaces/proj-[id]/keys/floem/floem'
 import {
   toDataDarts,
   toDataFlows,
   toFlowchartEdges,
   toFlowchartNodes,
-} from '../../../model/replicache-spaces/proj-[id]/keys/floem/reactflowAdapters'
+} from '../../../model/replicache/spaces/proj-[id]/keys/floem/reactflowAdapters'
 
 import React from 'react'
 import 'reactflow/dist/style.css'
 import { logger as parentLogger } from '../../../logger'
-import { DEFAULT_FLOWTEXT } from '../../../model/replicache-spaces/proj-[id]/keys/floem/flow'
-import { genDartId, genFlowId } from '../../../model/replicache-spaces/proj-[id]/projIds'
-import { WorkspaceMutate } from '../../../model/replicache-spaces/proj-[id]/projMutators'
+import { DEFAULT_FLOWTEXT } from '../../../model/replicache/spaces/proj-[id]/keys/floem/flow'
+import { genDartId, genFlowId } from '../../../model/replicache/spaces/proj-[id]/projIds'
+import { WorkspaceMutate } from '../../../model/replicache/spaces/proj-[id]/projMutators'
 import Breadcrumbs from './breadcrumbs'
 import FlowchartDart, { FlowchartEdge } from './flowchartDart'
 import FlowchartFlow, { FlowchartNode } from './flowchartFlow'

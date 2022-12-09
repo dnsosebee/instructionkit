@@ -1,6 +1,6 @@
 import { useSubscribe } from 'replicache-react'
-import { DataFloem, listFloems } from '../../model/replicache-spaces/proj-[id]/keys/floem/floem'
-import { WorkspaceMutate, WorkspaceRep } from '../../model/replicache-spaces/proj-[id]/projMutators'
+import { DataFloem, listFloems } from '../../model/replicache/spaces/proj-[id]/keys/floem/floem'
+import { WorkspaceMutate, WorkspaceRep } from '../../model/replicache/spaces/proj-[id]/projMutators'
 
 export const spaceRelativeUrl = (spaceId: string) => (path: string) => `/space/${spaceId}${path}`
 

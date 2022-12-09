@@ -1,10 +1,10 @@
 import { DocumentMinusIcon, DocumentPlusIcon, PlayIcon } from '@heroicons/react/20/solid'
 import { DocumentArrowDownIcon } from '@heroicons/react/24/solid'
 import { handleDownloadFloem } from '../../../../model/filesystem/filesystem'
-import { DataFloem } from '../../../../model/replicache-spaces/proj-[id]/keys/floem/floem'
-import { DEFAULT_FLOWTEXT } from '../../../../model/replicache-spaces/proj-[id]/keys/floem/flow'
-import { FLOW_START_ID, genFlowId } from '../../../../model/replicache-spaces/proj-[id]/projIds'
-import { WorkspaceMutate } from '../../../../model/replicache-spaces/proj-[id]/projMutators'
+import { DataFloem } from '../../../../model/replicache/spaces/proj-[id]/keys/floem/floem'
+import { DEFAULT_FLOWTEXT } from '../../../../model/replicache/spaces/proj-[id]/keys/floem/flow'
+import { FLOW_START_ID, genFlowId } from '../../../../model/replicache/spaces/proj-[id]/projIds'
+import { WorkspaceMutate } from '../../../../model/replicache/spaces/proj-[id]/projMutators'
 import { IconButton } from './iconButton'
 
 export interface ToolbarProps {

@@ -1,9 +1,9 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { logger } from '../../../logger'
-import { RepWorkspace } from '../../../model/replicache-spaces/app/keys/ws'
-import { DataFloem } from '../../../model/replicache-spaces/proj-[id]/keys/floem/floem'
-import { WorkspaceMutate } from '../../../model/replicache-spaces/proj-[id]/projMutators'
+import { RepWorkspace } from '../../../model/replicache/spaces/app/entries/ws'
+import { DataFloem } from '../../../model/replicache/spaces/proj-[id]/keys/floem/floem'
+import { WorkspaceMutate } from '../../../model/replicache/spaces/proj-[id]/projMutators'
 import { useAppContext } from '../../layout/appProvider'
 import { TitleEditor } from './titleEditor'
 

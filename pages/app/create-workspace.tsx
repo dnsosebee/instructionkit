@@ -3,8 +3,8 @@ import SupaProvider, { AuthState, useSupaAuthed } from '../../src/components/lay
 import Loading from '../../src/components/shared/loading'
 import Redirect from '../../src/components/shared/redirect'
 import { logger } from '../../src/logger'
-import { AppRep, useAppRep } from '../../src/model/replicache-spaces/app/appMutators'
-import { genWorkspaceId } from '../../src/model/replicache-spaces/proj-[id]/projMutators'
+import { AppRep, useAppRep } from '../../src/model/replicache/spaces/app/appMutators'
+import { genWorkspaceId } from '../../src/model/replicache/spaces/proj-[id]/projMutators'
 
 export default () => {
   const appRep = useAppRep()

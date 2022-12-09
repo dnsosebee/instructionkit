@@ -2,10 +2,13 @@ import { User } from '@supabase/auth-helpers-nextjs'
 import { createContext, useContext, useState } from 'react'
 import { useSubscribe } from 'replicache-react'
 import { logger } from '../../logger'
-import { AppRep as AppRepProvider, useAppRep } from '../../model/replicache-spaces/app/appMutators'
-import { listInvites, RepInvite } from '../../model/replicache-spaces/app/keys/invite'
-import { listMemberships, RepMembership } from '../../model/replicache-spaces/app/keys/membership'
-import { listWorkspaces, RepWorkspace } from '../../model/replicache-spaces/app/keys/ws'
+import { AppRep as AppRepProvider, useAppRep } from '../../model/replicache/spaces/app/appMutators'
+import { listInvites, RepInvite } from '../../model/replicache/spaces/app/entries/invite'
+import {
+  listMemberships,
+  RepMembership,
+} from '../../model/replicache/spaces/app/entries/membership'
+import { listWorkspaces, RepWorkspace } from '../../model/replicache/spaces/app/entries/ws'
 import Loading from '../shared/loading'
 import Redirect from '../shared/redirect'
 import { AppPage } from './appLayout'

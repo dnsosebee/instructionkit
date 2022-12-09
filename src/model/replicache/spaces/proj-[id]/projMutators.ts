@@ -1,21 +1,14 @@
-import { customAlphabet } from 'nanoid'
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
-import { logger as parentLogger } from '../../../logger'
-import { WORKSPACE_ID_PREFIX } from '../app/keys/ws'
+import { logger as parentLogger } from '../../../../logger'
 import { projectSchema, RepProject } from '../ws-[id]/keys/proj'
 import { deploymentSchema, RepDeployment } from './keys/deployment'
 import { DartUpdate, DataDart } from './keys/floem/dart'
 import { DataFloem, floemSchema, FloemUpdate } from './keys/floem/floem'
 import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate } from './keys/floem/flow'
-import { ALPHABET, DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './projIds'
+import { DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './projIds'
 
 const logger = parentLogger.child({ module: 'mutators' })
-
-export const SPACE_WORKSPACE_ID_PREFIX = WORKSPACE_ID_PREFIX
-export const WORKSPACE_UUID_LENGTH = 10
-export const genWorkspaceUuid = customAlphabet(ALPHABET, WORKSPACE_UUID_LENGTH)
-export const genWorkspaceId = () => SPACE_WORKSPACE_ID_PREFIX + genWorkspaceUuid()
 
 export type WorkspaceMutators = typeof workspaceMutators
 export type WorkspaceRep = Replicache<WorkspaceMutators>
