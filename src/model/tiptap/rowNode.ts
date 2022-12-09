@@ -1,10 +1,4 @@
-import {
-  mergeAttributes,
-  Node,
-  nodeInputRule,
-  ReactNodeViewRenderer,
-  wrappingInputRule,
-} from '@tiptap/react'
+import { mergeAttributes, Node, wrappingInputRule } from '@tiptap/react'
 import Row from '../../components/floem/tiptap/row'
 
 const ROW_INPUT_REGEX = /^\/row $/
