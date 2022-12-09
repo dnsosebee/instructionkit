@@ -2,6 +2,8 @@ import UniqueID from '@tiptap-pro/extension-unique-id'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import { Gapcursor } from '@tiptap/extension-gapcursor'
 import Link from '@tiptap/extension-link'
+import TaskItem from '@tiptap/extension-task-item'
+import TaskList from '@tiptap/extension-task-list'
 import { Extension } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { lowlight } from 'lowlight'
@@ -27,6 +29,14 @@ const FlowtextExtension = Extension.create({
       CaseNode,
       AssigneeNode,
       Link,
+      TaskList.configure({
+        HTMLAttributes: {
+          class: 'not-prose',
+        },
+      }),
+      TaskItem.configure({
+        nested: true,
+      }),
       createImageExtension(uploadBlob),
     ] // TODO follow up with reactflow on fixing dropcursor rendering
   },

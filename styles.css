@@ -161,3 +161,11 @@ column {
 column > * {
   @apply not-last:mr-2;
 }
+
+ul[data-type='taskList'] > li {
+  @apply flex items-center;
+}
+
+ul[data-type='taskList'] > li > label {
+  @apply mr-2;
+}
