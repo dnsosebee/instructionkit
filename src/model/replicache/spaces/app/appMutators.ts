@@ -1,20 +1,14 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { logger as parentLogger } from '../../../../logger'
+import { AcceptInvite, inviteKey, inviteSchema, INVITE_KEY_PREFIX, RepInvite } from './entries/inv'
 import {
-  AcceptInvite,
-  inviteKey,
-  inviteSchema_client,
-  INVITE_KEY_PREFIX,
-  RepInvite,
-} from './entries/invite'
-import {
-  getMembershipDBKey as membershipKey,
-  membershipSchema_client,
+  membershipKey,
+  membershipSchema,
   MEMBERSHIP_KEY_PREFIX,
   RepMembership,
-} from './entries/membership'
-import { RepWorkspace, workspaceSchema, WorkspaceUpdate } from './entries/ws'
+} from './entries/member'
+import { RepWorkspace, workspaceKey, workspaceSchema, WorkspaceUpdate } from './entries/ws'
 const logger = parentLogger.child({ module: 'appMutators' })
 
 export const APP_SPACE_ID = 'app'
@@ -26,12 +20,12 @@ const appMutators = {
   // invites
   async createOrUpdateInvite(tx: WriteTransaction, invite: RepInvite) {
     logger.info('createOrUpdateInvite', invite)
-    inviteSchema_client.parse(invite)
+    inviteSchema.parse(invite)
     await tx.put(inviteKey(invite.workspaceId, invite.email), invite.accessPolicy)
   },
   async deleteInvite(tx: WriteTransaction, invite: RepInvite) {
     logger.info('deleteInvite', invite)
-    inviteSchema_client.parse(invite)
+    inviteSchema.parse(invite)
     await tx.del(inviteKey(invite.workspaceId, invite.email))
   },
 
@@ -39,7 +33,7 @@ const appMutators = {
   async acceptInvite(tx: WriteTransaction, acceptInvite: AcceptInvite) {
     logger.info('acceptInvite', acceptInvite)
     const { invite, userId } = acceptInvite
-    inviteSchema_client.parse(invite)
+    inviteSchema.parse(invite)
     await Promise.all([
       tx.del(inviteKey(invite.workspaceId, invite.email)),
       tx.put(membershipKey(invite.workspaceId, userId), invite.accessPolicy),
@@ -49,7 +43,7 @@ const appMutators = {
   // memberships
   async deleteMembership(tx: WriteTransaction, membership: RepMembership) {
     logger.info('deleteMembership', membership)
-    membershipSchema_client.parse(membership)
+    membershipSchema.parse(membership)
     await tx.del(membershipKey(membership.workspaceId, membership.userId))
   },
 
@@ -65,33 +59,32 @@ const appMutators = {
       userId,
       accessPolicy: 'owner',
     }
-    workspaceSchema.parse(workspace)
-    membershipSchema_client.parse(membership)
+    membershipSchema.parse(membership)
     // ensure workspace doesn't already exist
     const existingWorkspace = await tx.get(workspace.id)
     if (existingWorkspace) {
       throw new Error(`Workspace ${workspace.id} already exists`)
     }
     await Promise.all([
-      tx.put(workspace.id, workspace),
+      tx.put(workspaceKey(workspace.id), workspaceSchema.parse(workspace)),
       tx.put(membershipKey(workspace.id, userId), membership.accessPolicy),
     ])
   },
 
   async deleteWorkspace(tx: WriteTransaction, workspaceId: string) {
     logger.info('deleteWorkspace', workspaceId)
-    const invites = await tx
+    const inviteKeys = await tx
       .scan({ prefix: `${INVITE_KEY_PREFIX}${workspaceId}` })
       .keys()
       .toArray()
-    const memberships = await tx
+    const membershipKeys = await tx
       .scan({ prefix: `${MEMBERSHIP_KEY_PREFIX}${workspaceId}` })
       .keys()
       .toArray()
     await Promise.all([
-      tx.del(workspaceId),
-      ...invites.map(invite => tx.del(invite)),
-      ...memberships.map(membership => tx.del(membership)),
+      tx.del(workspaceKey(workspaceId)),
+      ...inviteKeys.map(inviteKey => tx.del(inviteKey)),
+      ...membershipKeys.map(membershipKey => tx.del(membershipKey)),
     ])
   },
 
@@ -105,8 +98,7 @@ const appMutators = {
       ...workspace,
       ...workspaceUpdate,
     }
-    workspaceSchema.parse(updatedWorkspace)
-    await tx.put(workspaceUpdate.id, updatedWorkspace)
+    await tx.put(workspaceKey(workspaceUpdate.id), workspaceSchema.parse(updatedWorkspace))
   },
 }
 

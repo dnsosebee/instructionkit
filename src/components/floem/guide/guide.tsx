@@ -1,10 +1,10 @@
 import { List, Map } from 'immutable'
 import { useEffect, useState } from 'react'
 import { logger } from '../../../logger'
-import { DataFloem } from '../../../model/replicache/spaces/proj-[id]/keys/floem/floem'
-import { DataFlow } from '../../../model/replicache/spaces/proj-[id]/keys/floem/flow'
+import { DataFloem } from '../../../model/replicache/spaces/proj-[id]/entries/dart/floem'
+import { DataFlow } from '../../../model/replicache/spaces/proj-[id]/entries/flow'
+import { WorkspaceMutate } from '../../../model/replicache/spaces/proj-[id]/projectMutators'
 import { FLOW_START_ID } from '../../../model/replicache/spaces/proj-[id]/projIds'
-import { WorkspaceMutate } from '../../../model/replicache/spaces/proj-[id]/projMutators'
 import { riverStoneAt as guideStepAt } from './boat'
 import { StoneView as StepView } from './stone'
 

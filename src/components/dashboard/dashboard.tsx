@@ -6,9 +6,12 @@ import { useSubscribe } from 'replicache-react'
 import { logger } from '../../logger'
 import { handleUploadFloem } from '../../model/filesystem/filesystem'
 import { RepWorkspace } from '../../model/replicache/spaces/app/entries/ws'
-import { listFloems, STARTER_FLOEM } from '../../model/replicache/spaces/proj-[id]/keys/floem/floem'
+import {
+  listFloems,
+  STARTER_FLOEM,
+} from '../../model/replicache/spaces/proj-[id]/entries/dart/floem'
+import { WorkspaceRep } from '../../model/replicache/spaces/proj-[id]/projectMutators'
 import { genFloemId } from '../../model/replicache/spaces/proj-[id]/projIds'
-import { WorkspaceRep } from '../../model/replicache/spaces/proj-[id]/projMutators'
 import { spaceRelativeUrl } from '../floem/floem'
 import { useAppContext } from '../layout/appProvider'
 import { redirectTo } from '../shared/redirect'

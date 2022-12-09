@@ -1,9 +1,9 @@
-import { FlowchartEdge } from '../../../../../../components/floem/flowchart/flowchartDart'
-import { FlowchartNode } from '../../../../../../components/floem/flowchart/flowchartFlow'
-import { WorkspaceMutate } from '../../projMutators'
-import { DataDart } from './dart'
+import { FlowchartEdge } from '../../components/floem/flowchart/flowchartDart'
+import { FlowchartNode } from '../../components/floem/flowchart/flowchartFlow'
+import { DataDart } from '../replicache/spaces/proj-[id]/entries/dart'
+import { DataFlow } from '../replicache/spaces/proj-[id]/entries/flow'
+import { WorkspaceMutate } from '../replicache/spaces/proj-[id]/projectMutators'
 import { DataFloem } from './floem'
-import { DataFlow } from './flow'
 
 // adapters from Floem to React Flow nodes and edges
 

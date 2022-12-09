@@ -1,21 +1,30 @@
 import { ReadTransaction } from 'replicache'
 import z from 'zod'
-import { genUuid, key } from '../../../ids'
+import { genId, id, key } from '../../../IdsAndKeys'
 
-const WORKSPACE_KEY_PREFIX = 'ws'
-export const WORKSPACE_UUID_LENGTH = 10
-export const workspaceSchema = z.object({
-  id: z.string().length(WORKSPACE_UUID_LENGTH),
+export const WORKSPACE_KEY_PREFIX = 'ws/'
+export const WORKSPACE_ID_LENGTH = 15
+const workspaceValueSchema = z.object({
   name: z.string().min(1).max(100),
   icon: z.string().min(1).max(100), // TODO: tighten this up
   createdAt: z.number().int().positive(),
 })
-export const genWorkspaceId = genUuid(WORKSPACE_UUID_LENGTH)
+export const workspaceSchema = workspaceValueSchema.extend({
+  id: z.string().length(WORKSPACE_ID_LENGTH),
+})
+export const genWorkspaceId = genId(WORKSPACE_ID_LENGTH)
 export const workspaceKey = key(WORKSPACE_KEY_PREFIX)
+const workspaceId = id(WORKSPACE_KEY_PREFIX)
 
 export type RepWorkspace = z.infer<typeof workspaceSchema>
-export type WorkspaceUpdate = Pick<RepWorkspace, 'id'> & Partial<Omit<RepWorkspace, 'createdAt'>>
+export type WorkspaceUpdate = { id: string } & Partial<Omit<RepWorkspace, 'createdAt'>>
 
 export const listWorkspaces = async (tx: ReadTransaction): Promise<RepWorkspace[]> => {
-  return (await tx.scan({ prefix: WORKSPACE_KEY_PREFIX }).values().toArray()) as RepWorkspace[]
+  return (await tx.scan({ prefix: WORKSPACE_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {
+    const id = workspaceId(k)
+    return {
+      ...workspaceValueSchema.parse(v),
+      id,
+    }
+  })
 }

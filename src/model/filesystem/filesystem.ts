@@ -1,4 +1,4 @@
-import { DataFloem, floemSchema } from '../replicache/spaces/proj-[id]/keys/floem/floem'
+import { DataFloem, floemSchema } from '../replicache/spaces/proj-[id]/entries/dart/floem'
 
 export const handleDownloadFloem = async (floem: DataFloem): Promise<void> => {
   try {

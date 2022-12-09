@@ -3,11 +3,8 @@ import { createContext, useContext, useState } from 'react'
 import { useSubscribe } from 'replicache-react'
 import { logger } from '../../logger'
 import { AppRep as AppRepProvider, useAppRep } from '../../model/replicache/spaces/app/appMutators'
-import { listInvites, RepInvite } from '../../model/replicache/spaces/app/entries/invite'
-import {
-  listMemberships,
-  RepMembership,
-} from '../../model/replicache/spaces/app/entries/membership'
+import { listInvites, RepInvite } from '../../model/replicache/spaces/app/entries/inv'
+import { listMemberships, RepMembership } from '../../model/replicache/spaces/app/entries/member'
 import { listWorkspaces, RepWorkspace } from '../../model/replicache/spaces/app/entries/ws'
 import Loading from '../shared/loading'
 import Redirect from '../shared/redirect'

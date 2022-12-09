@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next'
 import { createSpace, spaceExists } from 'replicache-nextjs/lib/backend'
 import { Database } from '../lib/database.types'
 import { logger as parentLogger } from '../logger'
-import { getMembershipDBKey } from '../model/replicache/spaces/app/entries/membership'
+import { membershipKey } from '../model/replicache/spaces/app/entries/member'
 
 const logger = parentLogger.child({ module: 'getOrCreateWorkspaceSpace.ts' })
 
@@ -36,7 +36,7 @@ export const getOrCreateWorkspaceSpace: GetServerSideProps<WorkspaceIdIfExists> 
   }
 
   const userId = data.session.user.id
-  const membershipDBKey = getMembershipDBKey(workspaceId as string, userId)
+  const membershipDBKey = membershipKey(workspaceId as string, userId)
 
   const { data: membershipData, error: membershipError } = await supabase
     // get the value of the row in entry table that has key = membershipDBKey
