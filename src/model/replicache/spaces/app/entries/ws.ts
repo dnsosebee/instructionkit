@@ -3,7 +3,7 @@ import z from 'zod'
 import { genId, id, key } from '../../../IdsAndKeys'
 
 export const WORKSPACE_KEY_PREFIX = 'ws/'
-export const WORKSPACE_ID_LENGTH = 15
+export const WORKSPACE_ID_LENGTH = 8
 const workspaceValueSchema = z.object({
   name: z.string().min(1).max(100),
   icon: z.string().min(1).max(100), // TODO: tighten this up

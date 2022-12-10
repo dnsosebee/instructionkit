@@ -9,12 +9,17 @@ import {
   RepMembership,
 } from './entries/member'
 import { RepWorkspace, workspaceKey, workspaceSchema, WorkspaceUpdate } from './entries/ws'
+
 const logger = parentLogger.child({ module: 'appMutators' })
 
 export const APP_SPACE_ID = 'app'
+
 export type AppMutators = typeof appMutators
 export type AppRep = Replicache<AppMutators>
-export type AppMutate = AppRep['mutate']
+
+export const useAppRep = () => {
+  return useReplicache<AppMutators>({ name: APP_SPACE_ID, mutators: appMutators })
+}
 
 const appMutators = {
   // invites
@@ -71,6 +76,7 @@ const appMutators = {
     ])
   },
 
+  // workspaces
   async deleteWorkspace(tx: WriteTransaction, workspaceId: string) {
     logger.info('deleteWorkspace', workspaceId)
     const inviteKeys = await tx
@@ -100,8 +106,4 @@ const appMutators = {
     }
     await tx.put(workspaceKey(workspaceUpdate.id), workspaceSchema.parse(updatedWorkspace))
   },
-}
-
-export const useAppRep = () => {
-  return useReplicache<AppMutators>({ name: APP_SPACE_ID, mutators: appMutators })
 }
