@@ -136,7 +136,7 @@ row {
   @apply mx-1;
 }
 
-.react-flow row {
+.guide row {
   @apply flex-wrap;
 }
 
