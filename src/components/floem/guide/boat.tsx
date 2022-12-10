@@ -11,6 +11,12 @@ import { Booty, Flocation, GuideStep } from './guide'
 
 const logger = parentLogger.child({ module: 'boat' })
 
+function decodeHtml(html: string) {
+  const txt = document.createElement('textarea')
+  txt.innerHTML = html
+  return txt.value
+}
+
 export async function riverStoneAt(
   floem: DataFloem,
   flowFrom: Flocation,
@@ -158,10 +164,9 @@ const helper = async (data: {
     }
   } else if (el.tagName === 'PRE') {
     if (el.innerText.startsWith('<code class="language-css">')) {
-      const css = el.innerText
-        .slice('<code class="language-css">'.length, -'</code>'.length)
-        .replaceAll('&lt;', '<')
-        .replaceAll('&gt;', '>')
+      const css = decodeHtml(
+        el.innerText.slice('<code class="language-css">'.length, -'</code>'.length),
+      )
       fragment.push(parse(`<style>${css}</style>`))
       return helper({
         flows,
@@ -173,10 +178,7 @@ const helper = async (data: {
         chosenCaseId,
       })
     } else {
-      const flogram = el.innerText
-        .slice('<code>'.length, -'</code>'.length)
-        .replaceAll('&lt;', '<')
-        .replaceAll('&gt;', '>')
+      const flogram = decodeHtml(el.innerText.slice('<code>'.length, -'</code>'.length))
       const updatedVars = await evalAssignments(flogram, vars)
       return helper({
         flows,
