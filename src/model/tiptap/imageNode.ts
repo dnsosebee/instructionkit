@@ -1,4 +1,5 @@
 import { Node, nodeInputRule } from '@tiptap/core'
+import { mergeAttributes } from '@tiptap/react'
 import { dropImagePlugin, UploadFn } from './dropImage'
 
 // Gratefully stolen from https://gist.github.com/waptik/f44b0d3c803fade75456817b1b1df6b4
@@ -39,7 +40,10 @@ export const createImageExtension = (uploadFn: UploadFn) => {
         },
       },
     ],
-    renderHTML: ({ HTMLAttributes }) => ['img', HTMLAttributes],
+    renderHTML: ({ HTMLAttributes }) => [
+      'img',
+      mergeAttributes({ class: 'min-w-[100px] min-h-[100px]' }, HTMLAttributes),
+    ],
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -61,6 +65,7 @@ export const createImageExtension = (uploadFn: UploadFn) => {
           type: this.type,
           getAttributes: match => {
             const [, alt, src, title] = match
+
             return {
               src,
               alt,
