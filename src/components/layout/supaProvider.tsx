@@ -48,6 +48,13 @@ export default ({
     state: AuthState.Loading,
   })
 
+  const onAuthStateChange = async (event: any, session: Session | null) => {
+    if (session) {
+      setAuth({ state: AuthState.SignedIn, session })
+    } else {
+      setAuth({ state: AuthState.SignedOut })
+    }
+  }
   // maybe unnecessary due to the above "onAuthStateChange" listener
   useEffect(() => {
     async function checkSession() {

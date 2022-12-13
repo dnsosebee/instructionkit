@@ -5,13 +5,8 @@ export const genId = (idLength: number) => () => {
   return customAlphabet(ALPHABET, idLength)()
 }
 
-// get key from
 export const key = (keyPrefix: string) => (id: string) => `${keyPrefix}${id}`
 
-export const dependentKey = (keyPrefix: string) => (parent: string, id: string) =>
-  `${keyPrefix}${parent}/${id}`
-
-// get id[s]
 export const id = (keyPrefix: string) => (key: string) => {
   if (!key.startsWith(keyPrefix)) {
     throw new Error(`Key ${key} does not start with ${keyPrefix}`)
@@ -19,7 +14,21 @@ export const id = (keyPrefix: string) => (key: string) => {
   return key.substring(keyPrefix.length)
 }
 
-export const dependentIds = (keyPrefix: string) => (key: string) => {
+export const splitKey = (key: string) => {
+  const slashIndex = key.indexOf('/')
+  if (slashIndex === -1) {
+    throw new Error(`Key ${key} missing a slash`)
+  }
+  return {
+    keyPrefix: key.substring(0, slashIndex),
+    rest: key.substring(slashIndex + 1),
+  }
+}
+
+export const scopedKey = (keyPrefix: string) => (parent: string, id: string) =>
+  `${keyPrefix}${parent}/${id}`
+
+export const scopedIds = (keyPrefix: string) => (key: string) => {
   if (!key.startsWith(keyPrefix)) {
     throw new Error(`Key ${key} does not start with ${keyPrefix}`)
   }

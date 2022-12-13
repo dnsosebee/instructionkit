@@ -1,25 +1,111 @@
+import { NodePositionChange } from 'reactflow'
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { logger as parentLogger } from '../../../../logger'
-import { projectSchema, RepProject } from '../ws-[id]/entries/proj'
-import { DartUpdate, DataDart } from './entries/dart'
-import { DataFloem, floemSchema, FloemUpdate } from './entries/dart/floem'
-import { deploymentSchema, RepDeployment } from './entries/deployment'
-import { DataFlow, DEFAULT_FLOWTEXT, FlowUpdate } from './entries/flow'
-import { DART_UUID_LENGTH, FLOW_UUID_LENGTH, nextId } from './projIds'
+import { nextId } from '../../IdsAndKeys'
+import { projectSchema, PROJECT_KEY_PREFIX, RepProject } from '../ws-[id]/entries/proj'
+import { deploymentSchema, RepDeployment } from './entries/deploy'
+import { flowKey, flowSchema, FlowUpdate, listFlows, RepFlow } from './entries/flow/flow'
+import { branchKey, branchSchema, RepBranch } from './entries/flow/types/branch'
+import { RepRef } from './entries/flow/types/ref'
+import { RepStart, startKey, startSchema, START_FLOW_TYPE } from './entries/flow/types/start'
+import { RepSub, SUB_FLOW_TYPE } from './entries/flow/types/sub.ts'
 
-const logger = parentLogger.child({ module: 'mutators' })
+const logger = parentLogger.child({ module: 'projectMutators' })
 
-export type WorkspaceMutators = typeof workspaceMutators
-export type WorkspaceRep = Replicache<WorkspaceMutators>
-export type WorkspaceMutate = WorkspaceRep['mutate'] & {
-  spaceRelativeUrl: (path: string) => string
+export const PROJECT_SPACE_PREFIX = PROJECT_KEY_PREFIX
+
+export type ProjectMutators = typeof projectMutators
+export type ProjectRep = Replicache<ProjectMutators>
+
+export const useProjectRep = (projectId: string) => {
+  return useReplicache({
+    name: `${PROJECT_SPACE_PREFIX}${projectId}`,
+    mutators: projectMutators,
+  })
 }
 
-const parseOrSkip = <T>(schema: any, data: any, parse = true): T => {
-  logger.info(parse ? 'parsing data: ' : 'skipped parsing data: ', data)
-  return parse ? schema.parse(data) : data
+// for the following apply functions, let's assume the flow exists. We can check that in the mutator
+const updateFlowPosition = async (
+  tx: WriteTransaction,
+  update: Pick<RepFlow, 'id' | 'type' | 'position'>,
+) => {
+  const key = flowKey(update.type, update.id)
+  const flow = (await tx.get(key)) as RepFlow
+  await tx.put(key, flowSchema.parse({ ...flow, position: update.position }))
 }
+
+const removeFlow = async (
+  tx: WriteTransaction,
+  remove: Pick<RepFlow, 'id' | 'type'>,
+  isChild = false,
+) => {
+  const key = flowKey(remove.type, remove.id)
+  if (!isChild && remove.type === START_FLOW_TYPE) {
+    throw new Error(`Can't remove start flow ${remove}`)
+  }
+
+  if (remove.type === SUB_FLOW_TYPE) {
+    const children = (await listFlows(tx)).filter(f => f.parent === remove.id)
+    for (const child of children) {
+      await removeFlow(tx, child, true)
+    }
+  }
+}
+
+const projectMutators = {
+  // flows
+  async applyFlowChanges(tx: WriteTransaction, changes: (NodePositionChange | NodeRemove)[]) {
+    logger.info
+  },
+
+  // flow/start
+  // init should be called when initializing a project
+  async init(tx: WriteTransaction, start: RepStart) {
+    if (!tx.isEmpty()) {
+      throw new Error(`Project already initialized, can't create flowstart`)
+    }
+    await tx.put(startKey(start.id), startSchema.parse(start))
+  },
+
+  // flow/branch
+  async createBranch(tx: WriteTransaction, branch: RepBranch) {
+    let id = branch.id
+    let key = branchKey(id)
+    let prev = (await tx.get(key)) as RepBranch
+    while (prev) {
+      id = nextId(id)
+      key = branchKey(id)
+      prev = (await tx.get(key)) as RepBranch
+    }
+    branch = { ...branch, id }
+    await tx.put(key, branchSchema.parse(branch))
+  },
+
+  async deleteBranch(tx: WriteTransaction, id: string) {
+    const key = branchKey(id)
+    await tx.del(key)
+  },
+
+  // flow/sub
+  async createSub(tx: WriteTransaction, sub: RepSub) {
+    throw new Error('Not implemented')
+  },
+
+  async deleteSub(tx: WriteTransaction, id: string) {
+    throw new Error('Not implemented')
+  },
+
+  //flow/ref
+  async createRef(tx: WriteTransaction, ref: RepRef) {
+    throw new Error('Not implemented')
+  },
+
+  async deleteRef(tx: WriteTransaction, id: string) {
+    throw new Error('Not implemented')
+  },
+}
+// darts
 
 export const workspaceMutators = {
   // Floem

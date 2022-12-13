@@ -1,9 +1,8 @@
 import { ReadTransaction } from 'replicache'
 import { z } from 'zod'
-import { dependentIds, dependentKey, genId } from '../../../IdsAndKeys'
-import { PROJECT_ID_LENGTH } from '../../ws-[id]/entries/proj'
-import { dartSchema } from './dart'
-import { flowSchema } from './flow'
+import { genId, id, key } from '../../../IdsAndKeys'
+import { dartSchema } from './dart/dart'
+import { flowSchema } from './flow/flow'
 
 export const VERSION_KEY_PREFIX = 'ver/'
 export const VERSION_ID_LENGTH = 5
@@ -15,26 +14,19 @@ const versionValueSchema = z.object({
 })
 export const versionSchema = versionValueSchema.extend({
   id: z.string().length(VERSION_ID_LENGTH),
-  project: z.string().length(PROJECT_ID_LENGTH),
 })
 
 export const genVersionId = genId(VERSION_ID_LENGTH)
-export const versionKey = dependentKey(VERSION_KEY_PREFIX)
-const flowIds = dependentIds(VERSION_KEY_PREFIX)
+export const versionKey = key(VERSION_KEY_PREFIX)
+const flowId = id(VERSION_KEY_PREFIX)
 
 export type RepVersion = z.infer<typeof versionSchema>
-export type VersionUpdate = { id: string } & Partial<RepVersion>
 
-export const listVersions =
-  (projectId: string) =>
-  async (tx: ReadTransaction): Promise<RepVersion[]> => {
-    const prefix = VERSION_KEY_PREFIX + projectId + '/'
-    return (await tx.scan({ prefix }).entries().toArray()).map(([k, v]) => {
-      const { parent: project, id } = flowIds(k)
-      return {
-        ...versionValueSchema.parse(v),
-        project,
-        id,
-      }
-    })
-  }
+export const listVersions = async (tx: ReadTransaction): Promise<RepVersion[]> => {
+  return (await tx.scan({ prefix: VERSION_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {
+    return {
+      ...versionValueSchema.parse(v),
+      id: flowId(k),
+    }
+  })
+}

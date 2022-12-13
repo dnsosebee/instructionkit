@@ -1,6 +1,6 @@
 import { ReadTransaction } from 'replicache'
 import { z } from 'zod'
-import { genId, id, key } from '../../../IdsAndKeys'
+import { genId, key, unkey } from '../../../IdsAndKeys'
 
 export const PROJECT_KEY_PREFIX = 'proj/'
 export const PROJECT_ID_LENGTH = 14
@@ -16,17 +16,16 @@ export const projectSchema = projectValueSchema.extend({
 
 export const genProjectId = genId(PROJECT_ID_LENGTH)
 export const projectKey = key(PROJECT_KEY_PREFIX)
-const projectId = id(PROJECT_KEY_PREFIX)
+const projectId = unkey(PROJECT_KEY_PREFIX)
 
 export type RepProject = z.infer<typeof projectSchema>
 export type ProjectUpdate = { id: string } & Partial<Omit<RepProject, 'createdAt'>>
 
 export const listProjects = async (tx: ReadTransaction): Promise<RepProject[]> => {
   return (await tx.scan({ prefix: PROJECT_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {
-    const id = projectId(k)
     return {
       ...projectValueSchema.parse(v),
-      id,
+      id: projectId(k),
     }
   })
 }
