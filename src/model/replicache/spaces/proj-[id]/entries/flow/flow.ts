@@ -4,7 +4,7 @@ import { genId, scopedIds, scopedKey } from '../../../../IdsAndKeys'
 import { branchSchema, branchValueSchema, BRANCH_FLOW_TYPE } from './types/branch'
 import { refSchema, refValueSchema, REF_FLOW_TYPE } from './types/ref'
 import { startSchema, startValueSchema, START_FLOW_TYPE } from './types/start'
-import { subschema, subValueSchema, SUB_FLOW_TYPE } from './types/sub.ts'
+import { subschema, subValueSchema, SUB_FLOW_TYPE } from './types/sub'
 
 export const FLOW_ID_LENGTH = 10
 export const FLOW_KEY_PREFIX = 'flow/'
@@ -27,7 +27,8 @@ export const flowIdSchema = z.object({
 export const flowSchema = z.union([branchSchema, startSchema, subschema, refSchema])
 
 export type RepFlow = z.infer<typeof flowSchema>
-export type FlowUpdate = Pick<RepFlow, 'id' | 'type'> & Partial<RepFlow>
+export type FlowPositionUpdate = Pick<RepFlow, 'id' | 'type' | 'position'>
+export type FlowRemove = Pick<RepFlow, 'id' | 'type'>
 
 export const listFlows = async (tx: ReadTransaction): Promise<RepFlow[]> => {
   return (await tx.scan({ prefix: FLOW_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {

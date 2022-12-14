@@ -1,15 +1,14 @@
-import { NodePositionChange } from 'reactflow'
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { logger as parentLogger } from '../../../../logger'
 import { nextId } from '../../IdsAndKeys'
 import { projectSchema, PROJECT_KEY_PREFIX, RepProject } from '../ws-[id]/entries/proj'
 import { deploymentSchema, RepDeployment } from './entries/deploy'
-import { flowKey, flowSchema, FlowUpdate, listFlows, RepFlow } from './entries/flow/flow'
+import { flowKey, FlowPositionUpdate, FlowRemove, flowSchema, RepFlow } from './entries/flow/flow'
 import { branchKey, branchSchema, RepBranch } from './entries/flow/types/branch'
-import { RepRef } from './entries/flow/types/ref'
-import { RepStart, startKey, startSchema, START_FLOW_TYPE } from './entries/flow/types/start'
-import { RepSub, SUB_FLOW_TYPE } from './entries/flow/types/sub.ts'
+import { refKey, RepRef } from './entries/flow/types/ref'
+import { RepStart, startKey, startSchema } from './entries/flow/types/start'
+import { SubCreate, subKey } from './entries/flow/types/sub'
 
 const logger = parentLogger.child({ module: 'projectMutators' })
 
@@ -26,39 +25,45 @@ export const useProjectRep = (projectId: string) => {
 }
 
 // for the following apply functions, let's assume the flow exists. We can check that in the mutator
-const updateFlowPosition = async (
-  tx: WriteTransaction,
-  update: Pick<RepFlow, 'id' | 'type' | 'position'>,
-) => {
+const updateFlowPosition = async (tx: WriteTransaction, update: FlowPositionUpdate) => {
   const key = flowKey(update.type, update.id)
   const flow = (await tx.get(key)) as RepFlow
+  if (!flow) {
+    throw new Error(`Flow ${update.id} does not exist`)
+  }
   await tx.put(key, flowSchema.parse({ ...flow, position: update.position }))
 }
 
-const removeFlow = async (
-  tx: WriteTransaction,
-  remove: Pick<RepFlow, 'id' | 'type'>,
-  isChild = false,
-) => {
+const removeFlow = async (tx: WriteTransaction, remove: FlowRemove) => {
   const key = flowKey(remove.type, remove.id)
-  if (!isChild && remove.type === START_FLOW_TYPE) {
-    throw new Error(`Can't remove start flow ${remove}`)
-  }
-
-  if (remove.type === SUB_FLOW_TYPE) {
-    const children = (await listFlows(tx)).filter(f => f.parent === remove.id)
-    for (const child of children) {
-      await removeFlow(tx, child, true)
-    }
-  }
+  tx.del(key)
 }
 
-const projectMutators = {
-  // flows
-  async applyFlowChanges(tx: WriteTransaction, changes: (NodePositionChange | NodeRemove)[]) {
-    logger.info
-  },
+// const removeFlow = async (
+//   tx: WriteTransaction,
+//   remove: Pick<RepFlow, 'id' | 'type'>,
+// ) => {
+//   const key = flowKey(remove.type, remove.id)
+//   if (remove.type === START_FLOW_TYPE) {
+//     throw new Error(`Can't remove start flow ${remove.id}`)
+//   }
+//   if (remove.type === SUB_FLOW_TYPE) {
+//     const flows = (await listFlows(tx))
+//     recursiveRemoveFlow(tx, remove.id, flows)
+//   }
+//   await tx.del(key)
+// }
 
+// const recursiveRemoveFlow = async (tx: WriteTransaction, subFlowId: string, flows: RepFlow[]) => {
+//   const children = flows.filter(f => f.parent === subFlowId)
+//   for (const child of children) {
+//     if (child.type === SUB_FLOW_TYPE) {
+//     await recursiveRemoveFlow(tx, child.id, flows)
+//     await tx.del(flowKey(child.type, child.id))
+//   }
+// }
+
+const projectMutators = {
   // flow/start
   // init should be called when initializing a project
   async init(tx: WriteTransaction, start: RepStart) {
@@ -66,6 +71,18 @@ const projectMutators = {
       throw new Error(`Project already initialized, can't create flowstart`)
     }
     await tx.put(startKey(start.id), startSchema.parse(start))
+  },
+  // flows
+  async applyFlowChanges(
+    tx: WriteTransaction,
+    changes: { positionUpdates: FlowPositionUpdate[]; removes: FlowRemove[] },
+  ) {
+    for (const update of changes.positionUpdates) {
+      await updateFlowPosition(tx, update)
+    }
+    for (const remove of changes.removes) {
+      await removeFlow(tx, remove)
+    }
   },
 
   // flow/branch
@@ -88,24 +105,18 @@ const projectMutators = {
   },
 
   // flow/sub
-  async createSub(tx: WriteTransaction, sub: RepSub) {
-    throw new Error('Not implemented')
-  },
-
-  async deleteSub(tx: WriteTransaction, id: string) {
-    throw new Error('Not implemented')
+  async createSub(tx: WriteTransaction, { sub, start }: SubCreate) {
+    await Promise.all([
+      tx.put(subKey(sub.id), flowSchema.parse(sub)),
+      tx.put(startKey(start.id), startSchema.parse(start)),
+    ])
   },
 
   //flow/ref
   async createRef(tx: WriteTransaction, ref: RepRef) {
-    throw new Error('Not implemented')
-  },
-
-  async deleteRef(tx: WriteTransaction, id: string) {
-    throw new Error('Not implemented')
+    await tx.put(refKey(ref.id), flowSchema.parse(ref))
   },
 }
-// darts
 
 export const workspaceMutators = {
   // Floem
