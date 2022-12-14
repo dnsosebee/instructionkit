@@ -10,11 +10,10 @@ import { lowlight } from 'lowlight'
 import { genCaseId } from '../replicache-spaces/ws-[id]/ids'
 import AssigneeNode from './assigneeNode'
 import CaseNode from './caseNode'
-import ColumnNode from './columnNode'
 import { createImageExtension } from './imageNode'
-import RowNode from './rowNode'
+import GroupNode from './groupNode'
 import SwitchNode from './switchNode'
-import { uploadBlob } from './uploadBlob'
+import { uploadBlob } from './image/uploadBlob'
 
 const FlowtextExtension = Extension.create({
   addExtensions() {
@@ -24,8 +23,7 @@ const FlowtextExtension = Extension.create({
       CodeBlockLowlight.configure({ lowlight, defaultLanguage: 'javascript' }),
       UniqueID.configure({ types: ['case'], generateID: genCaseId }),
       SwitchNode,
-      RowNode,
-      ColumnNode,
+      GroupNode,
       CaseNode,
       AssigneeNode,
       Link,

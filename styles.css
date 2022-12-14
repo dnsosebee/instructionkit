@@ -132,34 +132,48 @@ hr.ProseMirror-selectednode {
   z-index: 100 !important;
 }
 
-row {
-  @apply mx-1;
-}
-
-.react-flow row {
+.guide .group {
   @apply flex-wrap;
 }
 
-.react-flow row > * {
-  @apply border border-gray-200 rounded-md px-1;
+.group > .content.row > div {
+  @apply flex;
 }
 
-row > * {
-  @apply not-last:mr-2;
+.group > .content.row > div > * {
+  /* @apply not-last:border-r-0; */
 }
 
-column {
+.group > .content.column > div > * {
+  /* @apply divide-x divide-gray-200; */
 }
 
-.react-flow column {
+.react-flow .group > .content.row > div {
+  @apply divide-x divide-gray-200;
 }
 
-.react-flow column > * {
-  @apply border border-gray-200 rounded-md px-1 mx-2;
+.react-flow .group > .content.column > div {
+  @apply divide-y divide-gray-200;
 }
 
-column > * {
-  @apply not-last:mr-2;
+.react-flow .group > .content.row > div > * {
+  @apply not-last:pr-1 not-first:pl-1;
+}
+
+.react-flow .group > .content.column > div > * {
+  @apply py-1;
+}
+
+.react-flow .group > .content > div > * {
+  @apply bg-zinc-50;
+}
+
+.group > .content > div > p {
+  @apply my-0;
+}
+
+#guide .group.row > * {
+  @apply not-last:mr-4;
 }
 
 ul[data-type='taskList'] > li {
