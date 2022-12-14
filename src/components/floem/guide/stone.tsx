@@ -1,6 +1,6 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import { motion } from 'framer-motion'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import FlowtextExtension from '../../../model/tiptap/flowtextExtension'
 import { TextInput } from '../../../model/tiptap/textInput'
 import FlowtextProvider, { FlowtextContext, View } from '../flowtextProvider'
@@ -32,8 +32,16 @@ export const StoneView = ({
     default:
       throw new Error(`Unknown advancer type: ${advancer.type}`)
   }
+
+  const ref = useRef<HTMLInputElement>(null)
+  useEffect(() =>
+    ref.current?.scrollIntoView({
+      behavior: 'smooth',
+    }),
+  )
+
   return (
-    <motion.div className='stone opacity-0' animate={{ opacity: 1 }}>
+    <motion.div className='stone opacity-0' animate={{ opacity: 1 }} ref={ref}>
       <div dangerouslySetInnerHTML={{ __html: fragment }} />
       <Advancer props={advancerProps} params={advancer.params} />
     </motion.div>
