@@ -173,7 +173,7 @@ hr.ProseMirror-selectednode {
 }
 
 .node-group {
-  @apply flex;
+  @apply flex grow;
 }
 
 #guide .group.row > * {

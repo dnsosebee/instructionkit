@@ -26,7 +26,7 @@ export const Group = (props: NodeViewProps) => {
         }`}
         contentEditable='false'
       >
-        <input type='checkbox' className={``} onChange={onRowCheckboxChange} checked={row} />
+        <input type='checkbox' className={`rounded`} onChange={onRowCheckboxChange} checked={row} />
       </div>
       <NodeViewContent
         className={`content grow ${row ? 'row' : 'column'}`}
