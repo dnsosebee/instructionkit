@@ -172,8 +172,16 @@ hr.ProseMirror-selectednode {
   @apply my-0;
 }
 
+.node-group {
+  @apply flex grow;
+}
+
 #guide .group.row > * {
   @apply not-last:mr-4;
+}
+
+#guide a {
+  text-decoration: underline;
 }
 
 ul[data-type='taskList'] > li {

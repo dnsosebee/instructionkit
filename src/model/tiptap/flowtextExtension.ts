@@ -26,7 +26,7 @@ const FlowtextExtension = Extension.create({
       GroupNode,
       CaseNode,
       AssigneeNode,
-      LinkNode,
+      // LinkNode,
       TaskList.configure({
         HTMLAttributes: {
           class: 'not-prose',
