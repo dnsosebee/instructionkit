@@ -1,6 +1,6 @@
 import { Node, nodeInputRule } from '@tiptap/core'
+import { dropImagePlugin, UploadFn } from './image/dropImage'
 import { mergeAttributes } from '@tiptap/react'
-import { dropImagePlugin, UploadFn } from './dropImage'
 
 // Gratefully stolen from https://gist.github.com/waptik/f44b0d3c803fade75456817b1b1df6b4
 
