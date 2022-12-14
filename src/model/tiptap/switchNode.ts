@@ -48,7 +48,7 @@ const SwitchNode = Node.create({
     return [
       'switch',
       mergeAttributes(HTMLAttributes, {
-        class: 'font-bold flex',
+        class: 'font-bold flex flex-wrap',
       }),
       0,
     ]

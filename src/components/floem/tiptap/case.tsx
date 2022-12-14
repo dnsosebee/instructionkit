@@ -36,7 +36,7 @@ export const Case = (props: NodeViewProps) => {
   return (
     <>
       <NodeViewWrapper
-        className={`flex flex-col relative border border-sky-500 rounded-md overflow-hidden ${buttonClasses}`}
+        className={`flex flex-col relative border border-sky-500 rounded-md mb-2 overflow-hidden ${buttonClasses}`}
         as='div'
       >
         <NodeViewContent

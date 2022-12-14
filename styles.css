@@ -14,8 +14,8 @@
 body,
 html,
 #__next {
-  height: 100%;
-  width: 100%;
+  min-height: 100%;
+  min-width: 100%;
   margin: 0;
   padding: 0;
   @apply bg-slate-900;
@@ -190,4 +190,9 @@ ul[data-type='taskList'] > li {
 
 ul[data-type='taskList'] > li > label {
   @apply mr-2;
+}
+
+/* This is just to give some upper bound on the width of paragraphs in the guide. It's not a perfect solution, but it's better than nothing. */
+#guide p {
+  max-width: 800px;
 }

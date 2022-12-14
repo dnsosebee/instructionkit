@@ -119,35 +119,29 @@ export const Guide = ({ floem }: GuideProps) => {
       id='guide'
       className=' bg-slate-900 grow flex flex-col items-center p-2 min-h-full min-w-full'
     >
-      {/* reversed so that new elements transition in smoothly at the bottom (at least, sometimes they do) */}
-      <div className='flex flex-col-reverse overflow-auto'>
-        <div className='flex flex-col'>
-          {pages.map((page, i) => (
-            <div
-              id={'page ' + i}
-              key={i}
-              className='guide-page overflow-hidden rounded-lg shadow my-5 p-5 flex flex-col prose-2xl text-white prose-headings:font-bold prose-h1:text-9xl prose-h2:text-7xl prose-h3:text-5xl prose-h4:text-3xl'
-            >
-              {page.map((step, j) => {
-                const { ui, value } = step.step
-                const active = i === activePage && j === page.size - 1
-                const onHop = async (value: any, chosenCaseId?: string) => {
-                  setState(await rewindAndApply(state, floem, i, j, value, chosenCaseId))
-                }
-                return (
-                  <StepView
-                    uiConfig={ui}
-                    advancerProps={{ active, value, onHop }}
-                    key={`r ${i} s ${j} f ${step.step.consequences.flowFrom.flow}`}
-                  />
-                )
-              })}
-            </div>
-          ))}
-        </div>
-        {/* <div className='text-3xl text-white mt-3 font-bold tracking-tight text-gray-50'>
-          {floem.title}
-        </div> */}
+      <div className='flex flex-col'>
+        {pages.map((page, i) => (
+          <div
+            id={'page ' + i}
+            key={i}
+            className='guide-page overflow-hidden rounded-lg shadow my-5 p-5 flex flex-col prose-2xl text-white prose-headings:font-bold prose-h1:text-9xl prose-h2:text-7xl prose-h3:text-5xl prose-h4:text-3xl'
+          >
+            {page.map((step, j) => {
+              const { ui, value } = step.step
+              const active = i === activePage && j === page.size - 1
+              const onHop = async (value: any, chosenCaseId?: string) => {
+                setState(await rewindAndApply(state, floem, i, j, value, chosenCaseId))
+              }
+              return (
+                <StepView
+                  uiConfig={ui}
+                  advancerProps={{ active, value, onHop }}
+                  key={`r ${i} s ${j} f ${step.step.consequences.flowFrom.flow}`}
+                />
+              )
+            })}
+          </div>
+        ))}
       </div>
     </div>
   )

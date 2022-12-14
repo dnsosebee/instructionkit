@@ -33,7 +33,7 @@ const GroupNode = Node.create({
     return [
       'div',
       mergeAttributes(HTMLAttributes, {
-        class: `group ${HTMLAttributes.row ? 'flex row' : 'column'}`,
+        class: `group ${HTMLAttributes.row ? 'flex row flex-wrap' : 'column'}`,
       }),
       0,
     ]
