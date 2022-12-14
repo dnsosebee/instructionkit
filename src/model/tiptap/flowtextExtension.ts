@@ -13,7 +13,7 @@ import { createImageExtension } from './imageNode'
 import GroupNode from './groupNode'
 import SwitchNode from './switchNode'
 import { uploadBlob } from './image/uploadBlob'
-import Link from './linkNode'
+import LinkNode from './linkNode'
 
 const FlowtextExtension = Extension.create({
   addExtensions() {
@@ -26,7 +26,7 @@ const FlowtextExtension = Extension.create({
       GroupNode,
       CaseNode,
       AssigneeNode,
-      Link,
+      LinkNode,
       TaskList.configure({
         HTMLAttributes: {
           class: 'not-prose',

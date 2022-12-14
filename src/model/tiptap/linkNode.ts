@@ -1,13 +1,10 @@
 import { Mark, markPasteRule, mergeAttributes } from '@tiptap/core'
-import { ReactNodeViewRenderer } from '@tiptap/react'
 import { find, registerCustomProtocol, reset } from 'linkifyjs'
 import { Plugin } from 'prosemirror-state'
 
 import { autolink } from './link/autolink'
 import { clickHandler } from './link/clickHandler'
 import { pasteHandler } from './link/pasteHandler'
-
-import LinkView from './link/link'
 
 export interface LinkOptions {
   /**
@@ -106,17 +103,12 @@ export const LinkNode = Mark.create<LinkOptions>({
   },
 
   parseHTML() {
-    // return [{ tag: 'link' }]
     return [{ tag: 'a[href]:not([href *= "javascript:" i])' }]
   },
 
   renderHTML({ HTMLAttributes }) {
-    return ['div', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
+    return ['a', mergeAttributes(this.options.HTMLAttributes, HTMLAttributes), 0]
   },
-
-  // addNodeView() {
-  //   return ReactNodeViewRenderer(LinkView)
-  // },
 
   addCommands() {
     return {
