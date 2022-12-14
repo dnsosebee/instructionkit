@@ -199,6 +199,7 @@ ul[data-type='taskList'] > li > label {
 }
 
 /* This is just to give some upper bound on the width of paragraphs in the guide. It's not a perfect solution, but it's better than nothing. */
-#guide p {
+#guide p,
+#guide h4 {
   max-width: 800px;
 }
