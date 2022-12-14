@@ -172,6 +172,10 @@ hr.ProseMirror-selectednode {
   @apply my-0;
 }
 
+.node-group {
+  @apply flex;
+}
+
 #guide .group.row > * {
   @apply not-last:mr-4;
 }

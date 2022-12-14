@@ -16,16 +16,20 @@ export const Group = (props: NodeViewProps) => {
   }
 
   return (
-    <NodeViewWrapper className={`group rounded p-0`} row={row.toString()}>
+    <NodeViewWrapper
+      className={`group grow rounded p-0 bg-zinc-50 ${row ? '' : 'flex'}`}
+      row={row.toString()}
+    >
       <div
-        className={`options flex items-center bg-gray-200 rounded mb-1 p-1 text-xs text-gray-500`}
+        className={`options flex items-center bg-zinc-100 rounded text-xs text-gray-500 ${
+          row ? 'mb-1' : 'flex flex-col mr-1'
+        }`}
         contentEditable='false'
       >
-        Row
-        <input type='checkbox' className={`ml-1`} onChange={onRowCheckboxChange} checked={row} />
+        <input type='checkbox' className={``} onChange={onRowCheckboxChange} checked={row} />
       </div>
       <NodeViewContent
-        className={`content ${row ? 'row' : 'column'}`}
+        className={`content grow ${row ? 'row' : 'column'}`}
         suppressContentEditableWarning={true}
       />
     </NodeViewWrapper>

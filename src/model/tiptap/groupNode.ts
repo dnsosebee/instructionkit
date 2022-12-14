@@ -4,15 +4,13 @@ import Group from './group/group'
 const ROW_INPUT_REGEX = /^\/row $/
 
 const GroupNode = Node.create({
-  name: 'row',
+  name: 'group',
 
   group: 'block',
 
   content: 'block+',
 
   defining: true,
-
-  joinable: false,
 
   addAttributes() {
     return {
