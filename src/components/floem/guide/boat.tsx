@@ -80,8 +80,9 @@ const helper = async (data: {
   let match
   logger.debug('helper, element', el)
 
-  // booty injections
+  // injections
   if (el.tagName !== 'PRE') {
+    // booty injections
     el.innerHTML = el.innerHTML.replaceAll(
       /{ *((?:(?:[A-z_]+[A-z_0-9]*)\.?)+) *}/g,
       (match, bootyName) => {
@@ -95,6 +96,12 @@ const helper = async (data: {
 
         return bootyValue.toString()
       },
+    )
+
+    // link injections
+    el.innerHTML = el.innerHTML.replaceAll(
+      /^\[([\w\s\d]+)\]\(((?:\/|https?:\/\/)[\w\d./?=#]+)\)$/g,
+      (match, text, url) => `<a href="${url}">${text}</a>`,
     )
   }
 
