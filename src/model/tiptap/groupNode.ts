@@ -32,7 +32,6 @@ const GroupNode = Node.create({
   },
 
   renderHTML({ HTMLAttributes }) {
-    console.log('Rendering HTML', HTMLAttributes)
     return [
       'div',
       mergeAttributes(HTMLAttributes, {
