@@ -1,7 +1,6 @@
 import UniqueID from '@tiptap-pro/extension-unique-id'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
 import { Gapcursor } from '@tiptap/extension-gapcursor'
-import Link from '@tiptap/extension-link'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import { Extension } from '@tiptap/react'
@@ -14,6 +13,7 @@ import { createImageExtension } from './imageNode'
 import GroupNode from './groupNode'
 import SwitchNode from './switchNode'
 import { uploadBlob } from './image/uploadBlob'
+import Link from './linkNode'
 
 const FlowtextExtension = Extension.create({
   addExtensions() {
