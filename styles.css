@@ -176,6 +176,10 @@ hr.ProseMirror-selectednode {
   @apply not-last:mr-4;
 }
 
+#guide a {
+  text-decoration: underline;
+}
+
 ul[data-type='taskList'] > li {
   @apply flex items-center;
 }
