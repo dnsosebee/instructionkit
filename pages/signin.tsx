@@ -3,7 +3,6 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import MarketingNav from '../src/components/layout/marketingNav'
-import { redirectTo } from '../src/components/shared/redirect'
 import { logger } from '../src/logger'
 
 const SignIn = () => {
@@ -23,7 +22,7 @@ const SignIn = () => {
 
     if (authResponse.data.user) {
       logger.debug('signed in', authResponse.data.user)
-      return redirectTo('/app')
+      // return redirectTo('/app')
     }
   }
 

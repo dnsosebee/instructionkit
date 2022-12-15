@@ -1,6 +1,6 @@
 import { ReadTransaction } from 'replicache'
 import z from 'zod'
-import { genId, key, unkey } from '../../../IdsAndKeys'
+import { genId, id, key } from '../../../IdsAndKeys'
 
 export const WORKSPACE_KEY_PREFIX = 'ws/'
 export const WORKSPACE_ID_LENGTH = 8
@@ -14,7 +14,7 @@ export const workspaceSchema = workspaceValueSchema.extend({
 })
 export const genWorkspaceId = genId(WORKSPACE_ID_LENGTH)
 export const workspaceKey = key(WORKSPACE_KEY_PREFIX)
-const workspaceId = unkey(WORKSPACE_KEY_PREFIX)
+const workspaceId = id(WORKSPACE_KEY_PREFIX)
 
 export type RepWorkspace = z.infer<typeof workspaceSchema>
 export type WorkspaceUpdate = { id: string } & Partial<Omit<RepWorkspace, 'createdAt'>>
