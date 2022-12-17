@@ -100,7 +100,7 @@ const helper = async (data: {
 
     // link injections
     el.innerHTML = el.innerHTML.replaceAll(
-      /\[([\w\s\d]+)\]\(((?:http(?:s)?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*))\)/g,
+      /\[(.+)\]\(((?:http(?:s)?:\/\/.)?(?:www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b(?:[-a-zA-Z0-9@:%_+.~#?&//=]*))\)/g,
       (match, text, url) => `<a href="${url}">${text}</a>`,
     )
   }
