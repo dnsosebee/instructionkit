@@ -17,6 +17,8 @@ import { workspaceMutators } from '../../../src/model/replicache/spaces/proj-[id
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { spaceID } = req.query
 
+  // TODO delete this obviously
+  return res.status(500).json({ error: 'not implemented' })
   if (spaceID === APP_SPACE_ID) {
     await handleRequest(req, res, appMutators)
   } else {

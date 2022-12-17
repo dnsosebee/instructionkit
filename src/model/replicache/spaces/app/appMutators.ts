@@ -21,7 +21,7 @@ export const useAppRep = () => {
   return useReplicache<AppMutators>({ name: APP_SPACE_ID, mutators: appMutators })
 }
 
-const appMutators = {
+export const appMutators = {
   // invites
   async createOrUpdateInvite(tx: WriteTransaction, invite: RepInvite) {
     logger.info('createOrUpdateInvite', invite)

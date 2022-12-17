@@ -1,14 +1,17 @@
 import { logger } from '../../../src/logger'
-import { App } from '../../../src/routeComponents/route'
+import { LoadSession } from '../../../src/routeComponents/loadSession/loadSession'
 
 export default () => {
-  logger.debug('On page app/index.tsx')
+  logger.debug('Load page app/index.tsx')
   return (
-    <App
+    <LoadSession
       route={{
         do: 'loadSession',
         then: {
           do: 'loadAppRep',
+          then: {
+            do: 'accessFallbackWorkspace',
+          },
         },
       }}
     />

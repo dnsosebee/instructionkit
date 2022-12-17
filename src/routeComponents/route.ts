@@ -1,5 +1,4 @@
-import React from 'react'
-import loadSession, { LoadSessionSubroute } from './loadSession/loadSession'
+import { LoadSessionSubroute } from './loadSession/loadSession'
 
 export type ActionSubroute<
   T extends {
@@ -28,4 +27,23 @@ export type ActionSubroute<
 
 export type Route = LoadSessionSubroute
 
-export const App = loadSession as React.FC<{ route: Route }>
+// export const AppRoute =
+//   /** @xstate-layout N4IgpgJg5mDOIC5QEMAOqBKB7ArgFzAGIBlACQHkB1AfQDEBBAGUYCF6BhAaWsvI0+IAFDgFEA2gAYAuolCossAJZ5FWAHayQAD0QAWAEwAaEAE9EARgDMATgB01gOwBWfQDZdD69YAclibu8AX2DjNSwIOE00TFwCTXklFXVNHQQAWldjM3TXWwl8gstXS11rAyDA42jsfDBbAFtkACcAazAVNSh4hWVVDSRtPSNTRG9zWwCnVzG3fO9SkJBq2Lro7sS+lL1dLO3x6yddG0tzfSdrfUsHReXa22jbWAALLAB3WmQAG0+AI2QAYxalCwrVgqABYHWvWSA1SF12CBcdl0ujmDncEnM1nMN3QNQI93Qjxer2BoPB-0hAwS0P6oFS5gkDls5lc+mcTjmElcDnMDgRrnO9iKgtcrLc5nOwWCQA */
+//   createMachine({
+//     id: 'appRoute',
+
+//     states: {
+//       marketing: {},
+//       app: {
+//         states: {
+//           showFallbackWorkspace: {},
+//           showWorkspace: {},
+//         },
+//       },
+//     },
+//     initial: 'marketing',
+
+//     on: {
+//       SHOW_FALLBACK_WORKSPACE: 'app.accessFallbackWorkspace'
+//     },
+//   })

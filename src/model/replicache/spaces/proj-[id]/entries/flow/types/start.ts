@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { key } from '../../../../../IdsAndKeys'
-import { flowIdSchema, FLOW_KEY_PREFIX } from '../flow'
+import { flowIdSchema } from '../flow'
+import { FLOW_KEY_PREFIX } from '../key'
 import { branchValueSchema } from './branch'
 
 export const START_FLOW_TYPE = 'start'

@@ -1,7 +1,8 @@
 import { JSONContent } from '@tiptap/react'
 import { z } from 'zod'
 import { key } from '../../../../../IdsAndKeys'
-import { flowIdSchema, flowValueSchema, FLOW_KEY_PREFIX } from '../flow'
+import { flowIdSchema, flowValueSchema } from '../flow'
+import { FLOW_KEY_PREFIX } from '../key'
 
 export const BRANCH_FLOW_TYPE = 'branch'
 export const branchKey = key(FLOW_KEY_PREFIX + BRANCH_FLOW_TYPE + '/')
