@@ -110,7 +110,6 @@ export default () => {
                     autoComplete='company'
                     className='block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm'
                     placeholder='Acme Inc.'
-                    required
                   />
                 </div>
               </div>
@@ -130,7 +129,6 @@ export default () => {
                     autoComplete='job-title'
                     className='block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm'
                     placeholder='Designer'
-                    required
                   />
                 </div>
               </div>
