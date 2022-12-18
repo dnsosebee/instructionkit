@@ -1,3 +1,4 @@
+import { proxy } from 'valtio'
 import { LoadSessionSubroute } from './loadSession/loadSession'
 
 export type ActionSubroute<
@@ -47,3 +48,15 @@ export type Route = LoadSessionSubroute
 //       SHOW_FALLBACK_WORKSPACE: 'app.accessFallbackWorkspace'
 //     },
 //   })
+
+type RouteState =
+  | {
+      accessFallbackWorkspace: true
+    }
+  | {
+      accessWorkspace: {
+        workspaceId: string
+      }
+    }
+
+export const routeState = proxy<RouteState>(undefined)

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ActionSubroute } from '../../../route'
 import { useAppRepCtx, UserInviteWorkspace, UserMembershipWorkspace } from '../loadAppRep'
 import { LoadProjects, LoadProjectsSubroute } from './loadProjects/loadProjects'
@@ -21,6 +21,10 @@ export const accessWorkspaceContext = React.createContext<AccessWorkspaceContext
 
 type UserWorkspace = UserMembershipWorkspace | UserInviteWorkspace
 
+type AccessWorkspaceState = {
+  workspaceId: string
+}
+
 export const AccessWorkspace = ({
   route,
   fallback,
@@ -30,27 +34,26 @@ export const AccessWorkspace = ({
 }) => {
   const { userMembershipWorkspaces, userInviteWorkspaces } = useAppRepCtx()
 
-  const [state, setState] = useState<{ workspaceId: string; userWorkspace: UserWorkspace | null }>({
-    workspaceId: route.do === 'accessWorkspace' ? route.withInput : '',
-    userWorkspace: null,
+  useEffect(() => {
+    if (route.do === 'accessFallbackWorkspace') {
+      window.history.pushState({}, '', window.location.origin + '/v1/app/' + fallback)
+    }
+  }, [route.do])
+  const [state, setState] = useState<AccessWorkspaceState>({
+    workspaceId: route.do === 'accessWorkspace' ? route.withInput : fallback,
   })
+
   const getUserWorkspace = (workspaceId: string) => {
     return (
       userMembershipWorkspaces.find(ws => ws.workspace.id === workspaceId) ||
       userInviteWorkspaces.find(ws => ws.workspace.id === workspaceId)
     )
   }
+  const userWorkspace = getUserWorkspace(state.workspaceId)
+
   const accessWorkspace = (workspaceId: string) => {
     window.history.pushState({}, '', window.location.origin + '/v1/app/' + workspaceId)
-    setState({ workspaceId, userWorkspace: null })
-  }
-  if (!state.userWorkspace) {
-    const userWorkspace = getUserWorkspace(state.workspaceId)
-    if (userWorkspace) {
-      setState({ workspaceId: state.workspaceId, userWorkspace })
-    } else {
-      accessWorkspace(fallback)
-    }
+    setState({ workspaceId })
   }
 
   const nextRoute: AccessWorkspaceSubroute['then'] =
