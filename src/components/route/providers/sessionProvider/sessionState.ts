@@ -1,6 +1,6 @@
 import { Session } from '@supabase/auth-helpers-react'
 import { assign, createMachine } from 'xstate'
-import { Database } from '../../lib/database.types'
+import { Database } from '../../../../lib/database.types'
 
 export type Profile = Pick<
   Database['public']['Tables']['profiles']['Row'],

@@ -1,5 +1,5 @@
 import { RepProject } from '../../../../../model/replicache/spaces/ws-[id]/entries/proj'
-import { ActionSubroute } from '../../../../route'
+import { ActionSubroute } from '../../../../routeOld'
 
 export type LoadProjectsSubroute = ActionSubroute<{
   name: 'loadProjects'

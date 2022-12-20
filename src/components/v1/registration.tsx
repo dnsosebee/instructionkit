@@ -1,7 +1,7 @@
 import Image from 'next/image'
 import { logger } from '../../logger'
 import { useSessionCtx } from '../../routeComponents/loadSession/loadSession'
-import { Profile } from '../../routeComponents/loadSession/sessionState'
+import { Profile } from '../route/providers/sessionProvider/sessionState'
 
 export default ({ setProfile }: { setProfile: (profile: Profile) => void }) => {
   const {

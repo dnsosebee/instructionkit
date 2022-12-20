@@ -9,35 +9,24 @@ import {
   listWorkspaces,
   RepWorkspace,
 } from '../../../model/replicache/spaces/app/entries/ws'
-import { ActionSubroute } from '../../routeOld'
-import { useSessionCtx } from '../loadSession'
-import {
-  AccessFallbackWorkspaceSubroute,
-  AccessWorkspace,
-  AccessWorkspaceSubroute,
-} from './accessWorkspace/accessWorkspace'
-
-export type LoadAppRepSubroute = ActionSubroute<{
-  name: 'loadAppRep'
-  subRoutes: [AccessWorkspaceSubroute, AccessFallbackWorkspaceSubroute]
-}>
+import { useSessionCtx } from './sessionProvider/sessionProvider'
 
 type AppRepContext = {
   appRep: AppRep
   userInviteWorkspaces: UserInviteWorkspace[]
   userMembershipWorkspaces: UserMembershipWorkspace[]
-  fallbackWorkspace: string | null
+  defaultWorkspaceId: string | null
   createWorkspace: () => void
 }
 
 export const appRepContext = React.createContext<AppRepContext | null>(null)
 
-export const LoadAppRep = ({ route }: { route: LoadAppRepSubroute }) => {
+export const AppRepProvider = ({ children }: { children: React.ReactNode }) => {
   const appRep = useAppRep()
   if (!appRep) {
     return <Loading />
   }
-  return <LoadAppRep2 route={route} appRep={appRep} />
+  return <InnerAppRepProvider appRep={appRep}>{children}</InnerAppRepProvider>
 }
 
 export type UserInviteWorkspace = {
@@ -52,7 +41,13 @@ export type UserMembershipWorkspace = {
 
 // TODO: should probably have some more accurate list subscriptions functions
 // This approach relies on syncing, which is unreliable
-const LoadAppRep2 = ({ route, appRep }: { appRep: AppRep; route: LoadAppRepSubroute }) => {
+const InnerAppRepProvider = ({
+  appRep,
+  children,
+}: {
+  appRep: AppRep
+  children: React.ReactNode
+}) => {
   const userInvites = useSubscribe(appRep, listInvites, null, [appRep])
   const userMemberships = useSubscribe(appRep, listMemberships, null, [appRep])
   const workspaces = useSubscribe(appRep, listWorkspaces, null, [appRep])
@@ -60,32 +55,33 @@ const LoadAppRep2 = ({ route, appRep }: { appRep: AppRep; route: LoadAppRepSubro
     return <Loading />
   }
   return (
-    <LoadAppRep3
-      route={route}
+    <InnerAppRepProvider2
       appRep={appRep}
       userInvites={userInvites}
       userMemberships={userMemberships}
       workspaces={workspaces}
-    />
+    >
+      {children}
+    </InnerAppRepProvider2>
   )
 }
 
-const LoadAppRep3 = ({
-  route,
+const InnerAppRepProvider2 = ({
+  children,
   appRep,
   userInvites,
   userMemberships,
   workspaces,
 }: {
+  children: React.ReactNode
   appRep: AppRep
-  route: LoadAppRepSubroute
   userInvites: RepInvite[]
   userMemberships: RepMembership[]
   workspaces: RepWorkspace[]
 }) => {
   const { session } = useSessionCtx()
 
-  const [fallback, setFallback] = useState<string | null>(null)
+  const [deafult, setDefault] = useState<string | null>(null)
 
   const userInviteWorkspaces = userInvites.map(invite => {
     const workspace = workspaces.find(ws => ws.id === invite.workspaceId)
@@ -102,8 +98,8 @@ const LoadAppRep3 = ({
     return { membership, workspace }
   })
   const createWorkspace = async () => {
-    if (fallback) {
-      setFallback(null)
+    if (deafult) {
+      setDefault(null)
     }
     const workspaceId = genWorkspaceId()
     await appRep.mutate.createWorkspaceWithOwner({
@@ -123,13 +119,13 @@ const LoadAppRep3 = ({
     if (userInviteWorkspaces.length === 0 && userMembershipWorkspaces.length === 0) {
       createWorkspace()
     } else if (userInviteWorkspaces.length > 0) {
-      setFallback(userInviteWorkspaces[0].workspace.id)
+      setDefault(userInviteWorkspaces[0].workspace.id)
     } else if (userMembershipWorkspaces.length > 0) {
-      setFallback(userMembershipWorkspaces[0].workspace.id)
+      setDefault(userMembershipWorkspaces[0].workspace.id)
     }
   }, [userInviteWorkspaces.length, userMembershipWorkspaces.length])
 
-  if (!fallback) {
+  if (!deafult) {
     return <Loading />
   }
   return (
@@ -138,11 +134,11 @@ const LoadAppRep3 = ({
         appRep,
         userInviteWorkspaces,
         userMembershipWorkspaces,
-        fallbackWorkspace: fallback,
+        defaultWorkspaceId: deafult,
         createWorkspace,
       }}
     >
-      <AccessWorkspace route={route.then} fallback={fallback} />
+      {children}
     </appRepContext.Provider>
   )
 }

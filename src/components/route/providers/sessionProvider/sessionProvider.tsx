@@ -1,21 +1,11 @@
 import { Session, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useMachine } from '@xstate/react'
 import React, { useEffect } from 'react'
-import SignIn from '../../../pages/signin'
-import {
-  Profile,
-  sessionStateMachine,
-} from '../../components/route/providers/sessionProvider/sessionState'
-import Loading from '../../components/shared/loading'
-import Registration from '../../components/v1/registration'
-import { Database } from '../../lib/database.types'
-import { ActionSubroute } from '../routeOld'
-import { LoadAppRep, LoadAppRepSubroute } from './loadAppRep/loadAppRep'
-
-export type LoadSessionSubroute = ActionSubroute<{
-  name: 'loadSession'
-  subRoutes: [LoadAppRepSubroute]
-}>
+import SignIn from '../../../../../pages/signin'
+import { Database } from '../../../../lib/database.types'
+import Loading from '../../../shared/loading'
+import Registration from '../../../v1/registration'
+import { Profile, sessionStateMachine } from './sessionState'
 
 type SessionContext = {
   session: Session
@@ -25,7 +15,7 @@ type SessionContext = {
 
 export const sessionContext = React.createContext<SessionContext | null>(null)
 
-export const LoadSession = ({ route }: { route: LoadSessionSubroute }) => {
+export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
   const [current, send] = useMachine(sessionStateMachine)
   const supabase = useSupabaseClient<Database>()
   const respondToAuth = (event: string, session: Session | null) => {
@@ -87,25 +77,27 @@ export const LoadSession = ({ route }: { route: LoadSessionSubroute }) => {
   if (current.matches('signedOut')) {
     return <SignIn />
   }
-  if (current.matches({ loadedSession: 'loadedProfile' }))
+  if (current.matches({ loadedSession: 'loadedProfile' })) {
     return (
       <sessionContext.Provider
         value={{ session: current.context.session, supabase, profile: current.context.profile }}
       >
         {current.matches({ loadedSession: { loadedProfile: 'registered' } }) ? (
-          <LoadAppRep route={route.then} />
+          children
         ) : (
           <Registration setProfile={setProfile} />
         )}
       </sessionContext.Provider>
     )
-  return <div>Something went wrong</div>
+  }
+  // should never get here
+  return null
 }
 
 export const useSessionCtx = () => {
   const ctx = React.useContext(sessionContext)
   if (!ctx) {
-    throw new Error('useSessionCtx must be used beneath the loadSession route component')
+    throw new Error('useSessionCtx must be used within a SessionProvider')
   }
   return ctx
 }

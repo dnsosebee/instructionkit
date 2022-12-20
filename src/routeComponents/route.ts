@@ -1,62 +1,101 @@
 import { proxy } from 'valtio'
-import { LoadSessionSubroute } from './loadSession/loadSession'
+import { ROUTE_CONFIG } from '../components/route/handlers/rootHandler'
 
-export type ActionSubroute<
-  T extends {
-    name: string
-    requiresInput?: boolean
-    subRoutes?: ActionSubroute<any>[]
-  },
-> = { do: T['name'] } & (T['requiresInput'] extends true
-  ? { withInput: string }
-  : { withInput?: undefined }) &
-  (T['subRoutes'] extends ActionSubroute<any>[]
-    ? {
-        then: T['subRoutes'][number]
-      }
-    : {
-        then?: undefined
-      })
+type UrlSegment = string
+type ParamName = string
+type ForkName = string
 
-// type SubrouteSchema = {do: z.ZodLiteral<string>, withInput?: z.ZodString, then?: Action['subrouteSchema']}
-// type Action = {
-//   subrouteSchema: SubrouteSchema
-//   url: (subroute: z.infer<SubrouteSchema>) => string
-// }
+export type ParamSubrouteConfig = {
+  paramName: ParamName
+  subRoute: ForkSubrouteConfig
+}
 
-// export const actionGen = (name:)
+export type ForkSubrouteConfig = {
+  forkName: ForkName
+  hasDefaultSubroute?: true
+  namedSubroutes?: Record<UrlSegment, ForkSubrouteConfig>
+  dynamicSubroute?: ParamSubrouteConfig
+}
 
-export type Route = LoadSessionSubroute
+export type SubrouteConfig = ParamSubrouteConfig | ForkSubrouteConfig
 
-// export const AppRoute =
-//   /** @xstate-layout N4IgpgJg5mDOIC5QEMAOqBKB7ArgFzAGIBlACQHkB1AfQDEBBAGUYCF6BhAaWsvI0+IAFDgFEA2gAYAuolCossAJZ5FWAHayQAD0QAWAEwAaEAE9EARgDMATgB01gOwBWfQDZdD69YAclibu8AX2DjNSwIOE00TFwCTXklFXVNHQQAWldjM3TXWwl8gstXS11rAyDA42jsfDBbAFtkACcAazAVNSh4hWVVDSRtPSNTRG9zWwCnVzG3fO9SkJBq2Lro7sS+lL1dLO3x6yddG0tzfSdrfUsHReXa22jbWAALLAB3WmQAG0+AI2QAYxalCwrVgqABYHWvWSA1SF12CBcdl0ujmDncEnM1nMN3QNQI93Qjxer2BoPB-0hAwS0P6oFS5gkDls5lc+mcTjmElcDnMDgRrnO9iKgtcrLc5nOwWCQA */
-//   createMachine({
-//     id: 'appRoute',
+export enum ForkType {
+  Named,
+  Dynamic,
+  Default,
+}
 
-//     states: {
-//       marketing: {},
-//       app: {
-//         states: {
-//           showFallbackWorkspace: {},
-//           showWorkspace: {},
-//         },
-//       },
-//     },
-//     initial: 'marketing',
-
-//     on: {
-//       SHOW_FALLBACK_WORKSPACE: 'app.accessFallbackWorkspace'
-//     },
-//   })
-
-type RouteState =
+type Fork =
   | {
-      accessFallbackWorkspace: true
+      type: ForkType.Default | ForkType.Dynamic
     }
   | {
-      accessWorkspace: {
-        workspaceId: string
-      }
+      type: ForkType.Named
+      urlSegment: UrlSegment
     }
 
-export const routeState = proxy<RouteState>(undefined)
+type RouteState = { params: Record<ParamName, string>; forks: Record<ForkName, Fork> }
+
+const forkUrlToRoute = (
+  urlSegments: string[],
+  forkSubrouteConfig: ForkSubrouteConfig,
+  routeState: RouteState,
+): RouteState => {
+  const [urlSegment, ...restUrlSegments] = urlSegments
+  const forkName = forkSubrouteConfig.forkName
+
+  if (urlSegment === undefined) {
+    if (forkSubrouteConfig.hasDefaultSubroute) {
+      routeState.forks[forkName] = { type: ForkType.Default }
+      return routeState
+    } else {
+      throw new Error('No default subroute')
+    }
+  }
+
+  if (forkSubrouteConfig.namedSubroutes) {
+    const subrouteConfig = forkSubrouteConfig.namedSubroutes[urlSegment]
+    if (subrouteConfig) {
+      routeState.forks[forkName] = { type: ForkType.Named, urlSegment }
+      return forkUrlToRoute(restUrlSegments, subrouteConfig, routeState)
+    }
+  }
+
+  if (forkSubrouteConfig.dynamicSubroute) {
+    routeState.forks[forkName] = { type: ForkType.Dynamic }
+    return paramUrlToRoute(urlSegments, forkSubrouteConfig.dynamicSubroute, routeState)
+  }
+
+  throw new Error('No matching subroute')
+}
+
+const paramUrlToRoute = (
+  urlSegments: string[],
+  paramSubrouteConfig: ParamSubrouteConfig,
+  routeState: RouteState,
+): RouteState => {
+  const [urlSegment, ...restUrlSegments] = urlSegments
+  const paramName = paramSubrouteConfig.paramName
+
+  if (urlSegment === undefined) {
+    throw new Error('No param value')
+  }
+
+  routeState.params[paramName] = urlSegment
+  return forkUrlToRoute(restUrlSegments, paramSubrouteConfig.subRoute, routeState)
+}
+
+export const urlToRoute = (url: string): RouteState => {
+  const routeState: RouteState = { params: {}, forks: {} }
+
+  const urlSegments = url.split('/').filter(segment => segment !== '')
+
+  return forkUrlToRoute(urlSegments, ROUTE_CONFIG, routeState)
+}
+
+export const globalRoute = proxy<{ state: RouteState }>(undefined)
+
+export const reroute = (route: string) => {
+  window.history.pushState({}, '', route)
+  globalRoute.state = urlToRoute(route)
+}
