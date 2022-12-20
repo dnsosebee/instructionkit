@@ -1,28 +1,15 @@
 import { ReadTransaction } from 'replicache'
 import { z } from 'zod'
 import { genId, scopedIds, scopedKey } from '../../../../IdsAndKeys'
-import { FLOW_KEY_PREFIX } from './key'
+import { FLOW_ID_LENGTH, FLOW_KEY_PREFIX } from './baseFlow'
 import { branchSchema, branchValueSchema, BRANCH_FLOW_TYPE } from './types/branch'
 import { refSchema, refValueSchema, REF_FLOW_TYPE } from './types/ref'
 import { startSchema, startValueSchema, START_FLOW_TYPE } from './types/start'
 import { subschema, subValueSchema, SUB_FLOW_TYPE } from './types/sub'
 
-export const FLOW_ID_LENGTH = 10
 export const genFlowId = genId(FLOW_ID_LENGTH)
 export const flowKey = scopedKey(FLOW_KEY_PREFIX) as (type: string, id: string) => string
 const flowIds = scopedIds(FLOW_KEY_PREFIX)
-
-export const flowValueSchema = z.object({
-  position: z.object({
-    x: z.number(),
-    y: z.number(),
-  }),
-  parent: z.string().length(FLOW_ID_LENGTH).optional(),
-})
-
-export const flowIdSchema = z.object({
-  id: z.string().length(FLOW_ID_LENGTH),
-})
 
 export const flowSchema = z.union([branchSchema, startSchema, subschema, refSchema])
 

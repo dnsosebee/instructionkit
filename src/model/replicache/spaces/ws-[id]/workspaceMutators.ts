@@ -1,24 +1,25 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { logger as parentLogger } from '../../../../logger'
-import { WORKSPACE_KEY_PREFIX } from '../app/entries/ws'
+import { workspaceKey, WORKSPACE_KEY_PREFIX } from '../app/entries/ws'
 import { projectKey, projectSchema, ProjectUpdate, RepProject } from './entries/proj'
 
 const logger = parentLogger.child({ module: 'workspaceMutators' })
 
 export const WORKSPACE_SPACE_PREFIX = WORKSPACE_KEY_PREFIX
+export const workspaceSpaceKey = workspaceKey
 
 export type WorkspaceMutators = typeof workspaceMutators
 export type WorkspaceRep = Replicache<WorkspaceMutators>
 
 export const useWorkspaceRep = (workspaceId: string) => {
   return useReplicache({
-    name: `${WORKSPACE_SPACE_PREFIX}${workspaceId}`,
+    name: workspaceSpaceKey(workspaceId),
     mutators: workspaceMutators,
   })
 }
 
-const workspaceMutators = {
+export const workspaceMutators = {
   // projects
   async createProject(tx: WriteTransaction, project: RepProject) {
     logger.info('createProject', project)

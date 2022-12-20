@@ -1,4 +1,4 @@
-import { proxy } from 'valtio'
+import { proxy, useSnapshot } from 'valtio'
 import { ROUTE_CONFIG } from '../components/route/handlers/rootHandler'
 
 type UrlSegment = string
@@ -85,7 +85,7 @@ const paramUrlToRoute = (
   return forkUrlToRoute(restUrlSegments, paramSubrouteConfig.subRoute, routeState)
 }
 
-export const urlToRoute = (url: string): RouteState => {
+const urlToRoute = (url: string): RouteState => {
   const routeState: RouteState = { params: {}, forks: {} }
 
   const urlSegments = url.split('/').filter(segment => segment !== '')
@@ -93,9 +93,15 @@ export const urlToRoute = (url: string): RouteState => {
   return forkUrlToRoute(urlSegments, ROUTE_CONFIG, routeState)
 }
 
-export const globalRoute = proxy<{ state: RouteState }>(undefined)
+const globalRoute = proxy<{ state: RouteState }>(undefined)
 
-export const reroute = (route: string) => {
-  window.history.pushState({}, '', route)
+export const getRoute = (): RouteState => useSnapshot(globalRoute).state
+
+// we should set replace to false if setting the route based on the URL
+// we should set replace to true if setting the route based on a user action
+export const setRoute = ({ route, replace }: { route: string; replace: boolean }) => {
+  if (replace) {
+    window.history.pushState({}, '', route)
+  }
   globalRoute.state = urlToRoute(route)
 }

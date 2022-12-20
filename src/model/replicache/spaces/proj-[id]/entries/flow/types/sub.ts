@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { key } from '../../../../../IdsAndKeys'
-import { flowIdSchema, flowValueSchema } from '../flow'
-import { FLOW_KEY_PREFIX } from '../key'
+import { flowIdSchema, flowValueSchema, FLOW_KEY_PREFIX } from '../baseFlow'
 import { RepStart } from './start'
 
 export const SUB_FLOW_TYPE = 'sub'

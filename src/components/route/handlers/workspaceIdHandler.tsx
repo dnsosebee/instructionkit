@@ -1,8 +1,7 @@
-import { useSnapshot } from 'valtio'
 import {
   ForkSubrouteConfig,
   ForkType,
-  globalRoute,
+  getRoute,
   ParamSubrouteConfig,
 } from '../../../routeComponents/route'
 import { FourOhFour } from '../../shared/404'
@@ -27,17 +26,17 @@ export const WORKSPACE_ID_ROUTE_CONFIG: ParamSubrouteConfig = {
 }
 
 export const WorkspaceIdHandler = () => {
-  const workspaceIdSnap = useSnapshot(globalRoute).state.params[WORKSPACE_ID_ROUTE_CONFIG.paramName]
+  const workspaceId = getRoute().params[WORKSPACE_ID_ROUTE_CONFIG.paramName]
   return (
-    <WorkspaceRepProvider>
+    <WorkspaceRepProvider workspaceId={workspaceId}>
       <WorkspaceHandler />
     </WorkspaceRepProvider>
   )
 }
 
 const WorkspaceHandler = () => {
-  const forkSnap = useSnapshot(globalRoute).state.forks[WORKSPACE_ROUTE_CONFIG.forkName]
-  switch (forkSnap) {
+  const workspaceFork = getRoute().forks[WORKSPACE_ROUTE_CONFIG.forkName]
+  switch (workspaceFork) {
     case { type: ForkType.Default }:
       return <div>INSERT WORKSPACE PROJECTS PAGE HERE</div>
     case { type: ForkType.Named, urlSegment: 'settings' }:

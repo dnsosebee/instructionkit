@@ -1,11 +1,12 @@
-import { useSnapshot } from 'valtio'
 import {
   ForkSubrouteConfig,
   ForkType,
-  globalRoute,
+  getRoute,
   ParamSubrouteConfig,
 } from '../../../routeComponents/route'
 import { FourOhFour } from '../../shared/404'
+import { ProjectRepProvider } from '../providers/projectRepProvider'
+import { WORKSPACE_ID_ROUTE_CONFIG } from './workspaceIdHandler'
 
 const PROJECT_ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'project',
@@ -24,13 +25,20 @@ export const PROJECT_ID_ROUTE_CONFIG: ParamSubrouteConfig = {
 }
 
 export const ProjectIdHandler = () => {
-  const projectIdSnap = useSnapshot(globalRoute).state.params[PROJECT_ID_ROUTE_CONFIG.paramName]
-  return <div>App</div>
+  const params = getRoute().params
+  return (
+    <ProjectRepProvider
+      workspaceId={params[WORKSPACE_ID_ROUTE_CONFIG.paramName]}
+      projectId={params[PROJECT_ID_ROUTE_CONFIG.paramName]}
+    >
+      <ProjectHandler />
+    </ProjectRepProvider>
+  )
 }
 
 const ProjectHandler = () => {
-  const forkSnap = useSnapshot(globalRoute).state.forks[PROJECT_ROUTE_CONFIG.forkName]
-  switch (forkSnap) {
+  const projectFork = getRoute().forks[PROJECT_ROUTE_CONFIG.forkName]
+  switch (projectFork) {
     case { type: ForkType.Default }:
       return <div>INSERT FLOWCHART PAGE HERE</div>
     case { type: ForkType.Named, urlSegment: 'preview' }:

@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { genId, id, key } from '../../../IdsAndKeys'
 
 export const PROJECT_KEY_PREFIX = 'proj/'
-export const PROJECT_ID_LENGTH = 14
+export const PROJECT_ID_LENGTH = 7
 
 const projectValueSchema = z.object({
   id: z.string().length(PROJECT_ID_LENGTH),

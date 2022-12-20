@@ -1,5 +1,4 @@
-import { useSnapshot } from 'valtio'
-import { ForkSubrouteConfig, ForkType, globalRoute } from '../../../routeComponents/route'
+import { ForkSubrouteConfig, ForkType, getRoute } from '../../../routeComponents/route'
 import { FourOhFour } from '../../shared/404'
 import { AppRepProvider } from '../providers/appRepProvider'
 import { SessionProvider } from '../providers/sessionProvider/sessionProvider'
@@ -14,8 +13,8 @@ export const ROUTE_CONFIG: ForkSubrouteConfig = {
 }
 
 export const RootHandler = () => {
-  const forkSnap = useSnapshot(globalRoute).state.forks[ROUTE_CONFIG.forkName]
-  switch (forkSnap) {
+  const rootFork = getRoute().forks[ROUTE_CONFIG.forkName]
+  switch (rootFork) {
     case { type: ForkType.Default }:
       return <div>INSERT LANDING PAGE HERE</div>
     case { type: ForkType.Named, urlSegment: 'app' }:

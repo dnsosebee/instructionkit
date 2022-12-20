@@ -1,5 +1,4 @@
-import { useSnapshot } from 'valtio'
-import { ForkSubrouteConfig, ForkType, globalRoute, reroute } from '../../../routeComponents/route'
+import { ForkSubrouteConfig, ForkType, getRoute, setRoute } from '../../../routeComponents/route'
 import { FourOhFour } from '../../shared/404'
 import { useAppRepCtx } from '../providers/appRepProvider'
 import { WorkspaceIdHandler, WORKSPACE_ID_ROUTE_CONFIG } from './workspaceIdHandler'
@@ -18,10 +17,10 @@ export const APP_ROUTE_CONFIG: ForkSubrouteConfig = {
 
 export const AppHandler = () => {
   const { defaultWorkspaceId } = useAppRepCtx()
-  const forkSnap = useSnapshot(globalRoute).state.forks[APP_ROUTE_CONFIG.forkName]
-  switch (forkSnap) {
+  const appFork = getRoute().forks[APP_ROUTE_CONFIG.forkName]
+  switch (appFork) {
     case { type: ForkType.Default }:
-      reroute(`/app/${defaultWorkspaceId}`)
+      setRoute({ route: `/app/${defaultWorkspaceId}`, replace: true })
       return null
     case { type: ForkType.Named, urlSegment: 'profile' }:
       return <div>INSERT PROFILE HERE</div>

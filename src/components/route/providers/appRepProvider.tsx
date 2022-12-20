@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSubscribe } from 'replicache-react'
 import Loading from '../../../components/shared/loading'
+import { createSpaceUtil } from '../../../model/replicache/createSpaceUtil'
 import { AppRep, useAppRep } from '../../../model/replicache/spaces/app/appMutators'
 import { listInvites, RepInvite } from '../../../model/replicache/spaces/app/entries/inv'
 import { listMemberships, RepMembership } from '../../../model/replicache/spaces/app/entries/member'
@@ -8,6 +9,7 @@ import {
   genWorkspaceId,
   listWorkspaces,
   RepWorkspace,
+  workspaceKey,
 } from '../../../model/replicache/spaces/app/entries/ws'
 import { useSessionCtx } from './sessionProvider/sessionProvider'
 
@@ -81,7 +83,7 @@ const InnerAppRepProvider2 = ({
 }) => {
   const { session } = useSessionCtx()
 
-  const [deafult, setDefault] = useState<string | null>(null)
+  const [defaultWorkspaceId, setDefaultWorkspaceId] = useState<string | null>(null)
 
   const userInviteWorkspaces = userInvites.map(invite => {
     const workspace = workspaces.find(ws => ws.id === invite.workspaceId)
@@ -97,21 +99,36 @@ const InnerAppRepProvider2 = ({
     }
     return { membership, workspace }
   })
-  const createWorkspace = async () => {
-    if (deafult) {
-      setDefault(null)
+  const createWorkspace = async (): Promise<string> => {
+    if (defaultWorkspaceId) {
+      setDefaultWorkspaceId(null)
     }
     const workspaceId = genWorkspaceId()
-    await appRep.mutate.createWorkspaceWithOwner({
-      workspace: {
-        id: workspaceId,
-        name: 'New Workspace',
-        icon: 'folder',
-        createdAt: Date.now(),
+    // we expect the mutation below to trigger the effect below, which will set the fallback
+    await createSpaceUtil(
+      appRep,
+      appRep.mutate.createWorkspaceWithOwner,
+      {
+        workspace: {
+          id: workspaceId,
+          name: 'New Workspace',
+          icon: 'folder',
+          createdAt: Date.now(),
+        },
+        userId: session.user.id,
       },
-      userId: session.user.id,
-    })
-    // we expect this to trigger the effect below, which will set the fallback
+      workspaceKey(workspaceId),
+    )
+    return workspaceId
+    // await appRep.mutate.createWorkspaceWithOwner({
+    //   workspace: {
+    //     id: workspaceId,
+    //     name: 'New Workspace',
+    //     icon: 'folder',
+    //     createdAt: Date.now(),
+    //   },
+    //   userId: session.user.id,
+    // })
   }
 
   // create a workspace whenever we don't have one
@@ -119,13 +136,13 @@ const InnerAppRepProvider2 = ({
     if (userInviteWorkspaces.length === 0 && userMembershipWorkspaces.length === 0) {
       createWorkspace()
     } else if (userInviteWorkspaces.length > 0) {
-      setDefault(userInviteWorkspaces[0].workspace.id)
+      setDefaultWorkspaceId(userInviteWorkspaces[0].workspace.id)
     } else if (userMembershipWorkspaces.length > 0) {
-      setDefault(userMembershipWorkspaces[0].workspace.id)
+      setDefaultWorkspaceId(userMembershipWorkspaces[0].workspace.id)
     }
   }, [userInviteWorkspaces.length, userMembershipWorkspaces.length])
 
-  if (!deafult) {
+  if (!defaultWorkspaceId) {
     return <Loading />
   }
   return (
@@ -134,7 +151,7 @@ const InnerAppRepProvider2 = ({
         appRep,
         userInviteWorkspaces,
         userMembershipWorkspaces,
-        defaultWorkspaceId: deafult,
+        defaultWorkspaceId: defaultWorkspaceId,
         createWorkspace,
       }}
     >
