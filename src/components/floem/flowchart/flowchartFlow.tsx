@@ -19,7 +19,7 @@ function FlowchartFlow({ data: { mutate, flow, floem }, selected }: FlowchartFlo
   const isBottom = !floem.darts.find(v => v.from == flow.id)
 
   return (
-    <div className='w-96'>
+    <div className='w-[42rem]'>
       {/* {
         isStart ? (
           <div className='pb-1 w-full'>
