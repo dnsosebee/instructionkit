@@ -1,5 +1,5 @@
 import { ForkSubrouteConfig, ForkType, getRoute } from '../../../lib/route'
-import { FourOhFour } from '../../shared/FourOhFour'
+import { FourOhFour } from '../../views/shared/FourOhFour'
 
 export const PROFILE_ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'profile',

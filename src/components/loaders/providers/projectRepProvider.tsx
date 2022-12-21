@@ -3,7 +3,7 @@ import {
   ProjectRep,
   useProjectRep,
 } from '../../../model/replicache/spaces/proj-[id]/projectMutators'
-import Loading from '../../shared/loading'
+import Loading from '../../views/shared/loading'
 
 export type ProjectRepContext = {
   projectRep: ProjectRep

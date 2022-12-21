@@ -1,5 +1,5 @@
 import { ForkSubrouteConfig, ForkType, getRoute, setRoute } from '../../../lib/route'
-import { FourOhFour } from '../../shared/FourOhFour'
+import { FourOhFour } from '../../views/shared/FourOhFour'
 import { useAppRepCtx } from '../providers/appRepProvider'
 import { ProfileHandler, PROFILE_ROUTE_CONFIG } from './profileHandler'
 import { WorkspaceIdHandler, WORKSPACE_ID_ROUTE_CONFIG } from './workspaceHandler'

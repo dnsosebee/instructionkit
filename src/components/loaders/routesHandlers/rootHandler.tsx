@@ -1,5 +1,5 @@
 import { ForkSubrouteConfig, ForkType, getRoute } from '../../../lib/route'
-import { FourOhFour } from '../../shared/FourOhFour'
+import { FourOhFour } from '../../views/shared/FourOhFour'
 import { AppRepProvider } from '../providers/appRepProvider'
 import { SessionProvider } from '../providers/sessionProvider/sessionProvider'
 import { AppHandler, APP_ROUTE_CONFIG } from './appHandler'

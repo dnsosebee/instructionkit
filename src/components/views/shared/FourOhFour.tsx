@@ -1,4 +1,4 @@
-import { logger as parentLogger } from '../../lib/logger'
+import { logger as parentLogger } from '../../../lib/logger'
 
 const logger = parentLogger.child({ component: 'FourOhFour' })
 

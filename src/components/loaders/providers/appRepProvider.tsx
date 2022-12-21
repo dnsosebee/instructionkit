@@ -10,7 +10,7 @@ import {
   listWorkspaces,
   RepWorkspace,
 } from '../../../model/replicache/spaces/app/entries/ws'
-import Loading from '../../shared/loading'
+import Loading from '../../views/shared/loading'
 import { useSessionCtx } from './sessionProvider/sessionProvider'
 
 const logger = parentLogger.child({ component: 'appRepProvider' })
@@ -20,7 +20,7 @@ type AppRepContext = {
   userInviteWorkspaces: UserInviteWorkspace[]
   userMembershipWorkspaces: UserMembershipWorkspace[]
   defaultWorkspaceId: string | null
-  createWorkspace: () => void
+  createWorkspace: () => Promise<string>
 }
 
 export const appRepContext = React.createContext<AppRepContext | null>(null)
