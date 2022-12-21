@@ -1,6 +1,6 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
-import { logger as parentLogger } from '../../../../logger'
+import { logger as parentLogger } from '../../../../lib/logger'
 import { AcceptInvite, inviteKey, inviteSchema, INVITE_KEY_PREFIX, RepInvite } from './entries/inv'
 import {
   membershipKey,

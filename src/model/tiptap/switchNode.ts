@@ -2,7 +2,7 @@ import { InputRule, mergeAttributes, Node } from '@tiptap/react'
 import { Fragment } from 'prosemirror-model'
 import { TextSelection } from 'prosemirror-state'
 import { findParentNodeOfType } from 'prosemirror-utils'
-import { logger } from '../../logger'
+import { logger } from '../../lib/logger'
 import { initialCase } from './caseNode'
 
 const BUTTON_SWITCH_INPUT_REGEX = /^(?: *(?<assignee>[A-z_]+[A-z0-9_]*) *= *)?\? $/

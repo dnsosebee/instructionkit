@@ -1,6 +1,6 @@
 import { mergeAttributes, Node, ReactNodeViewRenderer } from '@tiptap/react'
 import { EditorState } from 'prosemirror-state'
-import Case from '../../components/floem/tiptap/case'
+import { Case } from '../../components/app/flowchart/flowtext/nodes/case'
 
 const CaseNode = Node.create({
   name: 'case',

@@ -1,5 +1,5 @@
 /* global postMessage */
-import { logger as parentLogger } from '../../logger'
+import { logger as parentLogger } from '../logger'
 import { MessageTypes } from './flogramming'
 
 const logger = parentLogger.child({ module: 'worker' })

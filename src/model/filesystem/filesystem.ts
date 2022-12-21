@@ -1,20 +1,20 @@
-import { DataFloem, floemSchema } from '../replicache/spaces/proj-[id]/entries/dart/floem'
+import { RepVersion, versionSchema } from '../replicache/spaces/proj-[id]/entries/version'
 
-export const handleDownloadFloem = async (floem: DataFloem): Promise<void> => {
+export const handleDownloadVersion = async (version: RepVersion, title: string): Promise<void> => {
   try {
     const newHandle = await window.showSaveFilePicker({
-      suggestedName: `${floem.title}.floem`,
+      suggestedName: `${title}.floem`,
     })
     const writableStream = await newHandle.createWritable()
-    await writableStream.write(JSON.stringify(floem))
+    await writableStream.write(JSON.stringify(version))
     await writableStream.close()
   } catch (e) {
     console.error(e)
   }
 }
 
-export const handleUploadFloem = async (file: File): Promise<DataFloem> => {
+export const handleUploadFloem = async (file: File): Promise<RepVersion> => {
   const json = await file.text()
-  const floem = JSON.parse(json)
-  return floemSchema.parse(floem) as DataFloem
+  const version = JSON.parse(json)
+  return versionSchema.parse(version)
 }

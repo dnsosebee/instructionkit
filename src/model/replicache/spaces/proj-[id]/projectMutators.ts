@@ -1,6 +1,6 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
-import { logger as parentLogger } from '../../../../logger'
+import { logger as parentLogger } from '../../../../lib/logger'
 import { nextId, scopedKey } from '../../IdsAndKeys'
 import { PROJECT_KEY_PREFIX } from '../ws-[id]/entries/proj'
 import { flowKey, FlowPositionUpdate, FlowRemove, flowSchema, RepFlow } from './entries/flow/flow'

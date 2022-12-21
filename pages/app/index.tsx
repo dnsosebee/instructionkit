@@ -1,5 +1,5 @@
-import { RootHandler } from '../../src/components/route/handlers/rootHandler'
-import { setRoute } from '../../src/routeComponents/route'
+import { RootHandler } from '../../src/components/loaders/routesHandlers/rootHandler'
+import { setRoute } from '../../src/lib/route'
 
 const AppPage = () => {
   setRoute({ route: `/app`, replace: false })

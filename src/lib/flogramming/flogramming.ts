@@ -1,5 +1,5 @@
 import { Map } from 'immutable'
-import { logger as parentLogger } from '../../logger'
+import { logger as parentLogger } from '../logger'
 import { GenericMessageToWorker, MessageFromWorker, MessageToWorker } from './flogram.worker'
 import { getDeclaredIdentifiers } from './parse'
 

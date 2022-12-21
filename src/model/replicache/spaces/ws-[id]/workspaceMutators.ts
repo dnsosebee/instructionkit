@@ -1,6 +1,6 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
-import { logger as parentLogger } from '../../../../logger'
+import { logger as parentLogger } from '../../../../lib/logger'
 import { workspaceKey, WORKSPACE_KEY_PREFIX } from '../app/entries/ws'
 import { projectKey, projectSchema, ProjectUpdate, RepProject } from './entries/proj'
 

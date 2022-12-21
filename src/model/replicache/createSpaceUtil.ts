@@ -1,6 +1,6 @@
 import { MutatorDefs, Replicache } from 'replicache'
 import { createDetailRepHelper } from '../../../pages/api/createDetailRep'
-import { logger as parentLogger } from '../../logger'
+import { logger as parentLogger } from '../../lib/logger'
 
 const logger = parentLogger.child({ module: 'createSpaceUtil.ts' })
 

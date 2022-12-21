@@ -2,7 +2,7 @@ import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { createSpace, spaceExists } from 'replicache-nextjs/lib/backend'
 import { Database } from '../../src/lib/database.types'
-import { logger as parentLogger } from '../../src/logger'
+import { logger as parentLogger } from '../../src/lib/logger'
 
 const logger = parentLogger.child({ module: 'createDetailRep.ts' })
 
