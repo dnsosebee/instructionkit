@@ -8,11 +8,20 @@ export const Group = (props: NodeViewProps) => {
   const isChart = context.view === View.Flowchart
 
   const [row, setRow] = useState(props.node.attrs.row)
+  const [id, setId] = useState(props.node.attrs.id)
+
+  console.log('ID!', props.node.attrs.id)
 
   const onRowCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     console.log('Checkbox changed', e.target.checked)
     setRow(e.target.checked)
     props.updateAttributes({ row: e.target.checked })
+  }
+
+  const onIdChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log('ID changed', e.target.innerText)
+    setId(e.target.textContent)
+    props.updateAttributes({ id: e.target.textContent })
   }
 
   return (
@@ -27,6 +36,21 @@ export const Group = (props: NodeViewProps) => {
         contentEditable='false'
       >
         <input type='checkbox' className={`rounded`} onChange={onRowCheckboxChange} checked={row} />
+        <div
+          className={`flex relative rounded rounded border border-zinc-100 bg-zinc-50 pl-0.5 items-center ${
+            row ? 'ml-1' : 'mt-1'
+          }`}
+        >
+          <div className='absolute pl-1 pointer-events-none'>#</div>
+          <div
+            contentEditable='true'
+            onInput={onIdChange}
+            suppressContentEditableWarning={true}
+            className={`pl-3 py-0.5 pr-1`}
+          >
+            {props.node.attrs.id}
+          </div>
+        </div>
       </div>
       <NodeViewContent
         className={`content grow ${row ? 'row' : 'column'}`}

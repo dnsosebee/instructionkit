@@ -17,6 +17,9 @@ const GroupNode = Node.create({
       row: {
         default: 'false',
       },
+      id: {
+        default: '',
+      },
     }
   },
 
