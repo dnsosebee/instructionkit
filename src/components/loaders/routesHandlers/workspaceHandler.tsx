@@ -1,7 +1,8 @@
 import { ForkSubrouteConfig, ForkType, getRoute, ParamSubrouteConfig } from '../../../lib/route'
 import { FourOhFour } from '../../shared/FourOhFour'
+import { useAppRepCtx } from '../providers/appRepProvider'
 import { WorkspaceRepProvider } from '../providers/workspaceRepProvider'
-import { ProjectIdHandler, PROJECT_ID_ROUTE_CONFIG } from './projectIdHandler'
+import { ProjectIdHandler, PROJECT_ID_ROUTE_CONFIG } from './projectHandler'
 
 const WORKSPACE_ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'workspace',
@@ -22,6 +23,20 @@ export const WORKSPACE_ID_ROUTE_CONFIG: ParamSubrouteConfig = {
 
 export const WorkspaceIdHandler = () => {
   const workspaceId = getRoute().params[WORKSPACE_ID_ROUTE_CONFIG.paramName]
+  const { userMembershipWorkspaces, userInviteWorkspaces } = useAppRepCtx()
+  if (
+    !(
+      userInviteWorkspaces.find(v => v.workspace.id === workspaceId) ||
+      userMembershipWorkspaces.find(v => v.workspace.id === workspaceId)
+    )
+  ) {
+    return (
+      <FourOhFour
+        errorMessage={`user is not a member nor invitee of workspace with id '${workspaceId}'`}
+      />
+    )
+  }
+
   return (
     <WorkspaceRepProvider workspaceId={workspaceId}>
       <WorkspaceHandler />
@@ -31,14 +46,21 @@ export const WorkspaceIdHandler = () => {
 
 const WorkspaceHandler = () => {
   const workspaceFork = getRoute().forks[WORKSPACE_ROUTE_CONFIG.forkName]
-  switch (workspaceFork) {
-    case { type: ForkType.Default }:
+  switch (workspaceFork.type) {
+    case ForkType.Default:
       return <div>INSERT WORKSPACE PROJECTS PAGE HERE</div>
-    case { type: ForkType.Named, urlSegment: 'settings' }:
-      return <div>INSERT WORKSPACE SETTINGS PAGE HERE</div>
-    case { type: ForkType.Dynamic }:
+    case ForkType.Named:
+      switch (workspaceFork.urlSegment) {
+        case 'settings':
+          return <div>INSERT WORKSPACE SETTINGS PAGE HERE</div>
+        default:
+          return (
+            <FourOhFour
+              errorMessage={`unexpected urlSegment '${workspaceFork.urlSegment}' in workspace fork`}
+            />
+          )
+      }
+    case ForkType.Dynamic:
       return <ProjectIdHandler />
-    default:
-      return <FourOhFour />
   }
 }

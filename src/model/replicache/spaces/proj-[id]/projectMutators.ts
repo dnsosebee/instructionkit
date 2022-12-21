@@ -1,8 +1,9 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
+import { z } from 'zod'
 import { logger as parentLogger } from '../../../../lib/logger'
 import { nextId, scopedKey } from '../../IdsAndKeys'
-import { PROJECT_KEY_PREFIX } from '../ws-[id]/entries/proj'
+import { PROJECT_ID_LENGTH, PROJECT_KEY_PREFIX } from '../ws-[id]/entries/proj'
 import { flowKey, FlowPositionUpdate, FlowRemove, flowSchema, RepFlow } from './entries/flow/flow'
 import { branchKey, branchSchema, RepBranch } from './entries/flow/types/branch'
 import { refKey, RepRef } from './entries/flow/types/ref'
@@ -15,6 +16,10 @@ export const PROJECT_SPACE_PREFIX = PROJECT_KEY_PREFIX
 // for creating and accessing a project's replicache instance, we want to scope by workspaceId and projectId
 // note that this is different from the projectKey within the workspaceRep, which is not scoped by workspaceId
 export const projectSpaceKey = scopedKey(PROJECT_SPACE_PREFIX)
+export const projectSpaceKeySchema = z
+  .string()
+  .startsWith(PROJECT_SPACE_PREFIX)
+  .length(PROJECT_ID_LENGTH + PROJECT_SPACE_PREFIX.length)
 
 export type ProjectMutators = typeof projectMutators
 export type ProjectRep = Replicache<ProjectMutators>

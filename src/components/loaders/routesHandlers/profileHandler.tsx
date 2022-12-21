@@ -14,12 +14,23 @@ export const PROFILE_ROUTE_CONFIG: ForkSubrouteConfig = {
 
 export const ProfileHandler = () => {
   const profileFork = getRoute().forks[PROFILE_ROUTE_CONFIG.forkName]
-  switch (profileFork) {
-    case { type: ForkType.Default }:
+  switch (profileFork.type) {
+    case ForkType.Default:
       return <div>INSERT PROFILE HERE</div>
-    case { type: ForkType.Named, urlSegment: 'reset-password' }:
-      return <div>INSERT RESET PASSWORD HERE</div>
+    case ForkType.Named:
+      switch (profileFork.urlSegment) {
+        case 'reset-password':
+          return <div>INSERT RESET PASSWORD HERE</div>
+        default:
+          return (
+            <FourOhFour
+              errorMessage={`unexpected urlSegment '${profileFork.urlSegment}' in profile fork`}
+            />
+          )
+      }
     default:
-      return <FourOhFour />
+      return (
+        <FourOhFour errorMessage={`unexpected fork type '${profileFork.type}' in profile fork`} />
+      )
   }
 }

@@ -1,4 +1,6 @@
 import React from 'react'
+import { useSubscribe } from 'replicache-react'
+import { listProjects, RepProject } from '../../../model/replicache/spaces/ws-[id]/entries/proj'
 import {
   useWorkspaceRep,
   WorkspaceRep,
@@ -7,6 +9,7 @@ import Loading from '../../shared/loading'
 
 export type WorkspaceRepContext = {
   workspaceRep: WorkspaceRep
+  projects: RepProject[]
 }
 
 export const workspaceRepContext = React.createContext<WorkspaceRepContext | null>(null)
@@ -31,6 +34,24 @@ export const WorkspaceRepProvider = ({
     return <Loading />
   }
   return (
-    <workspaceRepContext.Provider value={{ workspaceRep }}>{children}</workspaceRepContext.Provider>
+    <InnerWorkspaceRepProvider workspaceRep={workspaceRep}>{children}</InnerWorkspaceRepProvider>
+  )
+}
+
+const InnerWorkspaceRepProvider = ({
+  children,
+  workspaceRep,
+}: {
+  children: React.ReactNode
+  workspaceRep: WorkspaceRep
+}) => {
+  const projects = useSubscribe(workspaceRep, listProjects, null, [workspaceRep])
+  if (!projects) {
+    return <Loading />
+  }
+  return (
+    <workspaceRepContext.Provider value={{ workspaceRep, projects }}>
+      {children}
+    </workspaceRepContext.Provider>
   )
 }

@@ -13,19 +13,30 @@ export const ROUTE_CONFIG: ForkSubrouteConfig = {
 }
 
 export const RootHandler = () => {
-  const rootFork = getRoute().forks[ROUTE_CONFIG.forkName]
-  switch (rootFork) {
-    case { type: ForkType.Default }:
+  const route = getRoute()
+  if (!route) return null
+
+  const rootFork = route.forks[ROUTE_CONFIG.forkName]
+  switch (rootFork.type) {
+    case ForkType.Default:
       return <div>INSERT LANDING PAGE HERE</div>
-    case { type: ForkType.Named, urlSegment: 'app' }:
-      return (
-        <SessionProvider>
-          <AppRepProvider>
-            <AppHandler />
-          </AppRepProvider>
-        </SessionProvider>
-      )
-    default:
-      return <FourOhFour />
+    case ForkType.Named:
+      switch (rootFork.urlSegment) {
+        case 'app':
+          return (
+            <SessionProvider>
+              <AppRepProvider>
+                <AppHandler />
+              </AppRepProvider>
+            </SessionProvider>
+          )
+        default:
+          return (
+            <FourOhFour
+              errorMessage={`unexpected urlSegment '${rootFork.urlSegment}' in root fork`}
+            />
+          )
+      }
   }
+  return <FourOhFour errorMessage={`unexpected fork type '${rootFork.type}' in root fork`} />
 }

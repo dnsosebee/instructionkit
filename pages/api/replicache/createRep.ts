@@ -1,17 +1,42 @@
 import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { createSpace, spaceExists } from 'replicache-nextjs/lib/backend'
-import { Database } from '../../src/lib/database.types'
-import { logger as parentLogger } from '../../src/lib/logger'
+import { ZodError } from 'zod'
+import { createRepBodySchema } from '../../../src/lib/apiHelpers'
+import { Database } from '../../../src/lib/database.types'
+import { logger as parentLogger } from '../../../src/lib/logger'
+import { projectSpaceKey } from '../../../src/model/replicache/spaces/proj-[id]/projectMutators'
+import { workspaceSpaceKey } from '../../../src/model/replicache/spaces/ws-[id]/workspaceMutators'
 
-const logger = parentLogger.child({ module: 'createDetailRep.ts' })
+const logger = parentLogger.child({ module: 'createRep.ts' })
 
 export default async (req: NextApiRequest, res: NextApiResponse<{ message: string }>) => {
-  const { spaceKey } = req.query as { spaceKey: string }
+  try {
+    createRepBodySchema.parse(req.body)
+  } catch (e: unknown) {
+    if (e instanceof ZodError) {
+      return res.status(400).json({ message: e.message })
+    }
+    throw e
+  }
 
-  if (await spaceExists(spaceKey)) {
-    logger.info('space exists')
-    return res.status(200).json({ message: 'space exists' })
+  let spaceId: string
+  switch (req.body.type) {
+    case 'workspace':
+      spaceId = workspaceSpaceKey(req.body.workspaceId)
+      break
+    case 'project':
+      spaceId = projectSpaceKey(req.body.workspaceId, req.body.projectId)
+      break
+    default:
+      return res.status(400).json({ message: `invalid type ${req.body.type}` })
+  }
+  if (!spaceId) {
+    return res.status(400).json({ message: 'spaceId is required' })
+  }
+
+  if (await spaceExists(spaceId)) {
+    return res.status(200).json({ message: `space ${spaceId} already exists` })
   }
 
   // no? then we need to check if the user has authority to create a workspace
@@ -42,18 +67,6 @@ export default async (req: NextApiRequest, res: NextApiResponse<{ message: strin
   //     return res.status(200).json({ message: 'no membership' })
   //   }
   // }
-  await createSpace(spaceKey)
-  logger.info('created space', { spaceKey })
-  return res.status(200).json({ message: 'created space' })
+  await createSpace(spaceId)
+  return res.status(200).json({ message: `created space ${spaceId}` })
 }
-
-export const createDetailRepHelper = async (spaceKey: string) =>
-  fetch('/api/createDetailRep', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      spaceKey,
-    }),
-  }).then(res => res.json() as Promise<{ message: string }>)

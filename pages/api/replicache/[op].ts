@@ -30,7 +30,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       await handleRequest(req, res, workspaceMutators)
     } else if (spaceID.startsWith(PROJECT_SPACE_PREFIX)) {
       await handleRequest(req, res, projectMutators)
+    } else {
+      return res.status(400).json({ error: 'invalid spaceID' })
     }
+  } else {
+    return res.status(400).json({ error: 'spaceID must be a string' })
   }
-  return res.status(400).json({ error: 'spaceID must be a string' })
 }

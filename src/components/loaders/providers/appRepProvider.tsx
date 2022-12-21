@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useSubscribe } from 'replicache-react'
-import { createSpaceUtil } from '../../../model/replicache/createSpaceUtil'
+import { logger as parentLogger } from '../../../lib/logger'
+import { createWorkspaceRepHelper } from '../../../model/replicache/createRepHelper'
 import { AppRep, useAppRep } from '../../../model/replicache/spaces/app/appMutators'
 import { listInvites, RepInvite } from '../../../model/replicache/spaces/app/entries/inv'
 import { listMemberships, RepMembership } from '../../../model/replicache/spaces/app/entries/member'
@@ -8,10 +9,11 @@ import {
   genWorkspaceId,
   listWorkspaces,
   RepWorkspace,
-  workspaceKey,
 } from '../../../model/replicache/spaces/app/entries/ws'
 import Loading from '../../shared/loading'
 import { useSessionCtx } from './sessionProvider/sessionProvider'
+
+const logger = parentLogger.child({ component: 'appRepProvider' })
 
 type AppRepContext = {
   appRep: AppRep
@@ -104,21 +106,9 @@ const InnerAppRepProvider2 = ({
       setDefaultWorkspaceId(null)
     }
     const workspaceId = genWorkspaceId()
+    logger.debug('Creating workspace', { workspaceId })
     // we expect the mutation below to trigger the effect below, which will set the fallback
-    await createSpaceUtil(
-      appRep,
-      appRep.mutate.createWorkspaceWithOwner,
-      {
-        workspace: {
-          id: workspaceId,
-          name: 'New Workspace',
-          icon: 'folder',
-          createdAt: Date.now(),
-        },
-        userId: session.user.id,
-      },
-      workspaceKey(workspaceId),
-    )
+    createWorkspaceRepHelper({ appRep, workspaceId, userId: session.user.id })
     return workspaceId
     // await appRep.mutate.createWorkspaceWithOwner({
     //   workspace: {

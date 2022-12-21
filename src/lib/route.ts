@@ -1,5 +1,8 @@
-import { proxy, useSnapshot } from 'valtio'
+import { proxy } from 'valtio'
 import { ROUTE_CONFIG } from '../components/loaders/routesHandlers/rootHandler'
+import { logger as parentLogger } from './logger'
+
+const logger = parentLogger.child({ module: 'route.ts' })
 
 type UrlSegment = string
 type ParamName = string
@@ -20,9 +23,9 @@ export type ForkSubrouteConfig = {
 export type SubrouteConfig = ParamSubrouteConfig | ForkSubrouteConfig
 
 export enum ForkType {
-  Named,
-  Dynamic,
-  Default,
+  Default = 'default',
+  Named = 'named',
+  Dynamic = 'dynamic',
 }
 
 type Fork =
@@ -93,15 +96,18 @@ const urlToRoute = (url: string): RouteState => {
   return forkUrlToRoute(urlSegments, ROUTE_CONFIG, routeState)
 }
 
-const globalRoute = proxy<{ state: RouteState }>(undefined)
+const route = proxy<{ state: RouteState }>(undefined)
 
-export const getRoute = (): RouteState => useSnapshot(globalRoute).state
+export const getRoute = (): RouteState => route.state
 
 // we should set replace to false if setting the route based on the URL
 // we should set replace to true if setting the route based on a user action
-export const setRoute = ({ route, replace }: { route: string; replace: boolean }) => {
+export const setRoute = ({ route: relativeUrl, replace }: { route: string; replace: boolean }) => {
+  logger.debug('setRoute', { relativeUrl, replace })
   if (replace) {
-    window.history.pushState({}, '', route)
+    window.history.pushState({}, '', relativeUrl)
   }
-  globalRoute.state = urlToRoute(route)
+  const routeState = urlToRoute(relativeUrl)
+  logger.info('setRoute', { routeState })
+  route.state = routeState
 }
