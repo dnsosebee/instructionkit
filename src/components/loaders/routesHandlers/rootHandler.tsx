@@ -19,7 +19,7 @@ export const RootHandler = () => {
   const rootFork = route.forks[ROUTE_CONFIG.forkName]
   switch (rootFork.type) {
     case ForkType.Default:
-      return <div>INSERT LANDING PAGE HERE</div>
+      return <div className='text-white'>INSERT LANDING PAGE HERE</div>
     case ForkType.Named:
       switch (rootFork.urlSegment) {
         case 'app':

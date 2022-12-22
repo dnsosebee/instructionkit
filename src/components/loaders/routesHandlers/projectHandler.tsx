@@ -47,11 +47,11 @@ const ProjectHandler = () => {
   const projectFork = getRoute().forks[PROJECT_ROUTE_CONFIG.forkName]
   switch (projectFork.type) {
     case ForkType.Default:
-      return <div>INSERT FLOWCHART PAGE HERE</div>
+      return <div className='text-white'>INSERT FLOWCHART PAGE HERE</div>
     case ForkType.Named:
       switch (projectFork.urlSegment) {
         case 'preview':
-          return <div>INSERT PREVIEW PAGE HERE</div>
+          return <div className='text-white'>INSERT PREVIEW PAGE HERE</div>
         default:
           return (
             <FourOhFour

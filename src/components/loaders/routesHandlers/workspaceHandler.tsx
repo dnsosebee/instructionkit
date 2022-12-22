@@ -48,11 +48,11 @@ const WorkspaceHandler = () => {
   const workspaceFork = getRoute().forks[WORKSPACE_ROUTE_CONFIG.forkName]
   switch (workspaceFork.type) {
     case ForkType.Default:
-      return <div>INSERT WORKSPACE PROJECTS PAGE HERE</div>
+      return <div className='text-white'>INSERT WORKSPACE PROJECTS PAGE HERE</div>
     case ForkType.Named:
       switch (workspaceFork.urlSegment) {
         case 'settings':
-          return <div>INSERT WORKSPACE SETTINGS PAGE HERE</div>
+          return <div className='text-white'>INSERT WORKSPACE SETTINGS PAGE HERE</div>
         default:
           return (
             <FourOhFour

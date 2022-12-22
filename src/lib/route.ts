@@ -1,4 +1,4 @@
-import { proxy } from 'valtio'
+import { proxy, useSnapshot } from 'valtio'
 import { ROUTE_CONFIG } from '../components/loaders/routesHandlers/rootHandler'
 import { logger as parentLogger } from './logger'
 
@@ -98,7 +98,7 @@ const urlToRoute = (url: string): RouteState => {
 
 const route = proxy<{ state: RouteState }>(undefined)
 
-export const getRoute = (): RouteState => route.state
+export const getRoute = (): RouteState => useSnapshot(route).state
 
 // we should set replace to false if setting the route based on the URL
 // we should set replace to true if setting the route based on a user action
