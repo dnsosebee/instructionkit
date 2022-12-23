@@ -1,4 +1,5 @@
-import { ForkSubrouteConfig, ForkType, getRoute } from '../../../lib/route'
+import { useEffect } from 'react'
+import { ForkSubrouteConfig, ForkType, getRoute, setRoute } from '../../../lib/route'
 import { FourOhFour } from '../../views/shared/FourOhFour'
 import { AppRepProvider } from '../providers/appRepProvider'
 import { SessionProvider } from '../providers/sessionProvider/sessionProvider'
@@ -15,6 +16,12 @@ export const ROUTE_CONFIG: ForkSubrouteConfig = {
 export const RootHandler = () => {
   const route = getRoute()
   if (!route) return null
+
+  useEffect(() => {
+    window.addEventListener('popstate', () => {
+      setRoute({ route: window.location.pathname, action: 'none' })
+    })
+  })
 
   const rootFork = route.forks[ROUTE_CONFIG.forkName]
   switch (rootFork.type) {

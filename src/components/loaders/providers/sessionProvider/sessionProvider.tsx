@@ -3,7 +3,7 @@ import { useMachine } from '@xstate/react'
 import React, { useEffect } from 'react'
 import { Database } from '../../../../lib/database.types'
 import Registration from '../../../views/app/registration'
-import SignIn from '../../../views/marketing/signin'
+import SignIn from '../../../views/app/signin'
 import Loading from '../../../views/shared/loading'
 import { Profile, sessionStateMachine } from './sessionState'
 

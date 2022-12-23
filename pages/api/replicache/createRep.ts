@@ -5,8 +5,8 @@ import { ZodError } from 'zod'
 import { createRepBodySchema } from '../../../src/lib/apiHelpers'
 import { Database } from '../../../src/lib/database.types'
 import { logger as parentLogger } from '../../../src/lib/logger'
-import { projectSpaceKey } from '../../../src/model/replicache/spaces/proj-[id]/projectMutators'
-import { workspaceSpaceKey } from '../../../src/model/replicache/spaces/ws-[id]/workspaceMutators'
+import { projectSpaceKey } from '../../../src/model/replicache/spaces/proj/projectMutators'
+import { workspaceSpaceKey } from '../../../src/model/replicache/spaces/ws/workspaceMutators'
 
 const logger = parentLogger.child({ module: 'createRep.ts' })
 

@@ -2,7 +2,7 @@ import { RootHandler } from '../../src/components/loaders/routesHandlers/rootHan
 import { setRoute } from '../../src/lib/route'
 
 const AppPage = () => {
-  setRoute({ route: `/app`, replace: false })
+  setRoute({ route: `/app`, action: 'none' })
   return <RootHandler />
 }
 

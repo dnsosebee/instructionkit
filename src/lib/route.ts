@@ -96,18 +96,26 @@ const urlToRoute = (url: string): RouteState => {
   return forkUrlToRoute(urlSegments, ROUTE_CONFIG, routeState)
 }
 
-const route = proxy<{ state: RouteState }>(undefined)
+const routeState = proxy<{ state: RouteState }>(undefined)
 
-export const getRoute = (): RouteState => useSnapshot(route).state
+export const getRoute = (): RouteState => useSnapshot(routeState).state
 
 // we should set replace to false if setting the route based on the URL
 // we should set replace to true if setting the route based on a user action
-export const setRoute = ({ route: relativeUrl, replace }: { route: string; replace: boolean }) => {
-  logger.debug('setRoute', { relativeUrl, replace })
-  if (replace) {
-    window.history.pushState({}, '', relativeUrl)
+export const setRoute = ({
+  route,
+  action,
+}: {
+  route: string
+  action: 'push' | 'replace' | 'none'
+}) => {
+  logger.debug('setRoute', { relativeUrl: route, action })
+  if (action === 'push') {
+    window.history.pushState({}, '', route)
+  } else if (action === 'replace') {
+    window.history.replaceState({}, '', route)
   }
-  const routeState = urlToRoute(relativeUrl)
-  logger.info('setRoute', { routeState })
-  route.state = routeState
+  const newRouteState = urlToRoute(route)
+  logger.info('setRoute', { routeState: newRouteState })
+  routeState.state = newRouteState
 }

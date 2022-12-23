@@ -14,7 +14,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const ProjectPage = ({ workspaceId, projectId }: { workspaceId: string; projectId: string }) => {
-  setRoute({ route: `/app/${workspaceId}/${projectId}`, replace: false })
+  setRoute({ route: `/app/${workspaceId}/${projectId}`, action: 'none' })
   return <RootHandler />
 }
 

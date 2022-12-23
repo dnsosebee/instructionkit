@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { key } from '../../../../../IdsAndKeys'
-import { PROJECT_ID_LENGTH } from '../../../../ws-[id]/entries/proj'
+import { PROJECT_ID_LENGTH } from '../../../../ws/entries/proj'
 import { flowIdSchema, flowValueSchema, FLOW_KEY_PREFIX } from '../baseFlow'
 
 export const REF_FLOW_TYPE = 'ref'

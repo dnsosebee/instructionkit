@@ -1,6 +1,6 @@
 import { z } from 'zod'
 import { WORKSPACE_ID_LENGTH } from '../model/replicache/spaces/app/entries/ws'
-import { PROJECT_ID_LENGTH } from '../model/replicache/spaces/ws-[id]/entries/proj'
+import { PROJECT_ID_LENGTH } from '../model/replicache/spaces/ws/entries/proj'
 import { logger as parentLogger } from './logger'
 
 const logger = parentLogger.child({ module: 'apiHelpers' })

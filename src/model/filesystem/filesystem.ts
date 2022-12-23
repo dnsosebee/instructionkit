@@ -1,4 +1,4 @@
-import { RepVersion, versionSchema } from '../replicache/spaces/proj-[id]/entries/version'
+import { RepVersion, versionSchema } from '../replicache/spaces/proj/entries/version'
 
 export const handleDownloadVersion = async (version: RepVersion, title: string): Promise<void> => {
   try {

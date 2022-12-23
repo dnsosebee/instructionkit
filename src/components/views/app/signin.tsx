@@ -3,7 +3,7 @@ import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { logger as parentLogger } from '../../../lib/logger'
-import MarketingNav from './layout/marketingNav'
+import MarketingNav from '../marketing/layout/marketingNav'
 
 const logger = parentLogger.child({ component: 'SignIn' })
 

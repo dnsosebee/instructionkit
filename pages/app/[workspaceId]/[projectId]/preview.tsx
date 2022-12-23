@@ -14,7 +14,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const PreviewPage = ({ workspaceId, projectId }: { workspaceId: string; projectId: string }) => {
-  setRoute({ route: `/app/${workspaceId}/${projectId}/preview`, replace: false })
+  setRoute({ route: `/app/${workspaceId}/${projectId}/preview`, action: 'none' })
   return <RootHandler />
 }
 

@@ -5,11 +5,11 @@ import {
   genProjectId,
   listProjects,
   RepProject,
-} from '../../../model/replicache/spaces/ws-[id]/entries/proj'
+} from '../../../model/replicache/spaces/ws/entries/proj'
 import {
   useWorkspaceRep,
   WorkspaceRep,
-} from '../../../model/replicache/spaces/ws-[id]/workspaceMutators'
+} from '../../../model/replicache/spaces/ws/workspaceMutators'
 import Loading from '../../views/shared/loading'
 
 export type WorkspaceRepContext = {

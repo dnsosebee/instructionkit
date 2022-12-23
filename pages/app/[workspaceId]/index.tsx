@@ -12,7 +12,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const WorkspacePage = ({ workspaceId }: { workspaceId: string }) => {
-  setRoute({ route: `/app/${workspaceId}`, replace: false })
+  setRoute({ route: `/app/${workspaceId}`, action: 'none' })
   return <RootHandler />
 }
 

@@ -4,11 +4,11 @@ import { appMutators, APP_SPACE_ID } from '../../../src/model/replicache/spaces/
 import {
   projectMutators,
   PROJECT_SPACE_PREFIX,
-} from '../../../src/model/replicache/spaces/proj-[id]/projectMutators'
+} from '../../../src/model/replicache/spaces/proj/projectMutators'
 import {
   workspaceMutators,
   WORKSPACE_SPACE_PREFIX,
-} from '../../../src/model/replicache/spaces/ws-[id]/workspaceMutators'
+} from '../../../src/model/replicache/spaces/ws/workspaceMutators'
 
 // Next.js runs this function server-side when /api/replicache/[anything].ts is
 // requested.

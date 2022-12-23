@@ -1,8 +1,5 @@
 import React from 'react'
-import {
-  ProjectRep,
-  useProjectRep,
-} from '../../../model/replicache/spaces/proj-[id]/projectMutators'
+import { ProjectRep, useProjectRep } from '../../../model/replicache/spaces/proj/projectMutators'
 import Loading from '../../views/shared/loading'
 
 export type ProjectRepContext = {

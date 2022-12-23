@@ -1,3 +1,5 @@
+import { ProfileView } from '../../../../pages/app/profile'
+import { UpdatePasswordView } from '../../../../pages/app/profile/updatepassword'
 import { ForkSubrouteConfig, ForkType, getRoute } from '../../../lib/route'
 import { FourOhFour } from '../../views/shared/FourOhFour'
 
@@ -5,8 +7,8 @@ export const PROFILE_ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'profile',
   hasDefaultSubroute: true,
   namedSubroutes: {
-    'reset-password': {
-      forkName: 'reset-password',
+    updatepassword: {
+      forkName: 'updatepassword',
       hasDefaultSubroute: true,
     },
   },
@@ -16,11 +18,11 @@ export const ProfileHandler = () => {
   const profileFork = getRoute().forks[PROFILE_ROUTE_CONFIG.forkName]
   switch (profileFork.type) {
     case ForkType.Default:
-      return <div className='text-white'>INSERT PROFILE HERE</div>
+      return <ProfileView />
     case ForkType.Named:
       switch (profileFork.urlSegment) {
-        case 'reset-password':
-          return <div className='text-white'>INSERT RESET PASSWORD HERE</div>
+        case 'updatepassword':
+          return <UpdatePasswordView />
         default:
           return (
             <FourOhFour

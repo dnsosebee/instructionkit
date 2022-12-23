@@ -24,7 +24,7 @@ export const AppHandler = () => {
   logger.debug('appFork', appFork)
   switch (appFork.type) {
     case ForkType.Default:
-      setRoute({ route: `/app/${defaultWorkspaceId}`, replace: true })
+      setRoute({ route: `/app/${defaultWorkspaceId}`, action: 'replace' })
       return null
     case ForkType.Named:
       switch (appFork.urlSegment) {
@@ -34,7 +34,7 @@ export const AppHandler = () => {
           return (
             <div className='bg-white'>
               <h1>Test</h1>
-              <button onClick={e => createWorkspace()}>Create Workspace</button>
+              <button onClick={createWorkspace}>Create Workspace</button>
             </div>
           )
         default:

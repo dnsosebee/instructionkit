@@ -1,7 +1,7 @@
 import { createRepApiHelper } from '../../lib/apiHelpers'
 import { logger as parentLogger } from '../../lib/logger'
 import { AppRep } from './spaces/app/appMutators'
-import { WorkspaceRep } from './spaces/ws-[id]/workspaceMutators'
+import { WorkspaceRep } from './spaces/ws/workspaceMutators'
 
 const logger = parentLogger.child({ module: 'createRepHelper.ts' })
 
