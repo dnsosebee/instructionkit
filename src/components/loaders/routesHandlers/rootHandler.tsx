@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { ForkSubrouteConfig, ForkType, getRoute, setRoute } from '../../../lib/route'
 import { FourOhFour } from '../../views/shared/FourOhFour'
-import { AppRepProvider } from '../providers/appRepProvider'
+import { AppProvider } from '../providers/appProvider'
 import { SessionProvider } from '../providers/sessionProvider/sessionProvider'
 import { AppHandler, APP_ROUTE_CONFIG } from './appHandler'
 
@@ -32,9 +32,9 @@ export const RootHandler = () => {
         case 'app':
           return (
             <SessionProvider>
-              <AppRepProvider>
+              <AppProvider>
                 <AppHandler />
-              </AppRepProvider>
+              </AppProvider>
             </SessionProvider>
           )
         default:

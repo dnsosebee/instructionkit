@@ -2,13 +2,13 @@ import { ChevronDownIcon } from '@heroicons/react/24/solid'
 import { logger as parentLogger } from '../../../../lib/logger'
 import { getRoute, setRoute } from '../../../../lib/route'
 import { RepWorkspace } from '../../../../model/replicache/spaces/app/entries/ws'
-import { useAppRepCtx } from '../../../loaders/providers/appRepProvider'
+import { useAppCtx } from '../../../loaders/providers/appProvider'
 
 const logger = parentLogger.child({ component: 'Picker' })
 
 export const MobilePicker = () => {
   const { workspaceId } = getRoute().params
-  const { userInviteWorkspaces, userMembershipWorkspaces } = useAppRepCtx()
+  const { userInviteWorkspaces, userMembershipWorkspaces } = useAppCtx()
 
   const handlePickerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value

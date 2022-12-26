@@ -1,7 +1,7 @@
 import { ForkSubrouteConfig, ForkType, getRoute, ParamSubrouteConfig } from '../../../lib/route'
 import { FourOhFour } from '../../views/shared/FourOhFour'
-import { ProjectRepProvider } from '../providers/projectRepProvider'
-import { useWorkspaceRepCtx } from '../providers/workspaceRepProvider'
+import { ProjectProvider } from '../providers/projectProvider'
+import { useWorkspaceCtx } from '../providers/workspaceRepProvider'
 import { WORKSPACE_ID_ROUTE_CONFIG } from './workspaceHandler'
 
 const PROJECT_ROUTE_CONFIG: ForkSubrouteConfig = {
@@ -22,7 +22,7 @@ export const PROJECT_ID_ROUTE_CONFIG: ParamSubrouteConfig = {
 
 export const ProjectIdHandler = () => {
   const params = getRoute().params
-  const { projects } = useWorkspaceRepCtx()
+  const { projects } = useWorkspaceCtx()
   const workspaceId = params[WORKSPACE_ID_ROUTE_CONFIG.paramName]
   const projectId = params[PROJECT_ID_ROUTE_CONFIG.paramName]
   if (!projects.find(v => v.id === projectId)) {
@@ -34,12 +34,12 @@ export const ProjectIdHandler = () => {
   }
 
   return (
-    <ProjectRepProvider
+    <ProjectProvider
       workspaceId={params[WORKSPACE_ID_ROUTE_CONFIG.paramName]}
       projectId={params[PROJECT_ID_ROUTE_CONFIG.paramName]}
     >
       <ProjectHandler />
-    </ProjectRepProvider>
+    </ProjectProvider>
   )
 }
 

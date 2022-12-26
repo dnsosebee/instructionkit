@@ -14,6 +14,14 @@ type SessionContext = {
 
 export const sessionContext = React.createContext<SessionContext | null>(null)
 
+export const useSessionCtx = () => {
+  const ctx = React.useContext(sessionContext)
+  if (!ctx) {
+    throw new Error('useSessionCtx must be used within a SessionProvider')
+  }
+  return ctx
+}
+
 export const SessionProvider = ({ children }: { children: React.ReactNode }) => {
   const [current, send] = useMachine(sessionStateMachine)
   const supabase = useSupabaseClient<Database>()
@@ -91,12 +99,4 @@ export const SessionProvider = ({ children }: { children: React.ReactNode }) => 
   }
   // should never get here
   return null
-}
-
-export const useSessionCtx = () => {
-  const ctx = React.useContext(sessionContext)
-  if (!ctx) {
-    throw new Error('useSessionCtx must be used within a SessionProvider')
-  }
-  return ctx
 }

@@ -66,12 +66,13 @@ export const appMutators = {
     }
     membershipSchema.parse(membership)
     // ensure workspace doesn't already exist
-    const existingWorkspace = await tx.get(workspace.id)
+    const wsKey = workspaceKey(workspace.id)
+    const existingWorkspace = await tx.get(wsKey)
     if (existingWorkspace) {
       throw new Error(`Workspace ${workspace.id} already exists`)
     }
     await Promise.all([
-      tx.put(workspaceKey(workspace.id), workspaceSchema.parse(workspace)),
+      tx.put(wsKey, workspaceSchema.parse(workspace)),
       tx.put(membershipKey(workspace.id, userId), membership.accessPolicy),
     ])
   },
@@ -96,7 +97,8 @@ export const appMutators = {
 
   async updateWorkspace(tx: WriteTransaction, workspaceUpdate: WorkspaceUpdate) {
     logger.info('updateWorkspace', workspaceUpdate)
-    const workspace = (await tx.get(workspaceUpdate.id)) as RepWorkspace
+    const key = workspaceKey(workspaceUpdate.id)
+    const workspace = (await tx.get(key)) as RepWorkspace
     if (!workspace) {
       throw new Error(`Workspace ${workspaceUpdate.id} does not exist`)
     }
@@ -104,6 +106,6 @@ export const appMutators = {
       ...workspace,
       ...workspaceUpdate,
     }
-    await tx.put(workspaceKey(workspaceUpdate.id), workspaceSchema.parse(updatedWorkspace))
+    await tx.put(key, workspaceSchema.parse(updatedWorkspace))
   },
 }

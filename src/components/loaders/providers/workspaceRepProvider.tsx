@@ -12,23 +12,23 @@ import {
 } from '../../../model/replicache/spaces/ws/workspaceMutators'
 import Loading from '../../views/shared/loading'
 
-export type WorkspaceRepContext = {
+export type WorkspaceContext = {
   workspaceRep: WorkspaceRep
   projects: RepProject[]
   createProject: () => Promise<string>
 }
 
-export const workspaceRepContext = React.createContext<WorkspaceRepContext | null>(null)
+export const workspaceContext = React.createContext<WorkspaceContext | null>(null)
 
-export const useWorkspaceRepCtx = () => {
-  const ctx = React.useContext(workspaceRepContext)
+export const useWorkspaceCtx = () => {
+  const ctx = React.useContext(workspaceContext)
   if (!ctx) {
     throw new Error('useWorkspaceRepCtx must be used within a WorkspaceRepProvider')
   }
   return ctx
 }
 
-export const WorkspaceRepProvider = ({
+export const WorkspaceProvider = ({
   children,
   workspaceId,
 }: {
@@ -40,13 +40,13 @@ export const WorkspaceRepProvider = ({
     return <Loading />
   }
   return (
-    <InnerWorkspaceRepProvider workspaceId={workspaceId} workspaceRep={workspaceRep}>
+    <InnerWorkspaceProvider workspaceId={workspaceId} workspaceRep={workspaceRep}>
       {children}
-    </InnerWorkspaceRepProvider>
+    </InnerWorkspaceProvider>
   )
 }
 
-const InnerWorkspaceRepProvider = ({
+const InnerWorkspaceProvider = ({
   children,
   workspaceRep,
   workspaceId,
@@ -70,8 +70,8 @@ const InnerWorkspaceRepProvider = ({
   }
 
   return (
-    <workspaceRepContext.Provider value={{ workspaceRep, projects, createProject }}>
+    <workspaceContext.Provider value={{ workspaceRep, projects, createProject }}>
       {children}
-    </workspaceRepContext.Provider>
+    </workspaceContext.Provider>
   )
 }

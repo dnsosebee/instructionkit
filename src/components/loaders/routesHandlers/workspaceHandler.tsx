@@ -1,7 +1,10 @@
+import { WorkspaceView } from '../../../../pages/app/[workspaceId]'
+import { SettingsView } from '../../../../pages/app/[workspaceId]/settings'
 import { ForkSubrouteConfig, ForkType, getRoute, ParamSubrouteConfig } from '../../../lib/route'
+import { AcceptInvite } from '../../views/app/acceptInvite'
 import { FourOhFour } from '../../views/shared/FourOhFour'
-import { useAppRepCtx } from '../providers/appRepProvider'
-import { WorkspaceRepProvider } from '../providers/workspaceRepProvider'
+import { useAppCtx } from '../providers/appProvider'
+import { WorkspaceProvider } from '../providers/workspaceRepProvider'
 import { ProjectIdHandler, PROJECT_ID_ROUTE_CONFIG } from './projectHandler'
 
 const WORKSPACE_ROUTE_CONFIG: ForkSubrouteConfig = {
@@ -23,24 +26,20 @@ export const WORKSPACE_ID_ROUTE_CONFIG: ParamSubrouteConfig = {
 
 export const WorkspaceIdHandler = () => {
   const workspaceId = getRoute().params[WORKSPACE_ID_ROUTE_CONFIG.paramName]
-  const { userMembershipWorkspaces, userInviteWorkspaces } = useAppRepCtx()
-  if (
-    !(
-      userInviteWorkspaces.find(v => v.workspace.id === workspaceId) ||
-      userMembershipWorkspaces.find(v => v.workspace.id === workspaceId)
-    )
-  ) {
+  const { userMembershipWorkspaces, userInviteWorkspaces } = useAppCtx()
+  if (userInviteWorkspaces.find(v => v.workspace.id === workspaceId)) {
+    return <AcceptInvite />
+  } else if (userMembershipWorkspaces.find(v => v.workspace.id === workspaceId)) {
     return (
-      <FourOhFour
-        errorMessage={`user is not a member nor invitee of workspace with id '${workspaceId}'`}
-      />
+      <WorkspaceProvider workspaceId={workspaceId}>
+        <WorkspaceHandler />
+      </WorkspaceProvider>
     )
   }
-
   return (
-    <WorkspaceRepProvider workspaceId={workspaceId}>
-      <WorkspaceHandler />
-    </WorkspaceRepProvider>
+    <FourOhFour
+      errorMessage={`user is not a member nor invitee of workspace with id '${workspaceId}'`}
+    />
   )
 }
 
@@ -48,11 +47,11 @@ const WorkspaceHandler = () => {
   const workspaceFork = getRoute().forks[WORKSPACE_ROUTE_CONFIG.forkName]
   switch (workspaceFork.type) {
     case ForkType.Default:
-      return <div className='text-white'>INSERT WORKSPACE PROJECTS PAGE HERE</div>
+      return <WorkspaceView />
     case ForkType.Named:
       switch (workspaceFork.urlSegment) {
         case 'settings':
-          return <div className='text-white'>INSERT WORKSPACE SETTINGS PAGE HERE</div>
+          return <SettingsView />
         default:
           return (
             <FourOhFour

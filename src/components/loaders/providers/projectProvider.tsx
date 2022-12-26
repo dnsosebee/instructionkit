@@ -2,21 +2,21 @@ import React from 'react'
 import { ProjectRep, useProjectRep } from '../../../model/replicache/spaces/proj/projectMutators'
 import Loading from '../../views/shared/loading'
 
-export type ProjectRepContext = {
+export type ProjectContext = {
   projectRep: ProjectRep
 }
 
-export const projectRepContext = React.createContext<ProjectRepContext | null>(null)
+export const projectContext = React.createContext<ProjectContext | null>(null)
 
-export const useProjectRepCtx = () => {
-  const ctx = React.useContext(projectRepContext)
+export const useProjectCtx = () => {
+  const ctx = React.useContext(projectContext)
   if (!ctx) {
-    throw new Error('useWorkspaceRepCtx must be used within a WorkspaceRepProvider')
+    throw new Error('useProjectCtx must be used within a ProjectProvider')
   }
   return ctx
 }
 
-export const ProjectRepProvider = ({
+export const ProjectProvider = ({
   children,
   workspaceId,
   projectId,
@@ -29,5 +29,5 @@ export const ProjectRepProvider = ({
   if (!projectRep) {
     return <Loading />
   }
-  return <projectRepContext.Provider value={{ projectRep }}>{children}</projectRepContext.Provider>
+  return <projectContext.Provider value={{ projectRep }}>{children}</projectContext.Provider>
 }

@@ -47,9 +47,9 @@ export const workspaceMutators = {
     await tx.put(key, projectSchema.parse(updatedProject))
   },
 
-  async deleteProject(tx: WriteTransaction, project: RepProject) {
-    logger.info('deleteProject', project)
-    const key = projectKey(project.id)
+  async deleteProject(tx: WriteTransaction, projectId: string) {
+    logger.info('deleteProject', projectId)
+    const key = projectKey(projectId)
     await tx.del(key)
   },
 }

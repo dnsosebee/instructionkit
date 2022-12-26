@@ -13,9 +13,9 @@ import {
 import Loading from '../../views/shared/loading'
 import { useSessionCtx } from './sessionProvider/sessionProvider'
 
-const logger = parentLogger.child({ component: 'appRepProvider' })
+const logger = parentLogger.child({ component: 'appProvider' })
 
-type AppRepContext = {
+type AppContext = {
   appRep: AppRep
   userInviteWorkspaces: UserInviteWorkspace[]
   userMembershipWorkspaces: UserMembershipWorkspace[]
@@ -23,14 +23,22 @@ type AppRepContext = {
   createWorkspace: () => Promise<string>
 }
 
-export const appRepContext = React.createContext<AppRepContext | null>(null)
+export const appContext = React.createContext<AppContext | null>(null)
 
-export const AppRepProvider = ({ children }: { children: React.ReactNode }) => {
+export const useAppCtx = () => {
+  const ctx = React.useContext(appContext)
+  if (!ctx) {
+    throw new Error('useAppCtx must be used within an AppProvider')
+  }
+  return ctx
+}
+
+export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const appRep = useAppRep()
   if (!appRep) {
     return <Loading />
   }
-  return <InnerAppRepProvider appRep={appRep}>{children}</InnerAppRepProvider>
+  return <InnerAppProvider appRep={appRep}>{children}</InnerAppProvider>
 }
 
 export type UserInviteWorkspace = {
@@ -45,13 +53,7 @@ export type UserMembershipWorkspace = {
 
 // TODO: should probably have some more accurate list subscriptions functions
 // This approach relies on syncing, which is unreliable
-const InnerAppRepProvider = ({
-  appRep,
-  children,
-}: {
-  appRep: AppRep
-  children: React.ReactNode
-}) => {
+const InnerAppProvider = ({ appRep, children }: { appRep: AppRep; children: React.ReactNode }) => {
   const userInvites = useSubscribe(appRep, listInvites, null, [appRep])
   const userMemberships = useSubscribe(appRep, listMemberships, null, [appRep])
   const workspaces = useSubscribe(appRep, listWorkspaces, null, [appRep])
@@ -59,18 +61,18 @@ const InnerAppRepProvider = ({
     return <Loading />
   }
   return (
-    <InnerAppRepProvider2
+    <InnerAppProvider2
       appRep={appRep}
       userInvites={userInvites}
       userMemberships={userMemberships}
       workspaces={workspaces}
     >
       {children}
-    </InnerAppRepProvider2>
+    </InnerAppProvider2>
   )
 }
 
-const InnerAppRepProvider2 = ({
+const InnerAppProvider2 = ({
   children,
   appRep,
   userInvites,
@@ -136,7 +138,7 @@ const InnerAppRepProvider2 = ({
     return <Loading />
   }
   return (
-    <appRepContext.Provider
+    <appContext.Provider
       value={{
         appRep,
         userInviteWorkspaces,
@@ -146,14 +148,6 @@ const InnerAppRepProvider2 = ({
       }}
     >
       {children}
-    </appRepContext.Provider>
+    </appContext.Provider>
   )
-}
-
-export const useAppRepCtx = () => {
-  const ctx = React.useContext(appRepContext)
-  if (!ctx) {
-    throw new Error('useAppRepCtx must be used beneath the loadAppRep route component')
-  }
-  return ctx
 }

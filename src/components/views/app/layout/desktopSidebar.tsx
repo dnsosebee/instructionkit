@@ -2,12 +2,12 @@ import { FolderPlusIcon } from '@heroicons/react/24/outline'
 import classNames from 'classnames'
 import { getRoute } from '../../../../lib/route'
 import { Blink } from '../../../loaders/blink'
-import { useAppRepCtx } from '../../../loaders/providers/appRepProvider'
+import { useAppCtx } from '../../../loaders/providers/appProvider'
 import { Icon } from '../../shared/icons'
 
 export const DesktopSidebar = () => {
   const { workspaceId } = getRoute().params
-  const { userMembershipWorkspaces, userInviteWorkspaces, createWorkspace } = useAppRepCtx()
+  const { userMembershipWorkspaces, userInviteWorkspaces, createWorkspace } = useAppCtx()
   return (
     <nav
       aria-label='Sidebar'
