@@ -4,10 +4,11 @@ import { z } from 'zod'
 import { logger as parentLogger } from '../../../../lib/logger'
 import { nextId, scopedKey } from '../../IdsAndKeys'
 import { PROJECT_ID_LENGTH, PROJECT_KEY_PREFIX } from '../ws/entries/proj'
+import { dartKey, dartSchema, RepDart } from './entries/dart/dart'
 import { flowKey, FlowPositionUpdate, FlowRemove, flowSchema, RepFlow } from './entries/flow/flow'
-import { branchKey, branchSchema, RepBranch } from './entries/flow/types/branch'
+import { branchKey, branchSchema, BRANCH_FLOW_TYPE, RepBranch } from './entries/flow/types/branch'
 import { refKey, RepRef } from './entries/flow/types/ref'
-import { RepStart, startKey, startSchema } from './entries/flow/types/start'
+import { RepStart, startKey, startSchema, START_FLOW_TYPE } from './entries/flow/types/start'
 import { SubCreate, subKey } from './entries/flow/types/sub'
 
 const logger = parentLogger.child({ module: 'projectMutators' })
@@ -117,6 +118,22 @@ export const projectMutators = {
     await tx.del(key)
   },
 
+  async updateFlowtext(
+    tx: WriteTransaction,
+    { type, id, flowtext }: { type: string; id: string; flowtext: string },
+  ) {
+    logger.info(`Updating flowtext for ${type} with id ${id}`)
+    const key = flowKey(type, id)
+    const flow = (await tx.get(key)) as RepFlow
+    if (!flow) {
+      throw new Error(`Flow ${id} does not exist`)
+    }
+    if (flow.type !== START_FLOW_TYPE && flow.type !== BRANCH_FLOW_TYPE) {
+      throw new Error(`Can't update flowtext for flow type ${flow.type}`)
+    }
+    await tx.put(key, flowSchema.parse({ ...flow, flowtext }))
+  },
+
   // flow/sub
   async createSub(tx: WriteTransaction, { sub, start }: SubCreate) {
     logger.info(`Creating sub flow: ${sub.id}`)
@@ -130,6 +147,12 @@ export const projectMutators = {
   async createRef(tx: WriteTransaction, ref: RepRef) {
     logger.info(`Creating ref: ${ref.id}`)
     await tx.put(refKey(ref.id), flowSchema.parse(ref))
+  },
+
+  // dart
+  async createDart(tx: WriteTransaction, dart: RepDart) {
+    logger.info(`Creating dart: ${dart.id}`)
+    await tx.put(dartKey(dart.type, dart.id), dartSchema.parse(dart))
   },
 }
 

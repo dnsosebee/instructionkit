@@ -15,6 +15,7 @@ import SwitchNode from './switchNode'
 import { uploadBlob } from './uploadBlob'
 
 export const HANDLE_ID_LENGTH = 7
+export const DEFAULT_HANDLE_ID = 'default' // THIS IS SEVEN CHARACTERS LONG
 
 const FlowtextExtension = Extension.create({
   addExtensions() {

@@ -1,9 +1,14 @@
 import React from 'react'
+import { useSubscribe } from 'replicache-react'
+import { listDarts, RepDart } from '../../../model/replicache/spaces/proj/entries/dart/dart'
+import { listFlows, RepFlow } from '../../../model/replicache/spaces/proj/entries/flow/flow'
 import { ProjectRep, useProjectRep } from '../../../model/replicache/spaces/proj/projectMutators'
 import Loading from '../../views/shared/loading'
 
 export type ProjectContext = {
   projectRep: ProjectRep
+  flows: RepFlow[]
+  darts: RepDart[]
 }
 
 export const projectContext = React.createContext<ProjectContext | null>(null)
@@ -26,8 +31,14 @@ export const ProjectProvider = ({
   projectId: string
 }) => {
   const projectRep = useProjectRep(workspaceId, projectId)
+  const flows = useSubscribe(projectRep, listFlows, [], [projectRep])
+  const darts = useSubscribe(projectRep, listDarts, [], [projectRep])
   if (!projectRep) {
     return <Loading />
   }
-  return <projectContext.Provider value={{ projectRep }}>{children}</projectContext.Provider>
+  return (
+    <projectContext.Provider value={{ projectRep, flows, darts }}>
+      {children}
+    </projectContext.Provider>
+  )
 }

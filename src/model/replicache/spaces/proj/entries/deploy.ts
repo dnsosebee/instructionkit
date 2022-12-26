@@ -6,8 +6,8 @@ export const DEPLOYMENT_KEY = 'deploy'
 
 // actually, no idea how compilation will work until we fix "the boat"
 // const compiledScopeSchema = z.object({
-//   start: flomNodesSchema,
-//   branches: z.record(branchSchema.pick({ id: true }), flomNodesSchema),
+//   start: z.string(), // flowtext, should be further optimized
+//   branches: z.record(branchSchema.pick({ id: true }), z.string()), // flowtext, should be further optimized
 //   darts: z.record(
 //     dartValueSchema.pick({ from: true }),
 //     z.record(

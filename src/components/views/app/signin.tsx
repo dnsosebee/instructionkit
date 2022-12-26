@@ -102,7 +102,7 @@ const SignIn = () => {
 
                 <div className='text-sm'>
                   <Link
-                    href='/reset-password'
+                    href='/resetpassword'
                     className='font-medium text-indigo-600 hover:text-indigo-500'
                   >
                     Forgot your password?

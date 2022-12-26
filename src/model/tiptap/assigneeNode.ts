@@ -1,6 +1,6 @@
 import { mergeAttributes, ReactNodeViewRenderer } from '@tiptap/react'
 import { EditorState } from 'prosemirror-state'
-import Assignee from '../../components/views/app/flowchart/flowtext/nodes/assignee'
+import Assignee from '../../components/views/app/project/flowchart/flowtext/nodes/assignee'
 import CaseNode from './caseNode'
 
 const AssigneeNode = CaseNode.extend({

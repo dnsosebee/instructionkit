@@ -1,5 +1,7 @@
+import { ProjectView } from '../../../../pages/app/[workspaceId]/[projectId]'
 import { ForkSubrouteConfig, ForkType, getRoute, ParamSubrouteConfig } from '../../../lib/route'
 import { FourOhFour } from '../../views/shared/FourOhFour'
+import FlowchartProvider from '../providers/flowchartProvider'
 import { ProjectProvider } from '../providers/projectProvider'
 import { useWorkspaceCtx } from '../providers/workspaceRepProvider'
 import { WORKSPACE_ID_ROUTE_CONFIG } from './workspaceHandler'
@@ -47,7 +49,11 @@ const ProjectHandler = () => {
   const projectFork = getRoute().forks[PROJECT_ROUTE_CONFIG.forkName]
   switch (projectFork.type) {
     case ForkType.Default:
-      return <div className='text-white'>INSERT FLOWCHART PAGE HERE</div>
+      return (
+        <FlowchartProvider>
+          <ProjectView />
+        </FlowchartProvider>
+      )
     case ForkType.Named:
       switch (projectFork.urlSegment) {
         case 'preview':
