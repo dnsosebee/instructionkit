@@ -7,9 +7,9 @@ import { AppHandler, APP_ROUTE_CONFIG } from './appHandler'
 
 export const ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'root',
-  hasDefaultSubroute: true,
   namedSubroutes: {
     app: APP_ROUTE_CONFIG,
+    playground: PLAYGROUND_ROUTE_CONFIG,
   },
 }
 
@@ -25,8 +25,6 @@ export const RootHandler = () => {
 
   const rootFork = route.forks[ROUTE_CONFIG.forkName]
   switch (rootFork.type) {
-    case ForkType.Default:
-      return <div className='text-white'>INSERT LANDING PAGE HERE</div>
     case ForkType.Named:
       switch (rootFork.urlSegment) {
         case 'app':
@@ -37,6 +35,8 @@ export const RootHandler = () => {
               </AppProvider>
             </SessionProvider>
           )
+        case 'playground':
+          return <PlaygroundHandler />
         default:
           return (
             <FourOhFour

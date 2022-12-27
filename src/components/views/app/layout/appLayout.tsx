@@ -182,9 +182,9 @@ export const AppLayout = ({
                     aria-label='Global'
                   >
                     <div className='flex h-16 items-center justify-between px-4 sm:px-6'>
-                      <a href='#'>
+                      <Blink href='/app'>
                         <Logo light={false} />
-                      </a>
+                      </Blink>
                       <button
                         type='button'
                         className='-mr-2 inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600'

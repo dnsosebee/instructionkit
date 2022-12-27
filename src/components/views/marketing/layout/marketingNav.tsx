@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Fragment } from 'react'
 
 export default ({ children }: { children: JSX.Element }) => {
-  const navigation = [] as { name: string; href: string }[]
+  // const navigation = [] as { name: string; href: string }[]
 
   return (
     <div className='w-full'>
@@ -35,7 +35,7 @@ export default ({ children }: { children: JSX.Element }) => {
                   </Popover.Button>
                 </div>
               </div>
-              <div className='hidden space-x-8 md:ml-10 md:flex'>
+              {/* <div className='hidden space-x-8 md:ml-10 md:flex'>
                 {navigation.map(item => (
                   <Link
                     key={item.name}
@@ -45,18 +45,18 @@ export default ({ children }: { children: JSX.Element }) => {
                     {item.name}
                   </Link>
                 ))}
-              </div>
+              </div> */}
             </div>
             <div className='hidden md:flex md:items-center md:space-x-6'>
-              <Link href='/signin' className='text-base font-medium text-white hover:text-gray-300'>
+              <Link href='/app' className='text-base font-medium text-white hover:text-gray-300'>
                 Sign in
               </Link>
-              <a
+              <Link
                 href='/waitlist'
                 className='inline-flex items-center rounded-md border border-transparent bg-gray-600 px-4 py-2 text-base font-medium text-white hover:bg-gray-700'
               >
                 Start building
-              </a>
+              </Link>
             </div>
           </nav>
         </div>
@@ -93,7 +93,7 @@ export default ({ children }: { children: JSX.Element }) => {
                 </div>
               </div>
               <div className='pt-5 pb-6'>
-                <div className='space-y-1 px-2'>
+                {/* <div className='space-y-1 px-2'>
                   {navigation.map(item => (
                     <Link
                       key={item.name}
@@ -103,19 +103,19 @@ export default ({ children }: { children: JSX.Element }) => {
                       {item.name}
                     </Link>
                   ))}
-                </div>
+                </div> */}
                 <div className='mt-6 px-5'>
-                  <a
-                    href='#'
+                  <Link
+                    href='/waitlist'
                     className='block w-full rounded-md bg-gradient-to-r from-teal-500 to-cyan-600 py-3 px-4 text-center font-medium text-white shadow hover:from-teal-600 hover:to-cyan-700'
                   >
                     Start building
-                  </a>
+                  </Link>
                 </div>
                 <div className='mt-6 px-5'>
                   <p className='text-center text-base font-medium text-gray-500'>
                     Existing customer?{' '}
-                    <Link href='/signin' className='text-gray-900 hover:underline'>
+                    <Link href='/app' className='text-gray-900 hover:underline'>
                       Sign in
                     </Link>
                   </p>

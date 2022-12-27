@@ -7,10 +7,10 @@ import { useEffect } from 'react'
 interface TitleEditorProps {
   title: string
   handleUpdate: (updatedTitle: string) => void
-  classNames: string
+  className: string
 }
 
-export const TitleEditor = ({ title, classNames, handleUpdate }: TitleEditorProps) => {
+export const TitleEditor = ({ title, className: classNames, handleUpdate }: TitleEditorProps) => {
   const editor = useEditor({
     extensions: [
       Document.extend({

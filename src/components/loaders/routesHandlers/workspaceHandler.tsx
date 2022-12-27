@@ -21,7 +21,7 @@ const WORKSPACE_ROUTE_CONFIG: ForkSubrouteConfig = {
 
 export const WORKSPACE_ID_ROUTE_CONFIG: ParamSubrouteConfig = {
   paramName: 'workspaceId',
-  subRoute: WORKSPACE_ROUTE_CONFIG,
+  subroute: WORKSPACE_ROUTE_CONFIG,
 }
 
 export const WorkspaceIdHandler = () => {

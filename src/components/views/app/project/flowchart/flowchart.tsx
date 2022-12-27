@@ -4,6 +4,7 @@ import ReactFlow, {
   NodePositionChange,
   NodeRemoveChange,
   NodeSelectionChange,
+  OnConnect,
   OnEdgesChange,
   OnNodesChange,
   useReactFlow,
@@ -77,7 +78,7 @@ export const Flowchart = () => {
     [floem],
   )
 
-  const onConnect = useCallback(
+  const onConnect: OnConnect = useCallback(
     params => {
       mutate.addDart({
         floem: floem.id,
@@ -145,9 +146,6 @@ export const Flowchart = () => {
   return (
     <FlowchartProvider>
       <div className='absolute top-0 bottom-0 left-0 right-0' ref={reactFlowWrapper}>
-        <div className='absolute z-50'>
-          <Breadcrumbs floem={floem} mutate={mutate} />
-        </div>
         <div className='absolute z-50 right-0'>
           <Toolbar {...toolbarProps} />
         </div>

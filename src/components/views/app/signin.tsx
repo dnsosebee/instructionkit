@@ -49,9 +49,12 @@ const SignIn = () => {
               </h2>
               <p className='mt-2 text-center text-sm text-gray-600'>
                 Or{' '}
-                <a href='/waitlist' className='font-medium text-indigo-600 hover:text-indigo-500'>
+                <Link
+                  href='/waitlist'
+                  className='font-medium text-indigo-600 hover:text-indigo-500'
+                >
                   join the waitlist
-                </a>
+                </Link>
               </p>
             </div>
             <form className='mt-8 space-y-6' onSubmit={handleSignin}>

@@ -10,7 +10,7 @@ type ForkName = string
 
 export type ParamSubrouteConfig = {
   paramName: ParamName
-  subRoute: ForkSubrouteConfig
+  subroute: ForkSubrouteConfig
 }
 
 export type ForkSubrouteConfig = {
@@ -85,7 +85,7 @@ const paramUrlToRoute = (
   }
 
   routeState.params[paramName] = urlSegment
-  return forkUrlToRoute(restUrlSegments, paramSubrouteConfig.subRoute, routeState)
+  return forkUrlToRoute(restUrlSegments, paramSubrouteConfig.subroute, routeState)
 }
 
 const urlToRoute = (url: string): RouteState => {
