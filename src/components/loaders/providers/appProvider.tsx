@@ -3,12 +3,12 @@ import { useSubscribe } from 'replicache-react'
 import { logger as parentLogger } from '../../../lib/logger'
 import { createWorkspaceRepHelper } from '../../../model/replicache/createRepHelper'
 import { AppRep, useAppRep } from '../../../model/replicache/spaces/app/appMutators'
-import { listInvites, RepInvite } from '../../../model/replicache/spaces/app/entries/inv'
-import { listMemberships, RepMembership } from '../../../model/replicache/spaces/app/entries/member'
+import { Invite, listInvites } from '../../../model/replicache/spaces/app/entries/inv'
+import { listMemberships, Membership } from '../../../model/replicache/spaces/app/entries/member'
 import {
   genWorkspaceId,
   listWorkspaces,
-  RepWorkspace,
+  Workspace,
 } from '../../../model/replicache/spaces/app/entries/ws'
 import Loading from '../../views/shared/loading'
 import { useSessionCtx } from './sessionProvider/sessionProvider'
@@ -42,13 +42,13 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 }
 
 export type UserInviteWorkspace = {
-  invite: RepInvite
-  workspace: RepWorkspace
+  invite: Invite
+  workspace: Workspace
 }
 
 export type UserMembershipWorkspace = {
-  membership: RepMembership
-  workspace: RepWorkspace
+  membership: Membership
+  workspace: Workspace
 }
 
 // TODO: should probably have some more accurate list subscriptions functions
@@ -81,9 +81,9 @@ const InnerAppProvider2 = ({
 }: {
   children: React.ReactNode
   appRep: AppRep
-  userInvites: RepInvite[]
-  userMemberships: RepMembership[]
-  workspaces: RepWorkspace[]
+  userInvites: Invite[]
+  userMemberships: Membership[]
+  workspaces: Workspace[]
 }) => {
   const { session } = useSessionCtx()
 

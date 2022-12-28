@@ -18,10 +18,10 @@ export const genProjectId = genId(PROJECT_ID_LENGTH)
 export const projectKey = key(PROJECT_KEY_PREFIX)
 const projectId = id(PROJECT_KEY_PREFIX)
 
-export type RepProject = z.infer<typeof projectSchema>
-export type ProjectUpdate = { id: string } & Partial<Omit<RepProject, 'createdAt'>>
+export type Project = z.infer<typeof projectSchema>
+export type ProjectUpdate = { id: string } & Partial<Omit<Project, 'createdAt'>>
 
-export const listProjects = async (tx: ReadTransaction): Promise<RepProject[]> => {
+export const listProjects = async (tx: ReadTransaction): Promise<Project[]> => {
   return (await tx.scan({ prefix: PROJECT_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {
     return {
       ...projectValueSchema.parse(v),

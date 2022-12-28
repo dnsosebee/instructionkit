@@ -14,4 +14,4 @@ export const refSchema = refValueSchema.merge(flowIdSchema).extend({
   type: z.literal(REF_FLOW_TYPE),
 })
 
-export type RepRef = z.infer<typeof refSchema>
+export type RefFlow = z.infer<typeof refSchema>

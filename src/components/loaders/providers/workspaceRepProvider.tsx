@@ -4,7 +4,7 @@ import { createProjectRepHelper } from '../../../model/replicache/createRepHelpe
 import {
   genProjectId,
   listProjects,
-  RepProject,
+  Project,
 } from '../../../model/replicache/spaces/ws/entries/proj'
 import {
   useWorkspaceRep,
@@ -14,7 +14,7 @@ import Loading from '../../views/shared/loading'
 
 export type WorkspaceContext = {
   workspaceRep: WorkspaceRep
-  projects: RepProject[]
+  projects: Project[]
   createProject: () => Promise<string>
 }
 

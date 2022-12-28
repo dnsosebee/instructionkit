@@ -4,6 +4,7 @@ import { FourOhFour } from '../../views/shared/FourOhFour'
 import { AppProvider } from '../providers/appProvider'
 import { SessionProvider } from '../providers/sessionProvider/sessionProvider'
 import { AppHandler, APP_ROUTE_CONFIG } from './appHandler'
+import { PlaygroundHandler, PLAYGROUND_ROUTE_CONFIG } from './playgroundHandler'
 
 export const ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'root',

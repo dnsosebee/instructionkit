@@ -20,9 +20,9 @@ export const genVersionId = genId(VERSION_ID_LENGTH)
 export const versionKey = key(VERSION_KEY_PREFIX)
 const flowId = id(VERSION_KEY_PREFIX)
 
-export type RepVersion = z.infer<typeof versionSchema>
+export type Version = z.infer<typeof versionSchema>
 
-export const listVersions = async (tx: ReadTransaction): Promise<RepVersion[]> => {
+export const listVersions = async (tx: ReadTransaction): Promise<Version[]> => {
   return (await tx.scan({ prefix: VERSION_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {
     return {
       ...versionValueSchema.parse(v),

@@ -16,10 +16,10 @@ export const genWorkspaceId = genId(WORKSPACE_ID_LENGTH)
 export const workspaceKey = key(WORKSPACE_KEY_PREFIX)
 const workspaceId = id(WORKSPACE_KEY_PREFIX)
 
-export type RepWorkspace = z.infer<typeof workspaceSchema>
-export type WorkspaceUpdate = { id: string } & Partial<Omit<RepWorkspace, 'createdAt'>>
+export type Workspace = z.infer<typeof workspaceSchema>
+export type WorkspaceUpdate = { id: string } & Partial<Omit<Workspace, 'createdAt'>>
 
-export const listWorkspaces = async (tx: ReadTransaction): Promise<RepWorkspace[]> => {
+export const listWorkspaces = async (tx: ReadTransaction): Promise<Workspace[]> => {
   return (await tx.scan({ prefix: WORKSPACE_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {
     return {
       ...workspaceValueSchema.parse(v),

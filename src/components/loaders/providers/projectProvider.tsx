@@ -1,14 +1,14 @@
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
-import { listDarts, RepDart } from '../../../model/replicache/spaces/proj/entries/dart/dart'
-import { listFlows, RepFlow } from '../../../model/replicache/spaces/proj/entries/flow/flow'
+import { Dart, listDarts } from '../../../model/replicache/spaces/proj/entries/dart/dart'
+import { Flow, listFlows } from '../../../model/replicache/spaces/proj/entries/flow/flow'
 import { ProjectRep, useProjectRep } from '../../../model/replicache/spaces/proj/projectMutators'
 import Loading from '../../views/shared/loading'
 
 export type ProjectContext = {
   projectRep: ProjectRep
-  flows: RepFlow[]
-  darts: RepDart[]
+  flows: Flow[]
+  darts: Dart[]
 }
 
 export const projectContext = React.createContext<ProjectContext | null>(null)

@@ -12,6 +12,6 @@ export const branchSchema = branchValueSchema.merge(flowIdSchema).extend({
   type: z.literal(BRANCH_FLOW_TYPE),
 })
 
-export type RepBranch = z.infer<typeof branchSchema>
+export type BranchFlow = z.infer<typeof branchSchema>
 
 export const EMPTY_BRANCH_FLOWTEXT = ''

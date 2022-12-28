@@ -9,4 +9,4 @@ export const asyncSchema = dartValueSchema.merge(dartIdSchema).extend({
   type: z.literal(ASYNC_DART_TYPE),
 })
 
-export type RepAsync = z.infer<typeof asyncSchema>
+export type AsyncDart = z.infer<typeof asyncSchema>

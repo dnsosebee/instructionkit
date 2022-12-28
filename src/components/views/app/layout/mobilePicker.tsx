@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from '@heroicons/react/24/solid'
 import { logger as parentLogger } from '../../../../lib/logger'
 import { getRoute, setRoute } from '../../../../lib/route'
-import { RepWorkspace } from '../../../../model/replicache/spaces/app/entries/ws'
+import { Workspace } from '../../../../model/replicache/spaces/app/entries/ws'
 import { useAppCtx } from '../../../loaders/providers/appProvider'
 
 const logger = parentLogger.child({ component: 'Picker' })
@@ -41,7 +41,7 @@ export const MobilePicker = () => {
   )
 }
 
-const PickerOption = ({ workspace }: { workspace: RepWorkspace }) => {
+const PickerOption = ({ workspace }: { workspace: Workspace }) => {
   return (
     <option key={workspace.id} value={workspace.id}>
       {workspace.name}

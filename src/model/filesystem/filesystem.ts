@@ -1,6 +1,6 @@
-import { RepVersion, versionSchema } from '../replicache/spaces/proj/entries/version'
+import { Version, versionSchema } from '../replicache/spaces/proj/entries/version'
 
-export const handleDownloadVersion = async (version: RepVersion, title: string): Promise<void> => {
+export const handleDownloadVersion = async (version: Version, title: string): Promise<void> => {
   try {
     const newHandle = await window.showSaveFilePicker({
       suggestedName: `${title}.floem`,
@@ -13,7 +13,7 @@ export const handleDownloadVersion = async (version: RepVersion, title: string):
   }
 }
 
-export const handleUploadFloem = async (file: File): Promise<RepVersion> => {
+export const handleUploadFloem = async (file: File): Promise<Version> => {
   const json = await file.text()
   const version = JSON.parse(json)
   return versionSchema.parse(version)

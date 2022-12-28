@@ -11,10 +11,10 @@ export const inviteSchema = z.object({
   accessPolicy: z.string(),
 })
 
-export type RepInvite = z.infer<typeof inviteSchema>
+export type Invite = z.infer<typeof inviteSchema>
 
 // get all memberships for the user with userId
-export const listInvites = async (tx: ReadTransaction): Promise<RepInvite[]> => {
+export const listInvites = async (tx: ReadTransaction): Promise<Invite[]> => {
   return (await tx.scan({ prefix: INVITE_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {
     const [_, workspaceId, email] = k.split('/')
     return {
@@ -22,10 +22,10 @@ export const listInvites = async (tx: ReadTransaction): Promise<RepInvite[]> => 
       email,
       accessPolicy: v,
     }
-  }) as RepInvite[]
+  }) as Invite[]
 }
 
-export type AcceptInvite = { invite: RepInvite; userId: string }
+export type AcceptInvite = { invite: Invite; userId: string }
 
 export const inviteKey = (workspaceId: string, email: string) =>
   `${INVITE_KEY_PREFIX}${workspaceId}/${email}`

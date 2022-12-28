@@ -35,10 +35,10 @@ export const deploymentSchema = z.object({
   prettyUrl: z.string().optional(),
 })
 
-export type RepDeployment = z.infer<typeof deploymentSchema>
-export type DeploymentUpdate = Omit<Partial<RepDeployment>, 'createdAt'>
+export type Deployment = z.infer<typeof deploymentSchema>
+export type DeploymentUpdate = Omit<Partial<Deployment>, 'createdAt'>
 
-export const getDeployment = async (tx: ReadTransaction): Promise<RepDeployment | null> => {
+export const getDeployment = async (tx: ReadTransaction): Promise<Deployment | null> => {
   const v = await tx.get(DEPLOYMENT_KEY)
   return deploymentSchema.parse(v)
 }

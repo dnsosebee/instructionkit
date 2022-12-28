@@ -3,7 +3,7 @@ import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { z } from 'zod'
 import { logger as parentLogger } from '../../../../lib/logger'
 import { workspaceKey, WORKSPACE_ID_LENGTH, WORKSPACE_KEY_PREFIX } from '../app/entries/ws'
-import { projectKey, projectSchema, ProjectUpdate, RepProject } from './entries/proj'
+import { Project, projectKey, projectSchema, ProjectUpdate } from './entries/proj'
 
 const logger = parentLogger.child({ module: 'workspaceMutators' })
 
@@ -26,10 +26,10 @@ export const useWorkspaceRep = (workspaceId: string) => {
 
 export const workspaceMutators = {
   // projects
-  async createProject(tx: WriteTransaction, project: RepProject) {
+  async createProject(tx: WriteTransaction, project: Project) {
     logger.info('createProject', project)
     const key = projectKey(project.id)
-    const existing = (await tx.get(key)) as RepProject | undefined
+    const existing = (await tx.get(key)) as Project | undefined
     if (existing) {
       throw new Error(`Project ${project.id} already exists`)
     }
@@ -39,7 +39,7 @@ export const workspaceMutators = {
   async updateProject(tx: WriteTransaction, update: ProjectUpdate) {
     logger.info('updateProject', update)
     const key = projectKey(update.id)
-    const existing = (await tx.get(key)) as RepProject | undefined
+    const existing = (await tx.get(key)) as Project | undefined
     if (!existing) {
       throw new Error(`Project ${update.id} does not exist`)
     }

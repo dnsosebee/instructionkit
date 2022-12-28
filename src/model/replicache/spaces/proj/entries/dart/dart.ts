@@ -12,9 +12,9 @@ const dartIds = scopedIds(DART_KEY_PREFIX)
 
 export const dartSchema = z.union([gotoSchema, asyncSchema, includeSchema])
 
-export type RepDart = z.infer<typeof dartSchema>
+export type Dart = z.infer<typeof dartSchema>
 
-export const listDarts = async (tx: ReadTransaction): Promise<RepDart[]> => {
+export const listDarts = async (tx: ReadTransaction): Promise<Dart[]> => {
   return (await tx.scan({ prefix: DART_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {
     const { id, parent: type } = dartIds(k)
     switch (type) {

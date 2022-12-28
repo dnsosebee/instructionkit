@@ -13,11 +13,11 @@ const flowIds = scopedIds(FLOW_KEY_PREFIX)
 
 export const flowSchema = z.union([branchSchema, startSchema, subschema, refSchema])
 
-export type RepFlow = z.infer<typeof flowSchema>
-export type FlowPositionUpdate = Pick<RepFlow, 'id' | 'type' | 'position'>
-export type FlowRemove = Pick<RepFlow, 'id' | 'type'>
+export type Flow = z.infer<typeof flowSchema>
+export type FlowPositionUpdate = Pick<Flow, 'id' | 'type' | 'position'>
+export type FlowRemove = Pick<Flow, 'id' | 'type'>
 
-export const listFlows = async (tx: ReadTransaction): Promise<RepFlow[]> => {
+export const listFlows = async (tx: ReadTransaction): Promise<Flow[]> => {
   return (await tx.scan({ prefix: FLOW_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {
     const { id, parent: type } = flowIds(k)
     switch (type) {

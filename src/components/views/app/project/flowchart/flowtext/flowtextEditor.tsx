@@ -7,31 +7,29 @@ import { genDartId } from '../../../../../../model/replicache/spaces/proj/entrie
 import { GOTO_DART_TYPE } from '../../../../../../model/replicache/spaces/proj/entries/dart/types/goto'
 import { genFlowId } from '../../../../../../model/replicache/spaces/proj/entries/flow/flow'
 import {
+  BranchFlow,
   BRANCH_FLOW_TYPE,
   EMPTY_BRANCH_FLOWTEXT,
-  RepBranch,
 } from '../../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
-import { RepStart } from '../../../../../../model/replicache/spaces/proj/entries/flow/types/start'
+import { StartFlow } from '../../../../../../model/replicache/spaces/proj/entries/flow/types/start'
 import FlowtextExtension from '../../../../../../model/tiptap/flowtextExtension'
 import { useFlowchartCtx } from '../../../../../loaders/providers/flowchartProvider'
-import { useProjectCtx } from '../../../../../loaders/providers/projectProvider'
 import FlowtextProvider, { View } from './flowtextProvider'
 
 const logger = parentLogger.child({ component: 'FlowtextEditor' })
 
-export const FlowtextEditor = ({ flow }: { flow: RepBranch | RepStart }) => {
-  const { projectRep, darts } = useProjectCtx()
-  const { flocus, setFlocus } = useFlowchartCtx()
+export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
+  const { flocus, setFlocus, edges, updateFlowtext, addBranch, addDart } = useFlowchartCtx()
 
   const positionRef = React.useRef(flow.position)
   useEffect(() => {
     positionRef.current = flow.position
   }, [flow.position])
 
-  const dartsRef = React.useRef(darts)
+  const edgesRef = React.useRef(edges)
   useEffect(() => {
-    dartsRef.current = darts
-  }, [darts])
+    edgesRef.current = edges
+  }, [edges])
 
   const ExtensionWithShortcuts = FlowtextExtension.extend({
     addKeyboardShortcuts() {
@@ -69,16 +67,16 @@ export const FlowtextEditor = ({ flow }: { flow: RepBranch | RepStart }) => {
             const xOffset = (found ? index * 400 : 0) - 250
             const yOffset = 500
 
-            const existingDart = dartsRef.current.find(
-              dart => dart.fromHandle === caseId && dart.from === flow.id,
+            const existingEdge = edgesRef.current.find(
+              edge => edge.sourceHandle === caseId && edge.source === flow.id,
             )
-            if (existingDart) {
-              logger.debug('existing dart')
-              setFlocus(existingDart.to)
+            if (existingEdge) {
+              logger.debug('existing edge')
+              setFlocus(existingEdge.target)
             } else {
               const newFlowId = genFlowId()
               const flowPos = positionRef.current
-              projectRep.mutate.createBranch({
+              addBranch({
                 type: BRANCH_FLOW_TYPE,
                 id: newFlowId,
                 flowtext: EMPTY_BRANCH_FLOWTEXT,
@@ -87,7 +85,7 @@ export const FlowtextEditor = ({ flow }: { flow: RepBranch | RepStart }) => {
                   y: flowPos.y + yOffset,
                 },
               })
-              projectRep.mutate.createDart({
+              addDart({
                 type: GOTO_DART_TYPE,
                 id: genDartId(),
                 from: flow.id,
@@ -114,7 +112,7 @@ export const FlowtextEditor = ({ flow }: { flow: RepBranch | RepStart }) => {
       }
     },
     onUpdate: ({ editor }) => {
-      projectRep.mutate.updateFlowtext({ id: flow.id, type: flow.type, flowtext: editor.getHTML() })
+      updateFlowtext(flow.id, flow.type, editor.getHTML())
     },
     editorProps: {
       attributes: {
@@ -138,9 +136,9 @@ export const FlowtextEditor = ({ flow }: { flow: RepBranch | RepStart }) => {
     }
   }, [flocus, !!contentEditor])
 
-  const dartCases = darts.filter(v => v.from === flow.id).map(v => v.fromHandle)
+  const edgeCases = edges.filter(v => v.source === flow.id).map(v => v.sourceHandle)
   return (
-    <FlowtextProvider context={{ view: View.Flowchart, dartCases }}>
+    <FlowtextProvider context={{ view: View.Flowchart, dartCases: edgeCases }}>
       <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
     </FlowtextProvider>
   )

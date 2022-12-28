@@ -11,9 +11,9 @@ export const membershipSchema = z.object({
   accessPolicy: z.string(),
 })
 
-export type RepMembership = z.infer<typeof membershipSchema>
+export type Membership = z.infer<typeof membershipSchema>
 
-export const listMemberships = async (tx: ReadTransaction): Promise<RepMembership[]> => {
+export const listMemberships = async (tx: ReadTransaction): Promise<Membership[]> => {
   return (await tx.scan({ prefix: MEMBERSHIP_KEY_PREFIX }).entries().toArray()).map(([k, v]) => {
     const [_, workspaceId, userId] = k.split('/')
     return {
@@ -21,7 +21,7 @@ export const listMemberships = async (tx: ReadTransaction): Promise<RepMembershi
       userId,
       accessPolicy: v,
     }
-  }) as RepMembership[]
+  }) as Membership[]
 }
 
 export const membershipKey = (workspaceId: string, userId: string) =>

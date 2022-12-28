@@ -9,7 +9,7 @@ import { RootHandler } from '../../../src/components/loaders/routesHandlers/root
 import { AppLayout } from '../../../src/components/views/app/layout/appLayout'
 import ContextMenu from '../../../src/components/views/shared/contextMenu'
 import { getRoute, setRoute } from '../../../src/lib/route'
-import { listProjects, RepProject } from '../../../src/model/replicache/spaces/ws/entries/proj'
+import { listProjects, Project } from '../../../src/model/replicache/spaces/ws/entries/proj'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -132,7 +132,7 @@ function ProjectCard({
   workspaceId,
   handleClickDelete,
 }: {
-  project: RepProject
+  project: Project
   workspaceId: string
   handleClickDelete: () => void
 }) {

@@ -9,4 +9,4 @@ export const gotoSchema = dartValueSchema.merge(dartIdSchema).extend({
   type: z.literal(GOTO_DART_TYPE),
 })
 
-export type RepGoto = z.infer<typeof gotoSchema>
+export type GotoDart = z.infer<typeof gotoSchema>

@@ -9,4 +9,4 @@ export const includeSchema = dartValueSchema.merge(dartIdSchema).extend({
   type: z.literal(INCLUDE_DART_TYPE),
 })
 
-export type RepInclude = z.infer<typeof includeSchema>
+export type IncludeDart = z.infer<typeof includeSchema>

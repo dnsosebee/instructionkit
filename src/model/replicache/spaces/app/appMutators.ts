@@ -1,14 +1,14 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { logger as parentLogger } from '../../../../lib/logger'
-import { AcceptInvite, inviteKey, inviteSchema, INVITE_KEY_PREFIX, RepInvite } from './entries/inv'
+import { AcceptInvite, Invite, inviteKey, inviteSchema, INVITE_KEY_PREFIX } from './entries/inv'
 import {
+  Membership,
   membershipKey,
   membershipSchema,
   MEMBERSHIP_KEY_PREFIX,
-  RepMembership,
 } from './entries/member'
-import { RepWorkspace, workspaceKey, workspaceSchema, WorkspaceUpdate } from './entries/ws'
+import { Workspace, workspaceKey, workspaceSchema, WorkspaceUpdate } from './entries/ws'
 
 const logger = parentLogger.child({ module: 'appMutators' })
 
@@ -23,12 +23,12 @@ export const useAppRep = () => {
 
 export const appMutators = {
   // invites
-  async createOrUpdateInvite(tx: WriteTransaction, invite: RepInvite) {
+  async createOrUpdateInvite(tx: WriteTransaction, invite: Invite) {
     logger.info('createOrUpdateInvite', invite)
     inviteSchema.parse(invite)
     await tx.put(inviteKey(invite.workspaceId, invite.email), invite.accessPolicy)
   },
-  async deleteInvite(tx: WriteTransaction, invite: RepInvite) {
+  async deleteInvite(tx: WriteTransaction, invite: Invite) {
     logger.info('deleteInvite', invite)
     inviteSchema.parse(invite)
     await tx.del(inviteKey(invite.workspaceId, invite.email))
@@ -46,7 +46,7 @@ export const appMutators = {
   },
 
   // memberships
-  async deleteMembership(tx: WriteTransaction, membership: RepMembership) {
+  async deleteMembership(tx: WriteTransaction, membership: Membership) {
     logger.info('deleteMembership', membership)
     membershipSchema.parse(membership)
     await tx.del(membershipKey(membership.workspaceId, membership.userId))
@@ -55,7 +55,7 @@ export const appMutators = {
   // memberships and workspaces
   async createWorkspaceWithOwner(
     tx: WriteTransaction,
-    data: { workspace: RepWorkspace; userId: string },
+    data: { workspace: Workspace; userId: string },
   ) {
     logger.info('createWorkspaceWithOwner', data)
     const { workspace, userId } = data
@@ -98,7 +98,7 @@ export const appMutators = {
   async updateWorkspace(tx: WriteTransaction, workspaceUpdate: WorkspaceUpdate) {
     logger.info('updateWorkspace', workspaceUpdate)
     const key = workspaceKey(workspaceUpdate.id)
-    const workspace = (await tx.get(key)) as RepWorkspace
+    const workspace = (await tx.get(key)) as Workspace
     if (!workspace) {
       throw new Error(`Workspace ${workspaceUpdate.id} does not exist`)
     }

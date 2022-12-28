@@ -1,3 +1,4 @@
+import { Map } from 'immutable'
 import { GetServerSideProps } from 'next'
 import { EdgeChange, NodeChange, ReactFlowProvider } from 'reactflow'
 import FlowchartProvider, {
@@ -7,8 +8,8 @@ import { RootHandler } from '../../../../src/components/loaders/routesHandlers/r
 import Breadcrumbs from '../../../../src/components/views/app/project/flowchart/breadcrumbs'
 import { Flowchart } from '../../../../src/components/views/app/project/flowchart/flowchart'
 import { setRoute } from '../../../../src/lib/route'
-import { RepDart } from '../../../../src/model/replicache/spaces/proj/entries/dart/dart'
-import { RepBranch } from '../../../../src/model/replicache/spaces/proj/entries/flow/types/branch'
+import { Dart } from '../../../../src/model/replicache/spaces/proj/entries/dart/dart'
+import { BranchFlow } from '../../../../src/model/replicache/spaces/proj/entries/flow/types/branch'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -36,19 +37,25 @@ export const ProjectView = () => {
   const flowchartProviderProps: Omit<FlowchartProviderProps, 'children'> = {
     nodes: [],
     edges: [],
+    nodeSelections: Map(),
+    edgeSelections: Map(),
+    title: '',
     handleNodesChange: function (changes: NodeChange[]): void {
       throw new Error('Function not implemented.')
     },
     handleEdgesChange: function (changes: EdgeChange[]): void {
       throw new Error('Function not implemented.')
     },
-    addBranch: function (branch: RepBranch): void {
+    addBranch: function (branch: BranchFlow): void {
       throw new Error('Function not implemented.')
     },
-    addDart: function (dart: RepDart): void {
+    addDart: function (dart: Dart): void {
       throw new Error('Function not implemented.')
     },
-    updateFlowtext: function (flowId: string, text: string): void {
+    updateFlowtext: function (id: string, type: string, flowtext: string): void {
+      throw new Error('Function not implemented.')
+    },
+    updateTitle: function (title: string): void {
       throw new Error('Function not implemented.')
     },
   }

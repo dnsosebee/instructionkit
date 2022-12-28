@@ -11,4 +11,4 @@ export const startSchema = startValueSchema.merge(flowIdSchema).extend({
   type: z.literal(START_FLOW_TYPE),
 })
 
-export type RepStart = z.infer<typeof startSchema>
+export type StartFlow = z.infer<typeof startSchema>

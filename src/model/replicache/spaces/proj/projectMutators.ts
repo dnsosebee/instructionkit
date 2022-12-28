@@ -4,11 +4,11 @@ import { z } from 'zod'
 import { logger as parentLogger } from '../../../../lib/logger'
 import { nextId, scopedKey } from '../../IdsAndKeys'
 import { PROJECT_ID_LENGTH, PROJECT_KEY_PREFIX } from '../ws/entries/proj'
-import { dartKey, dartSchema, RepDart } from './entries/dart/dart'
-import { flowKey, FlowPositionUpdate, FlowRemove, flowSchema, RepFlow } from './entries/flow/flow'
-import { branchKey, branchSchema, BRANCH_FLOW_TYPE, RepBranch } from './entries/flow/types/branch'
-import { refKey, RepRef } from './entries/flow/types/ref'
-import { RepStart, startKey, startSchema, START_FLOW_TYPE } from './entries/flow/types/start'
+import { Dart, dartKey, dartSchema } from './entries/dart/dart'
+import { Flow, flowKey, FlowPositionUpdate, FlowRemove, flowSchema } from './entries/flow/flow'
+import { BranchFlow, branchKey, branchSchema, BRANCH_FLOW_TYPE } from './entries/flow/types/branch'
+import { RefFlow, refKey } from './entries/flow/types/ref'
+import { StartFlow, startKey, startSchema, START_FLOW_TYPE } from './entries/flow/types/start'
 import { SubCreate, subKey } from './entries/flow/types/sub'
 
 const logger = parentLogger.child({ module: 'projectMutators' })
@@ -60,7 +60,7 @@ export const useProjectRep = (workspaceId: string, projectId: string) => {
 const updateFlowPosition = async (tx: WriteTransaction, update: FlowPositionUpdate) => {
   logger.info(`Updating flow position: ${update.id} to ${update.position}`)
   const key = flowKey(update.type, update.id)
-  const flow = (await tx.get(key)) as RepFlow
+  const flow = (await tx.get(key)) as Flow
   if (!flow) {
     throw new Error(`Flow ${update.id} does not exist`)
   }
@@ -76,7 +76,7 @@ const removeFlow = async (tx: WriteTransaction, remove: FlowRemove) => {
 export const projectMutators = {
   // flow/start
   // init should be called when initializing a project
-  async init(tx: WriteTransaction, start: RepStart) {
+  async init(tx: WriteTransaction, start: StartFlow) {
     logger.info(`Initializing project with start flow: ${start.id}`)
     if (!tx.isEmpty()) {
       throw new Error(`Project already initialized, can't create flowstart`)
@@ -98,15 +98,15 @@ export const projectMutators = {
   },
 
   // flow/branch
-  async createBranch(tx: WriteTransaction, branch: RepBranch) {
+  async createBranch(tx: WriteTransaction, branch: BranchFlow) {
     logger.info(`Creating branch: ${branch.id}`)
     let id = branch.id
     let key = branchKey(id)
-    let prev = (await tx.get(key)) as RepBranch
+    let prev = (await tx.get(key)) as BranchFlow
     while (prev) {
       id = nextId(id)
       key = branchKey(id)
-      prev = (await tx.get(key)) as RepBranch
+      prev = (await tx.get(key)) as BranchFlow
     }
     branch = { ...branch, id }
     await tx.put(key, branchSchema.parse(branch))
@@ -124,7 +124,7 @@ export const projectMutators = {
   ) {
     logger.info(`Updating flowtext for ${type} with id ${id}`)
     const key = flowKey(type, id)
-    const flow = (await tx.get(key)) as RepFlow
+    const flow = (await tx.get(key)) as Flow
     if (!flow) {
       throw new Error(`Flow ${id} does not exist`)
     }
@@ -144,13 +144,13 @@ export const projectMutators = {
   },
 
   //flow/ref
-  async createRef(tx: WriteTransaction, ref: RepRef) {
+  async createRef(tx: WriteTransaction, ref: RefFlow) {
     logger.info(`Creating ref: ${ref.id}`)
     await tx.put(refKey(ref.id), flowSchema.parse(ref))
   },
 
   // dart
-  async createDart(tx: WriteTransaction, dart: RepDart) {
+  async createDart(tx: WriteTransaction, dart: Dart) {
     logger.info(`Creating dart: ${dart.id}`)
     await tx.put(dartKey(dart.type, dart.id), dartSchema.parse(dart))
   },

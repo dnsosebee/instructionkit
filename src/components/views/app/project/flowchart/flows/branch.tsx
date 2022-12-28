@@ -1,16 +1,16 @@
 import { Handle, Node, NodeProps, Position } from 'reactflow'
 import { GOTO_DART_TYPE } from '../../../../../../model/replicache/spaces/proj/entries/dart/types/goto'
-import { RepBranch } from '../../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
+import { BranchFlow } from '../../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
 import { DEFAULT_HANDLE_ID } from '../../../../../../model/tiptap/flowtextExtension'
-import { useProjectCtx } from '../../../../../loaders/providers/projectProvider'
+import { useFlowchartCtx } from '../../../../../loaders/providers/flowchartProvider'
 import { FlowtextEditor } from '../flowtext/flowtextEditor'
 import { StartProps } from './start'
 
-export type BranchData = {
-  flow: RepBranch
+export type BranchNodeData = {
+  flow: BranchFlow
 }
-export type BranchNode = Node<BranchData>
-export type BranchProps = NodeProps<BranchData>
+export type BranchNode = Node<BranchNodeData>
+export type BranchProps = NodeProps<BranchNodeData>
 
 export const BranchNode = (props: BranchProps) => {
   return <Branch {...props} isStart={false} />
@@ -21,11 +21,11 @@ export const Branch = ({
   selected,
   isStart,
 }: (BranchProps | StartProps) & { isStart: boolean }) => {
-  const { darts } = useProjectCtx()
+  const { edges } = useFlowchartCtx()
   const isTop =
-    darts.filter(dart => dart.to === flow.id && dart.type === GOTO_DART_TYPE).length === 0
+    edges.filter(edge => edge.target === flow.id && edge.type === GOTO_DART_TYPE).length === 0
   const isBottom =
-    darts.filter(dart => dart.from === flow.id && dart.type === GOTO_DART_TYPE).length === 0
+    edges.filter(edge => edge.source === flow.id && edge.type === GOTO_DART_TYPE).length === 0
   return (
     <div className='w-[42rem]'>
       <div
