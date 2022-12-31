@@ -5,11 +5,11 @@ import { logger as parentLogger } from '../../../../lib/logger'
 import { nextId, scopedKey } from '../../IdsAndKeys'
 import { PROJECT_ID_LENGTH, PROJECT_KEY_PREFIX } from '../ws/entries/proj'
 import { Dart, dartKey, dartSchema } from './entries/dart/dart'
-import { Flow, flowKey, FlowPositionUpdate, FlowRemove, flowSchema } from './entries/flow/flow'
-import { BranchFlow, branchKey, branchSchema, BRANCH_FLOW_TYPE } from './entries/flow/types/branch'
-import { RefFlow, refKey } from './entries/flow/types/ref'
-import { StartFlow, startKey, startSchema, START_FLOW_TYPE } from './entries/flow/types/start'
-import { SubCreate, subKey } from './entries/flow/types/sub'
+import { Flow, flowKey, flowSchema } from './entries/flow/flow'
+import { BranchFlow, branchSchema, BRANCH_FLOW_TYPE } from './entries/flow/types/branch'
+import { RefFlow } from './entries/flow/types/ref'
+import { StartFlow, startSchema, START_FLOW_TYPE } from './entries/flow/types/start'
+import { SubCreate } from './entries/flow/types/sub'
 
 const logger = parentLogger.child({ module: 'projectMutators' })
 
@@ -57,9 +57,9 @@ export const useProjectRep = (workspaceId: string, projectId: string) => {
 // }
 
 // for the following apply functions, let's assume the flow exists. We can check that in the mutator
-const updateFlowPosition = async (tx: WriteTransaction, update: FlowPositionUpdate) => {
+const updateFlowPosition = async (tx: WriteTransaction, update: any) => {
   logger.info(`Updating flow position: ${update.id} to ${update.position}`)
-  const key = flowKey(update.type, update.id)
+  const key = flowKey(update.id)
   const flow = (await tx.get(key)) as Flow
   if (!flow) {
     throw new Error(`Flow ${update.id} does not exist`)
@@ -67,12 +67,13 @@ const updateFlowPosition = async (tx: WriteTransaction, update: FlowPositionUpda
   await tx.put(key, flowSchema.parse({ ...flow, position: update.position }))
 }
 
-const removeFlow = async (tx: WriteTransaction, remove: FlowRemove) => {
+const removeFlow = async (tx: WriteTransaction, remove: any) => {
   logger.info(`Removing flow: ${remove.id}`)
-  const key = flowKey(remove.type, remove.id)
+  const key = flowKey(remove.id)
   tx.del(key)
 }
 
+// TODO THESE ARE BROKEN AF
 export const projectMutators = {
   // flow/start
   // init should be called when initializing a project
@@ -81,12 +82,12 @@ export const projectMutators = {
     if (!tx.isEmpty()) {
       throw new Error(`Project already initialized, can't create flowstart`)
     }
-    await tx.put(startKey(start.id), startSchema.parse(start))
+    await tx.put(flowKey(start.id), startSchema.parse(start))
   },
   // flows
   async applyFlowChanges(
     tx: WriteTransaction,
-    changes: { positionUpdates: FlowPositionUpdate[]; removes: FlowRemove[] },
+    changes: { positionUpdates: any[]; removes: any[] },
   ) {
     logger.info(`Applying flow changes: ${JSON.stringify(changes)}`)
     for (const update of changes.positionUpdates) {
@@ -101,11 +102,11 @@ export const projectMutators = {
   async createBranch(tx: WriteTransaction, branch: BranchFlow) {
     logger.info(`Creating branch: ${branch.id}`)
     let id = branch.id
-    let key = branchKey(id)
+    let key = flowKey(id)
     let prev = (await tx.get(key)) as BranchFlow
     while (prev) {
       id = nextId(id)
-      key = branchKey(id)
+      key = flowKey(id)
       prev = (await tx.get(key)) as BranchFlow
     }
     branch = { ...branch, id }
@@ -114,7 +115,7 @@ export const projectMutators = {
 
   async deleteBranch(tx: WriteTransaction, id: string) {
     logger.info(`Deleting branch: ${id}`)
-    const key = branchKey(id)
+    const key = flowKey(id)
     await tx.del(key)
   },
 
@@ -123,7 +124,7 @@ export const projectMutators = {
     { type, id, flowtext }: { type: string; id: string; flowtext: string },
   ) {
     logger.info(`Updating flowtext for ${type} with id ${id}`)
-    const key = flowKey(type, id)
+    const key = flowKey(id)
     const flow = (await tx.get(key)) as Flow
     if (!flow) {
       throw new Error(`Flow ${id} does not exist`)
@@ -138,21 +139,21 @@ export const projectMutators = {
   async createSub(tx: WriteTransaction, { sub, start }: SubCreate) {
     logger.info(`Creating sub flow: ${sub.id}`)
     await Promise.all([
-      tx.put(subKey(sub.id), flowSchema.parse(sub)),
-      tx.put(startKey(start.id), startSchema.parse(start)),
+      tx.put(flowKey(sub.id), flowSchema.parse(sub)),
+      tx.put(flowKey(start.id), startSchema.parse(start)),
     ])
   },
 
   //flow/ref
   async createRef(tx: WriteTransaction, ref: RefFlow) {
     logger.info(`Creating ref: ${ref.id}`)
-    await tx.put(refKey(ref.id), flowSchema.parse(ref))
+    await tx.put(flowKey(ref.id), flowSchema.parse(ref))
   },
 
   // dart
   async createDart(tx: WriteTransaction, dart: Dart) {
     logger.info(`Creating dart: ${dart.id}`)
-    await tx.put(dartKey(dart.type, dart.id), dartSchema.parse(dart))
+    await tx.put(dartKey(dart.id), dartSchema.parse(dart))
   },
 }
 

@@ -1,6 +1,16 @@
-import { useCallback, useRef } from 'react'
-import ReactFlow, { Background, Controls, OnConnect, useReactFlow } from 'reactflow'
+import { Map } from 'immutable'
+import { useCallback, useRef, useState } from 'react'
+import ReactFlow, {
+  Background,
+  Controls,
+  OnConnect,
+  OnEdgesChange,
+  OnNodesChange,
+  useReactFlow,
+} from 'reactflow'
+import 'reactflow/dist/style.css'
 import { logger as parentLogger } from '../../../../../lib/logger'
+import { toFlowchartEdges, toFlowchartNodes } from '../../../../../model/reactflow/adapters'
 import { genDartId } from '../../../../../model/replicache/spaces/proj/entries/dart/dart'
 import { GOTO_DART_TYPE } from '../../../../../model/replicache/spaces/proj/entries/dart/types/goto'
 import { genFlowId } from '../../../../../model/replicache/spaces/proj/entries/flow/flow'
@@ -9,7 +19,7 @@ import {
   EMPTY_BRANCH_FLOWTEXT,
 } from '../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
 import { START_FLOW_TYPE } from '../../../../../model/replicache/spaces/proj/entries/flow/types/start'
-import { useFlowchartCtx } from '../../../../loaders/providers/flowchartProvider'
+import { FloemChangeEvent, useFlowchartCtx } from '../../../../loaders/providers/flowchartProvider'
 import { GotoEdge } from './darts/goto'
 import { BranchNode } from './flows/branch'
 import { StartNode } from './flows/start'
@@ -26,54 +36,102 @@ const nodeTypes = { [START_FLOW_TYPE]: StartNode, [BRANCH_FLOW_TYPE]: BranchNode
 const edgeTypes = { [GOTO_DART_TYPE]: GotoEdge }
 
 export const Flowchart = () => {
-  const {
-    nodes,
-    edges,
-    nodeSelections,
-    edgeSelections,
-    title,
-    handleNodesChange,
-    handleEdgesChange,
-    updateFlowtext,
-    addBranch,
-    addDart,
-    updateTitle,
-  } = useFlowchartCtx()
+  const { flows, darts, send } = useFlowchartCtx()
+  const [nodeSelections, setNodeSelections] = useState<Map<string, boolean>>(Map([]))
+  const [edgeSelections, setEdgeSelections] = useState<Map<string, boolean>>(Map([]))
+
+  const nodes = toFlowchartNodes(flows, nodeSelections)
+  const edges = toFlowchartEdges(darts, edgeSelections)
+
   // HTML elemenet ref for the reactflow component wrapper
   const reactFlowWrapper = useRef<null | HTMLDivElement>(null)
   const connectingCase = useRef<null | { flowId: string; caseId: string }>(null)
   const { project } = useReactFlow()
 
-  // const onNodesChange: OnNodesChange = useCallback(changes => {
-  //   const selectionChanges = changes.filter(c => c.type === 'select') as NodeSelectionChange[]
-  //   const positionChanges = changes.filter(c => c.type === 'position') as NodePositionChange[]
-  //   const removeChanges = changes.filter(c => c.type === 'remove') as NodeRemoveChange[]
+  const onNodesChange: OnNodesChange = useCallback(
+    changes => {
+      const floemEvents: FloemChangeEvent[] = []
+      let updatedSelections = nodeSelections
+      changes.forEach(change => {
+        if (change.type === 'position') {
+          const { id, position } = change
+          if (position) {
+            floemEvents.push({
+              action: 'updateFlow',
+              update: {
+                id,
+                position,
+              },
+            })
+          }
+        } else if (change.type === 'remove') {
+          const { id } = change
+          floemEvents.push({
+            action: 'deleteFlow',
+            id,
+          })
+          updatedSelections = updatedSelections.set(id, false)
+        } else if (change.type === 'select') {
+          const { id, selected } = change
+          updatedSelections = updatedSelections.set(id, selected)
+        }
+      })
+      setNodeSelections(updatedSelections)
+      logger.debug('setNodeSelections', { updatedSelections: updatedSelections.toString() })
+      send(floemEvents)
+    },
+    [nodeSelections],
+  )
 
-  //   let newNodeSelections = nodeSelections
-  //   selectionChanges.forEach(c => {
-  //     newNodeSelections = newNodeSelections.set(c.id, c.selected)
-  //   })
-  //   const removes: FlowRemove[] = removeChanges.map(c => {
-  //     newNodeSelections = newNodeSelections.delete(c.id)
-  //     return { type: flows.find(flow => flow.id === c.id)!.type, id: c.id }
-  //   })
-  //   const positionUpdates: FlowPositionUpdate[] = positionChanges.map(c => ({
-  //     id: c.id,
-  //     type: flows.find(flow => flow.id === c.id)!.type,
-  //     position: c.position!,
-  //   }))
-
-  //   setNodeSelections(newNodeSelections)
-  //   projectRep.mutate.applyFlowChanges({ removes, positionUpdates })
-  // }, [])
+  const onEdgesChange: OnEdgesChange = useCallback(
+    changes => {
+      const floemEvents: FloemChangeEvent[] = []
+      let updatedSelections = edgeSelections
+      changes.forEach(change => {
+        if (change.type === 'add') {
+          const {
+            item: { id, source, sourceHandle, target, targetHandle },
+          } = change
+          floemEvents.push({
+            action: 'createDart',
+            dart: {
+              id,
+              type: GOTO_DART_TYPE,
+              from: source,
+              fromHandle: sourceHandle!,
+              to: target,
+              toHandle: targetHandle ?? undefined,
+            },
+          })
+        } else if (change.type === 'remove') {
+          const { id } = change
+          floemEvents.push({
+            action: 'deleteDart',
+            id,
+          })
+          updatedSelections = updatedSelections.set(id, false)
+        } else if (change.type === 'select') {
+          const { id, selected } = change
+          updatedSelections = updatedSelections.set(id, selected)
+        }
+      })
+      setEdgeSelections(updatedSelections)
+      logger.debug('setEdgeSelections', { updatedSelections: updatedSelections.toString() })
+      send(floemEvents)
+    },
+    [edgeSelections],
+  )
 
   const onConnect: OnConnect = useCallback(params => {
-    addDart({
-      id: genDartId(),
-      type: GOTO_DART_TYPE,
-      from: params.source!,
-      fromHandle: params.sourceHandle!,
-      to: params.target!,
+    send({
+      action: 'createDart',
+      dart: {
+        id: genDartId(),
+        type: GOTO_DART_TYPE,
+        from: params.source!,
+        fromHandle: params.sourceHandle!,
+        to: params.target!,
+      },
     })
   }, [])
 
@@ -97,24 +155,32 @@ export const Flowchart = () => {
         x: event.clientX - left - FLOW_OFFSET,
         y: event.clientY - top,
       })
-      addBranch({
-        id: newFlowId,
-        type: BRANCH_FLOW_TYPE,
-        flowtext: EMPTY_BRANCH_FLOWTEXT,
-        position: newFlowPosition,
-      })
-      addDart({
-        id: newDartId,
-        type: GOTO_DART_TYPE,
-        from: connectingCase.current!.flowId,
-        fromHandle: connectingCase.current!.caseId,
-        to: newFlowId,
-      })
+      send([
+        {
+          action: 'createFlow',
+          flow: {
+            id: newFlowId,
+            type: BRANCH_FLOW_TYPE,
+            flowtext: EMPTY_BRANCH_FLOWTEXT,
+            position: newFlowPosition,
+          },
+        },
+        {
+          action: 'createDart',
+          dart: {
+            id: newDartId,
+            type: GOTO_DART_TYPE,
+            from: connectingCase.current!.flowId,
+            fromHandle: connectingCase.current!.caseId,
+            to: newFlowId,
+          },
+        },
+      ])
     }
   }, [])
 
   const toolbarProps: ToolbarProps = {
-    addBranch,
+    send,
   }
 
   return (
@@ -124,9 +190,9 @@ export const Flowchart = () => {
       </div>
       <ReactFlow
         nodes={nodes}
-        onNodesChange={handleNodesChange}
+        onNodesChange={onNodesChange}
         edges={edges}
-        onEdgesChange={handleEdgesChange}
+        onEdgesChange={onEdgesChange}
         onConnect={onConnect}
         nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
@@ -134,6 +200,10 @@ export const Flowchart = () => {
         onConnectEnd={onConnectEnd}
         minZoom={0.2}
         onSelectionChange={e => console.log(e)}
+        // panOnScroll
+        // selectionOnDrag
+        // panOnDrag={[0, 1]}
+        // selectionMode={SelectionMode.Partial}
       >
         <Background />
         <Controls />

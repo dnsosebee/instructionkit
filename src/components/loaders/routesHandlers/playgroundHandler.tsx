@@ -1,5 +1,5 @@
-import { PlaygroundView } from '../../../../pages/playground.tsx/[data]'
-import { PlaygroundPreviewView } from '../../../../pages/playground.tsx/[data]/preview'
+import { PlaygroundView } from '../../../../pages/playground/[playgroundData]'
+import { PlaygroundPreviewView } from '../../../../pages/playground/[playgroundData]/preview'
 import {
   ForkSubrouteConfig,
   ForkType,

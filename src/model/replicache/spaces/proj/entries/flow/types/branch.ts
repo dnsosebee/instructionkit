@@ -1,9 +1,7 @@
 import { z } from 'zod'
-import { key } from '../../../../../IdsAndKeys'
-import { flowIdSchema, flowValueSchema, FLOW_KEY_PREFIX } from '../baseFlow'
+import { flowIdSchema, flowValueSchema } from '../baseFlow'
 
 export const BRANCH_FLOW_TYPE = 'branch'
-export const branchKey = key(FLOW_KEY_PREFIX + BRANCH_FLOW_TYPE + '/')
 
 export const branchValueSchema = flowValueSchema.extend({
   flowtext: z.string(),

@@ -44,6 +44,9 @@ const forkUrlToRoute = (
   forkSubrouteConfig: ForkSubrouteConfig,
   routeState: RouteState,
 ): RouteState => {
+  // logger.debug(
+  //   `forkUrlToRoute, urlSegments: ${urlSegments}, forkSubrouteConfig: ${forkSubrouteConfig}, routeState: ${routeState}`,
+  // )
   const [urlSegment, ...restUrlSegments] = urlSegments
   const forkName = forkSubrouteConfig.forkName
 
@@ -69,7 +72,9 @@ const forkUrlToRoute = (
     return paramUrlToRoute(urlSegments, forkSubrouteConfig.dynamicSubroute, routeState)
   }
 
-  throw new Error('No matching subroute')
+  throw new Error(
+    `ForkSubrouteConfig ${forkSubrouteConfig} has no subroute for urlSegment: ${urlSegment}`,
+  )
 }
 
 const paramUrlToRoute = (
@@ -77,6 +82,7 @@ const paramUrlToRoute = (
   paramSubrouteConfig: ParamSubrouteConfig,
   routeState: RouteState,
 ): RouteState => {
+  // logger.debug('paramUrlToRoute', { urlSegments, paramSubrouteConfig, routeState })
   const [urlSegment, ...restUrlSegments] = urlSegments
   const paramName = paramSubrouteConfig.paramName
 

@@ -1,5 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { RootHandler } from '../../../src/components/loaders/routesHandlers/rootHandler'
+import { Guide } from '../../../src/components/views/app/project/guide/guide'
 import MarketingNav from '../../../src/components/views/marketing/layout/marketingNav'
 import { getRoute, setRoute } from '../../../src/lib/route'
 import { urlDecodePlayground } from '../../../src/model/url/playground'
@@ -14,7 +15,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const PlaygroundPreviewPage = ({ playgroundData }: { playgroundData: string }) => {
-  setRoute({ route: `/playground/${playgroundData}`, action: 'none' })
+  setRoute({ route: `/playground/${encodeURIComponent(playgroundData)}/preview`, action: 'none' })
   return <RootHandler />
 }
 
@@ -29,7 +30,7 @@ export const PlaygroundPreviewView = () => {
   const playground = urlDecodePlayground(playgroundData)
   return (
     <MarketingNav>
-      <p className='text-2xl font-bold text-white'>Insert Playground Preview here</p>
+      <Guide flows={playground.flows} darts={playground.darts} />
     </MarketingNav>
   )
 }

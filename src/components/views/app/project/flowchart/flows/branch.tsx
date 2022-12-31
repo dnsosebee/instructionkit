@@ -21,11 +21,11 @@ export const Branch = ({
   selected,
   isStart,
 }: (BranchProps | StartProps) & { isStart: boolean }) => {
-  const { edges } = useFlowchartCtx()
+  const { darts } = useFlowchartCtx()
   const isTop =
-    edges.filter(edge => edge.target === flow.id && edge.type === GOTO_DART_TYPE).length === 0
+    darts.filter(dart => dart.to === flow.id && dart.type === GOTO_DART_TYPE).length === 0
   const isBottom =
-    edges.filter(edge => edge.source === flow.id && edge.type === GOTO_DART_TYPE).length === 0
+    darts.filter(dart => dart.from === flow.id && dart.type === GOTO_DART_TYPE).length === 0
   return (
     <div className='w-[42rem]'>
       <div

@@ -19,17 +19,17 @@ import FlowtextProvider, { View } from './flowtextProvider'
 const logger = parentLogger.child({ component: 'FlowtextEditor' })
 
 export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
-  const { flocus, setFlocus, edges, updateFlowtext, addBranch, addDart } = useFlowchartCtx()
+  const { flocus, setFlocus, darts, send } = useFlowchartCtx()
 
   const positionRef = React.useRef(flow.position)
   useEffect(() => {
     positionRef.current = flow.position
   }, [flow.position])
 
-  const edgesRef = React.useRef(edges)
+  const dartsRef = React.useRef(darts)
   useEffect(() => {
-    edgesRef.current = edges
-  }, [edges])
+    dartsRef.current = darts
+  }, [darts])
 
   const ExtensionWithShortcuts = FlowtextExtension.extend({
     addKeyboardShortcuts() {
@@ -67,30 +67,36 @@ export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
             const xOffset = (found ? index * 400 : 0) - 250
             const yOffset = 500
 
-            const existingEdge = edgesRef.current.find(
-              edge => edge.sourceHandle === caseId && edge.source === flow.id,
+            const existingEdge = dartsRef.current.find(
+              edge => edge.fromHandle === caseId && edge.from === flow.id,
             )
             if (existingEdge) {
               logger.debug('existing edge')
-              setFlocus(existingEdge.target)
+              setFlocus(existingEdge.to)
             } else {
               const newFlowId = genFlowId()
               const flowPos = positionRef.current
-              addBranch({
-                type: BRANCH_FLOW_TYPE,
-                id: newFlowId,
-                flowtext: EMPTY_BRANCH_FLOWTEXT,
-                position: {
-                  x: flowPos.x + xOffset,
-                  y: flowPos.y + yOffset,
+              send({
+                action: 'createFlow',
+                flow: {
+                  type: BRANCH_FLOW_TYPE,
+                  id: newFlowId,
+                  flowtext: EMPTY_BRANCH_FLOWTEXT,
+                  position: {
+                    x: flowPos.x + xOffset,
+                    y: flowPos.y + yOffset,
+                  },
                 },
               })
-              addDart({
-                type: GOTO_DART_TYPE,
-                id: genDartId(),
-                from: flow.id,
-                fromHandle: caseId,
-                to: newFlowId,
+              send({
+                action: 'createDart',
+                dart: {
+                  type: GOTO_DART_TYPE,
+                  id: genDartId(),
+                  from: flow.id,
+                  fromHandle: caseId,
+                  to: newFlowId,
+                },
               })
               setFlocus(newFlowId)
             }
@@ -112,7 +118,13 @@ export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
       }
     },
     onUpdate: ({ editor }) => {
-      updateFlowtext(flow.id, flow.type, editor.getHTML())
+      send({
+        action: 'updateFlow',
+        update: {
+          id: flow.id,
+          flowtext: editor.getHTML(),
+        },
+      })
     },
     editorProps: {
       attributes: {
@@ -136,7 +148,7 @@ export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
     }
   }, [flocus, !!contentEditor])
 
-  const edgeCases = edges.filter(v => v.source === flow.id).map(v => v.sourceHandle)
+  const edgeCases = darts.filter(v => v.from === flow.id).map(v => v.fromHandle)
   return (
     <FlowtextProvider context={{ view: View.Flowchart, dartCases: edgeCases }}>
       <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />

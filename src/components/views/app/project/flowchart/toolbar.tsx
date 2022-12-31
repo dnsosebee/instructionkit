@@ -1,19 +1,21 @@
 import { DocumentPlusIcon } from '@heroicons/react/20/solid'
+import { PlayIcon } from '@heroicons/react/24/solid'
 import { genFlowId } from '../../../../../model/replicache/spaces/proj/entries/flow/flow'
 import {
-  BranchFlow,
   BRANCH_FLOW_TYPE,
   EMPTY_BRANCH_FLOWTEXT,
 } from '../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
+import { SendFloemChange, useFlowchartCtx } from '../../../../loaders/providers/flowchartProvider'
 import { IconButton } from './iconButton'
 export interface ToolbarProps {
-  addBranch: (branch: BranchFlow) => void
+  send: SendFloemChange
 }
 
-export const Toolbar = ({ addBranch }: ToolbarProps) => {
+export const Toolbar = ({ send }: ToolbarProps) => {
   // const disableDelete =
   //   (nodeSelections.every(v => !v) && edgeSelections.every(v => !v)) ||
   //   nodeSelections[floem.flows.findIndex(flow => flow.id === FLOW_START_ID)]
+  const { previewHref } = useFlowchartCtx()
 
   return (
     <div className='static'>
@@ -21,11 +23,14 @@ export const Toolbar = ({ addBranch }: ToolbarProps) => {
         <IconButton
           Icon={DocumentPlusIcon}
           onClick={() =>
-            addBranch({
-              id: genFlowId(),
-              type: BRANCH_FLOW_TYPE,
-              position: { x: 0, y: 0 },
-              flowtext: EMPTY_BRANCH_FLOWTEXT,
+            send({
+              action: 'createFlow',
+              flow: {
+                id: genFlowId(),
+                type: BRANCH_FLOW_TYPE,
+                position: { x: 0, y: 0 },
+                flowtext: EMPTY_BRANCH_FLOWTEXT,
+              },
             })
           }
           title='Add Flow'
@@ -47,10 +52,10 @@ export const Toolbar = ({ addBranch }: ToolbarProps) => {
           Icon={DocumentArrowDownIcon}
           onClick={() => handleDownloadFloem(floem)}
           title='Download'
-        />
-        <a href={mutate.spaceRelativeUrl(`/river/${floem.id}`)} target='_blank'>
-          <IconButton Icon={PlayIcon} onClick={() => null} title='Embark' />
-        </a> */}
+        /> */}
+        <a href={previewHref} target='_blank' rel='noopener noreferrer'>
+          <IconButton Icon={PlayIcon} onClick={() => null} title='Preview' />
+        </a>
       </span>
     </div>
   )
