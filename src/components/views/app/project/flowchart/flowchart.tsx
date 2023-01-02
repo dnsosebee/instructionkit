@@ -145,6 +145,10 @@ export const Flowchart = () => {
 
   const onConnectEnd = useCallback(event => {
     logger.debug('onConnectEnd', { event })
+    if (connectingCase.current!.caseId === null) {
+      // This prevents mutations from triggering on drag from a flow's input handle
+      return
+    }
     const targetIsPane = event.target.classList.contains('react-flow__pane')
     logger.debug('onConnectEnd', 'targetIsPane', { targetIsPane })
     if (targetIsPane) {

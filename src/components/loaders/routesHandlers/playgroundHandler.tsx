@@ -7,26 +7,48 @@ import {
   ParamSubrouteConfig,
   setRoute,
 } from '../../../lib/route'
+import { genDartId } from '../../../model/replicache/spaces/proj/entries/dart/dart'
+import { GOTO_DART_TYPE } from '../../../model/replicache/spaces/proj/entries/dart/types/goto'
 import { genFlowId } from '../../../model/replicache/spaces/proj/entries/flow/flow'
+import { BRANCH_FLOW_TYPE } from '../../../model/replicache/spaces/proj/entries/flow/types/branch'
+import { START_FLOW_TYPE } from '../../../model/replicache/spaces/proj/entries/flow/types/start'
 import { genVersionId } from '../../../model/replicache/spaces/proj/entries/version'
+import { DEFAULT_HANDLE_ID } from '../../../model/tiptap/flowtextExtension'
 import { Playground, urlEncodePlayground } from '../../../model/url/playground'
 import { FourOhFour } from '../../views/shared/FourOhFour'
 
-const genPlayground = (): Playground => ({
-  id: genVersionId(),
-  flows: [
-    {
-      id: genFlowId(),
-      type: 'start',
-      flowtext: '<h1>Hello world!</h1>',
-      position: { x: 0, y: 0 },
-    },
-  ],
-  darts: [],
-  createdAt: Date.now(),
-  title: 'Blank project',
-  schemaVersion: 1,
-})
+const genPlayground = (): Playground => {
+  const startId = genFlowId()
+  const branchId = genFlowId()
+  return {
+    id: genVersionId(),
+    flows: [
+      {
+        id: startId,
+        type: START_FLOW_TYPE,
+        position: { x: 0, y: 0 },
+      },
+      {
+        id: branchId,
+        type: BRANCH_FLOW_TYPE,
+        position: { x: 0, y: 200 },
+        flowtext: '<h1>My Beautiful New Guide</h1>',
+      },
+    ],
+    darts: [
+      {
+        id: genDartId(),
+        type: GOTO_DART_TYPE,
+        from: startId,
+        fromHandle: DEFAULT_HANDLE_ID,
+        to: branchId,
+      },
+    ],
+    createdAt: Date.now(),
+    title: 'Blank project',
+    schemaVersion: 1,
+  }
+}
 const PLAYGROUND_DATA_FORK_ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'playgroundData',
   hasDefaultSubroute: true,

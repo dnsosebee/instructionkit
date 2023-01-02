@@ -11,20 +11,19 @@ import {
   BRANCH_FLOW_TYPE,
   EMPTY_BRANCH_FLOWTEXT,
 } from '../../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
-import { StartFlow } from '../../../../../../model/replicache/spaces/proj/entries/flow/types/start'
 import FlowtextExtension from '../../../../../../model/tiptap/flowtextExtension'
 import { useFlowchartCtx } from '../../../../../loaders/providers/flowchartProvider'
 import FlowtextProvider, { View } from './flowtextProvider'
 
 const logger = parentLogger.child({ component: 'FlowtextEditor' })
 
-export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
+export const FlowtextEditor = ({ branch }: { branch: BranchFlow }) => {
   const { flocus, setFlocus, darts, send } = useFlowchartCtx()
 
-  const positionRef = React.useRef(flow.position)
+  const positionRef = React.useRef(branch.position)
   useEffect(() => {
-    positionRef.current = flow.position
-  }, [flow.position])
+    positionRef.current = branch.position
+  }, [branch.position])
 
   const dartsRef = React.useRef(darts)
   useEffect(() => {
@@ -68,7 +67,7 @@ export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
             const yOffset = 500
 
             const existingEdge = dartsRef.current.find(
-              edge => edge.fromHandle === caseId && edge.from === flow.id,
+              edge => edge.fromHandle === caseId && edge.from === branch.id,
             )
             if (existingEdge) {
               logger.debug('existing edge')
@@ -93,7 +92,7 @@ export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
                 dart: {
                   type: GOTO_DART_TYPE,
                   id: genDartId(),
-                  from: flow.id,
+                  from: branch.id,
                   fromHandle: caseId,
                   to: newFlowId,
                 },
@@ -111,7 +110,7 @@ export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
   // Content stuff
   const contentEditor = useEditor({
     extensions: [ExtensionWithShortcuts],
-    content: flow.flowtext,
+    content: branch.flowtext,
     onCreate({ editor }) {
       if (process.env.NODE_ENV !== 'production') {
         applyDevTools(editor.view)
@@ -121,14 +120,14 @@ export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
       send({
         action: 'updateFlow',
         update: {
-          id: flow.id,
+          id: branch.id,
           flowtext: editor.getHTML(),
         },
       })
     },
     editorProps: {
       attributes: {
-        flow: flow.id,
+        flow: branch.id,
         class:
           'chart-prose py-3 prose prose-hr:border-2 prose-hr:border-black cursor-text prose-hr:selected:border-blue-600',
       },
@@ -136,22 +135,22 @@ export const FlowtextEditor = ({ flow }: { flow: BranchFlow | StartFlow }) => {
   })
 
   useEffect(() => {
-    if (contentEditor && flow.flowtext !== contentEditor.getHTML() && !contentEditor.isFocused) {
-      contentEditor.commands.setContent(`${flow.flowtext}`)
+    if (contentEditor && branch.flowtext !== contentEditor.getHTML() && !contentEditor.isFocused) {
+      contentEditor.commands.setContent(`${branch.flowtext}`)
     }
-  }, [flow.flowtext])
+  }, [branch.flowtext])
 
   useEffect(() => {
-    if (contentEditor && flocus === flow.id) {
+    if (contentEditor && flocus === branch.id) {
       contentEditor.commands.focus()
       setFlocus(null)
     }
   }, [flocus, !!contentEditor])
 
-  const edgeCases = darts.filter(v => v.from === flow.id).map(v => v.fromHandle)
+  const edgeCases = darts.filter(v => v.from === branch.id).map(v => v.fromHandle)
   return (
     <FlowtextProvider context={{ view: View.Flowchart, dartCases: edgeCases }}>
-      <EditorContent editor={contentEditor} key={`CE/${flow.id}`} />
+      <EditorContent editor={contentEditor} key={`EC/${branch.id}`} />
     </FlowtextProvider>
   )
 }

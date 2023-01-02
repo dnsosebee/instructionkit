@@ -1,6 +1,15 @@
 import { GetServerSideProps } from 'next'
+import { ReactFlowProvider } from 'reactflow'
+import FlowchartProvider, {
+  FloemChangeEvent,
+  FlowchartProviderProps,
+} from '../../../../src/components/loaders/providers/flowchartProvider'
+import { useProjectCtx } from '../../../../src/components/loaders/providers/projectProvider'
+import { useWorkspaceCtx } from '../../../../src/components/loaders/providers/workspaceRepProvider'
 import { RootHandler } from '../../../../src/components/loaders/routesHandlers/rootHandler'
-import { setRoute } from '../../../../src/lib/route'
+import Breadcrumbs from '../../../../src/components/views/app/project/flowchart/breadcrumbs'
+import { Flowchart } from '../../../../src/components/views/app/project/flowchart/flowchart'
+import { getRoute, setRoute } from '../../../../src/lib/route'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -25,40 +34,43 @@ export default ProjectPage
  */
 
 export const ProjectView = () => {
-  // const flowchartProviderProps: Omit<FlowchartProviderProps, 'children'> = {
-  //   nodes: [],
-  //   edges: [],
-  //   title: '',
-  //   handleNodesChange: function (changes: NodeChange[]): void {
-  //     throw new Error('Function not implemented.')
-  //   },
-  //   handleEdgesChange: function (changes: EdgeChange[]): void {
-  //     throw new Error('Function not implemented.')
-  //   },
-  //   addBranch: function (branch: BranchFlow): void {
-  //     throw new Error('Function not implemented.')
-  //   },
-  //   addDart: function (dart: Dart): void {
-  //     throw new Error('Function not implemented.')
-  //   },
-  //   updateFlowtext: function (id: string, type: string, flowtext: string): void {
-  //     throw new Error('Function not implemented.')
-  //   },
-  //   updateTitle: function (title: string): void {
-  //     throw new Error('Function not implemented.')
-  //   },
-  // }
-  // return (
-  //   <div>
-  //     <div className='absolute z-50'>
-  //       <Breadcrumbs />
-  //     </div>
-  //     <FlowchartProvider {...flowchartProviderProps}>
-  //       <ReactFlowProvider>
-  //         <Flowchart />
-  //       </ReactFlowProvider>
-  //     </FlowchartProvider>
-  //   </div>
-  // )
+  const { workspaceId, projectId } = getRoute().params
+  const { workspaceRep, projects } = useWorkspaceCtx()
+  const { projectRep, flows, darts } = useProjectCtx()
+  const project = projects.find(p => p.id === projectId)!
+  const flowchartProviderProps: Omit<FlowchartProviderProps, 'children'> = {
+    title: project.title,
+    flows,
+    darts,
+    send: function (changes: FloemChangeEvent | FloemChangeEvent[]): void {
+      if (!Array.isArray(changes)) {
+        changes = [changes]
+      }
+      const projectChanges = []
+      for (const change of changes) {
+        if (change.action === 'updateTitle') {
+          workspaceRep.mutate.updateProject({ id: projectId, title: change.title })
+        } else {
+          projectChanges.push(change)
+        }
+      }
+      if (projectChanges.length > 0) {
+        // projectRep.mutate.send(projectChanges) // TODO
+      }
+    },
+    previewHref: `/app/${workspaceId}/${projectId}/preview`,
+  }
+  return (
+    <div>
+      <div className='absolute z-50'>
+        <Breadcrumbs />
+      </div>
+      <FlowchartProvider {...flowchartProviderProps}>
+        <ReactFlowProvider>
+          <Flowchart />
+        </ReactFlowProvider>
+      </FlowchartProvider>
+    </div>
+  )
   return <div>Project</div>
 }

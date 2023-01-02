@@ -22,7 +22,7 @@ export const toFlowchartNodes = (
           type: flow.type,
           position: flow.position,
           data: {
-            flow,
+            start: flow,
           },
           selected: flowSelections.get(flow.id) ?? false,
         } as StartNode
@@ -32,7 +32,7 @@ export const toFlowchartNodes = (
           type: flow.type,
           position: flow.position,
           data: {
-            flow,
+            branch: flow,
           },
           selected: flowSelections.get(flow.id) ?? false,
         } as BranchNode

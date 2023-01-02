@@ -1,10 +1,9 @@
 import { z } from 'zod'
-import { flowIdSchema } from '../baseFlow'
-import { branchValueSchema } from './branch'
+import { flowIdSchema, flowValueSchema } from '../baseFlow'
 
 export const START_FLOW_TYPE = 'start'
 
-export const startValueSchema = branchValueSchema
+export const startValueSchema = flowValueSchema
 export const startSchema = startValueSchema.merge(flowIdSchema).extend({
   type: z.literal(START_FLOW_TYPE),
 })
