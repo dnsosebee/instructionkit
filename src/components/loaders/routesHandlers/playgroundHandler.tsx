@@ -31,8 +31,8 @@ const genPlayground = (): Playground => {
       {
         id: branchId,
         type: BRANCH_FLOW_TYPE,
-        position: { x: 0, y: 200 },
-        flowtext: '<h1>My Beautiful New Guide</h1>',
+        position: { x: 50, y: 150 },
+        flowtext: '<h1>My Beautiful New Guide</h1><p>Let’s get started!</p>',
       },
     ],
     darts: [
@@ -40,7 +40,7 @@ const genPlayground = (): Playground => {
         id: genDartId(),
         type: GOTO_DART_TYPE,
         from: startId,
-        fromHandle: DEFAULT_HANDLE_ID,
+        case: DEFAULT_HANDLE_ID,
         to: branchId,
       },
     ],

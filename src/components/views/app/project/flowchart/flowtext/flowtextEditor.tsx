@@ -67,7 +67,7 @@ export const FlowtextEditor = ({ branch }: { branch: BranchFlow }) => {
             const yOffset = 500
 
             const existingEdge = dartsRef.current.find(
-              edge => edge.fromHandle === caseId && edge.from === branch.id,
+              edge => edge.case === caseId && edge.from === branch.id,
             )
             if (existingEdge) {
               logger.debug('existing edge')
@@ -93,7 +93,7 @@ export const FlowtextEditor = ({ branch }: { branch: BranchFlow }) => {
                   type: GOTO_DART_TYPE,
                   id: genDartId(),
                   from: branch.id,
-                  fromHandle: caseId,
+                  case: caseId,
                   to: newFlowId,
                 },
               })
@@ -147,7 +147,7 @@ export const FlowtextEditor = ({ branch }: { branch: BranchFlow }) => {
     }
   }, [flocus, !!contentEditor])
 
-  const edgeCases = darts.filter(v => v.from === branch.id).map(v => v.fromHandle)
+  const edgeCases = darts.filter(v => v.from === branch.id).map(v => v.case)
   return (
     <FlowtextProvider context={{ view: View.Flowchart, dartCases: edgeCases }}>
       <EditorContent editor={contentEditor} key={`EC/${branch.id}`} />

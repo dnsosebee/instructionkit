@@ -98,9 +98,8 @@ export const Flowchart = () => {
               id,
               type: GOTO_DART_TYPE,
               from: source,
-              fromHandle: sourceHandle!,
+              case: sourceHandle!,
               to: target,
-              toHandle: targetHandle ?? undefined,
             },
           })
         } else if (change.type === 'remove') {
@@ -129,7 +128,7 @@ export const Flowchart = () => {
         id: genDartId(),
         type: GOTO_DART_TYPE,
         from: params.source!,
-        fromHandle: params.sourceHandle!,
+        case: params.sourceHandle!,
         to: params.target!,
       },
     })
@@ -175,7 +174,7 @@ export const Flowchart = () => {
             id: newDartId,
             type: GOTO_DART_TYPE,
             from: connectingCase.current!.flowId,
-            fromHandle: connectingCase.current!.caseId,
+            case: connectingCase.current!.caseId,
             to: newFlowId,
           },
         },

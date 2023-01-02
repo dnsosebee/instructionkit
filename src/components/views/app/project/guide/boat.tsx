@@ -59,7 +59,7 @@ const helper = async (data: {
   const doneWithFlow = flocation.node >= flowNodes.length
   if (doneWithFlow) {
     const branches = darts.filter(v => v.from == flocation.flow)
-    const dart = branches.find(v => v.fromHandle === chosenCaseId)
+    const dart = branches.find(v => v.case === chosenCaseId)
     if (!dart) {
       return finishStone({ fragment, vars, flowFrom: flocation })
     }

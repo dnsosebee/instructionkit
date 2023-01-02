@@ -51,9 +51,8 @@ export const toFlowchartEdges = (
       id: dart.id,
       type: dart.type,
       source: dart.from,
-      sourceHandle: dart.fromHandle,
+      sourceHandle: dart.case,
       target: dart.to,
-      targetHandle: dart.toHandle,
       selected: dartSelections.get(dart.id) ?? false,
       data: {
         dart,
@@ -61,39 +60,3 @@ export const toFlowchartEdges = (
     }
   })
 }
-
-// export const toFlowsAndSelections = (
-//   nodes: FlowchartNode[],
-// ): { updatedFlows: Flow[]; updatedNodeSelections: Map<Flow['id'], boolean> } => {
-//   const updatedFlows: Flow[] = []
-//   const updatedNodeSelections = Map<Flow['id'], boolean>()
-//   nodes.forEach(node => {
-//     updatedFlows.push({
-//       id: node.id,
-//       type: node.type as typeof START_FLOW_TYPE | typeof BRANCH_FLOW_TYPE,
-//       position: node.position,
-//       flowtext: node.data.flow.flowtext,
-//     })
-//     updatedNodeSelections.set(node.id, node.selected ?? false)
-//   })
-//   return { updatedFlows, updatedNodeSelections }
-// }
-
-// export const toDartsAndSelections = (
-//   edges: FlowchartEdge[],
-// ): { updatedDarts: Dart[]; updatedEdgeSelections: Map<Dart['id'], boolean> } => {
-//   const updatedDarts: Dart[] = []
-//   const updatedEdgeSelections = Map<Dart['id'], boolean>()
-//   edges.forEach(edge => {
-//     updatedDarts.push({
-//       id: edge.id,
-//       type: edge.type as typeof GOTO_DART_TYPE,
-//       from: edge.source,
-//       fromHandle: edge.sourceHandle,
-//       to: edge.target,
-//       toHandle: edge.targetHandle ?? undefined,
-//     })
-//     updatedEdgeSelections.set(edge.id, edge.selected ?? false)
-//   })
-//   return { updatedDarts, updatedEdgeSelections }
-// }
