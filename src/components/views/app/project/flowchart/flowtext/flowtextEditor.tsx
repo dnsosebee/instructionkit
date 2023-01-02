@@ -125,6 +125,12 @@ export const FlowtextEditor = ({ branch }: { branch: BranchFlow }) => {
         },
       })
     },
+    // onBlur: ({ editor }) => {
+    //   editor.setEditable(false)
+    // },
+    // onFocus: ({ editor }) => {
+    //   editor.setEditable(true)
+    // },
     editorProps: {
       attributes: {
         flow: branch.id,

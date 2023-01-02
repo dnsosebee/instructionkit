@@ -6,6 +6,7 @@ import ReactFlow, {
   OnConnect,
   OnEdgesChange,
   OnNodesChange,
+  SelectionMode,
   useReactFlow,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
@@ -203,10 +204,11 @@ export const Flowchart = () => {
         onConnectEnd={onConnectEnd}
         minZoom={0.2}
         onSelectionChange={e => console.log(e)}
-        // panOnScroll
-        // selectionOnDrag
-        // panOnDrag={[0, 1]}
-        // selectionMode={SelectionMode.Partial}
+        panOnScroll={true}
+        panOnDrag={[2]}
+        selectionOnDrag={true}
+        panActivationKeyCode='Space'
+        selectionMode={SelectionMode.Partial}
       >
         <Background />
         <Controls />
