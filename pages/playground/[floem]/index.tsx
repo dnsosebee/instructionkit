@@ -9,25 +9,21 @@ import { Flowchart } from '../../../src/components/views/app/project/flowchart/f
 import { logger as parentLogger } from '../../../src/lib/logger'
 import { getRoute, setRoute } from '../../../src/lib/route'
 import { START_FLOW_TYPE } from '../../../src/model/replicache/spaces/proj/entries/flow/types/start'
-import {
-  Playground,
-  urlDecodePlayground,
-  urlEncodePlayground,
-} from '../../../src/model/url/playground'
+import { Floem, urlDecodeFloem, urlEncodeFloem } from '../../../src/model/url/floem'
 
 const logger = parentLogger.child({ component: 'playground' })
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const playgroundData = params?.playgroundData as string
+  const floem = params?.floem as string
   return {
     props: {
-      playgroundData,
+      floem,
     },
   }
 }
 
-const PlaygroundPage = ({ playgroundData }: { playgroundData: string }) => {
-  setRoute({ route: `/playground/${encodeURIComponent(playgroundData)}`, action: 'none' })
+const PlaygroundPage = ({ floem }: { floem: string }) => {
+  setRoute({ route: `/playground/${encodeURIComponent(floem)}`, action: 'none' })
   return <RootHandler />
 }
 
@@ -38,45 +34,45 @@ export default PlaygroundPage
  */
 
 export const PlaygroundView = () => {
-  const { playgroundData } = getRoute().params
+  const { floem } = getRoute().params
 
   const newRef = (data: string) => {
-    return urlDecodePlayground(data)
+    return urlDecodeFloem(data)
   }
-  const ref = React.useRef(newRef(playgroundData))
+  const ref = React.useRef(newRef(floem))
   React.useEffect(() => {
-    ref.current = newRef(playgroundData)
+    ref.current = newRef(floem)
     logger.debug('ref', ref.current)
-  }, [playgroundData])
+  }, [floem])
 
-  const updatePlayground = (updatedPlayground: Playground) => {
-    setRoute({ route: `/playground/${urlEncodePlayground(updatedPlayground)}`, action: 'push' })
+  const updateFloem = (update: Floem) => {
+    setRoute({ route: `/playground/${urlEncodeFloem(update)}`, action: 'push' })
   }
 
   const flowchartProviderProps: Omit<FlowchartProviderProps, 'children'> = {
     title: ref.current.title,
     flows: ref.current.flows,
     darts: ref.current.darts,
-    previewHref: `/playground/${playgroundData}/preview`,
+    previewHref: `/playground/${floem}/preview`,
     send: function (changes: FloemChangeEvent | FloemChangeEvent[]): void {
       logger.debug('send', changes)
       if (!Array.isArray(changes)) {
         changes = [changes]
       }
-      const updatedPlayground = { ...ref.current }
+      const update = { ...ref.current }
       for (const change of changes) {
         let existing: any
         switch (change.action) {
           case 'createFlow':
-            existing = updatedPlayground.flows.find(flow => flow.id === change.flow.id)
+            existing = update.flows.find(flow => flow.id === change.flow.id)
             if (existing === undefined) {
-              updatedPlayground.flows.push(change.flow)
+              update.flows.push(change.flow)
             } else {
               logger.warn('createFlow: flow already exists', change.flow)
             }
             break
           case 'updateFlow':
-            existing = updatedPlayground.flows.find(flow => flow.id === change.update.id)
+            existing = update.flows.find(flow => flow.id === change.update.id)
             if (existing !== undefined) {
               Object.assign(existing, change.update)
             } else {
@@ -84,10 +80,10 @@ export const PlaygroundView = () => {
             }
             break
           case 'deleteFlow':
-            existing = updatedPlayground.flows.find(flow => flow.id === change.id)
+            existing = update.flows.find(flow => flow.id === change.id)
             if (existing !== undefined) {
               if (existing.type !== START_FLOW_TYPE) {
-                updatedPlayground.flows.splice(updatedPlayground.flows.indexOf(existing), 1)
+                update.flows.splice(update.flows.indexOf(existing), 1)
               } else {
                 logger.warn('deleteFlow: cannot delete start flow', change.id)
                 return
@@ -97,29 +93,29 @@ export const PlaygroundView = () => {
             }
             break
           case 'createDart':
-            existing = updatedPlayground.darts.find(dart => dart.id === change.dart.id)
+            existing = update.darts.find(dart => dart.id === change.dart.id)
             if (existing === undefined) {
-              updatedPlayground.darts.push(change.dart)
+              update.darts.push(change.dart)
             } else {
               logger.warn('createDart: dart already exists', change.dart)
             }
             break
           case 'deleteDart':
-            existing = updatedPlayground.darts.find(dart => dart.id === change.id)
+            existing = update.darts.find(dart => dart.id === change.id)
             if (existing !== undefined) {
-              updatedPlayground.darts.splice(updatedPlayground.darts.indexOf(existing), 1)
+              update.darts.splice(update.darts.indexOf(existing), 1)
             } else {
               logger.warn('deleteDart: dart not found', change.id)
             }
             break
           case 'updateTitle':
-            updatedPlayground.title = change.title
+            update.title = change.title
             break
           default:
             logger.warn('unknown action', change)
         }
       }
-      updatePlayground(updatedPlayground)
+      updateFloem(update)
     },
   }
   return (

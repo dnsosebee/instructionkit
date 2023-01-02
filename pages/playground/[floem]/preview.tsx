@@ -3,19 +3,19 @@ import { RootHandler } from '../../../src/components/loaders/routesHandlers/root
 import { Guide } from '../../../src/components/views/app/project/guide/guide'
 import MarketingNav from '../../../src/components/views/marketing/layout/marketingNav'
 import { getRoute, setRoute } from '../../../src/lib/route'
-import { urlDecodePlayground } from '../../../src/model/url/playground'
+import { urlDecodeFloem } from '../../../src/model/url/floem'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const playgroundData = params?.playgroundData as string
+  const floem = params?.floem as string
   return {
     props: {
-      playgroundData,
+      floem,
     },
   }
 }
 
-const PlaygroundPreviewPage = ({ playgroundData }: { playgroundData: string }) => {
-  setRoute({ route: `/playground/${encodeURIComponent(playgroundData)}/preview`, action: 'none' })
+const PlaygroundPreviewPage = ({ floem }: { floem: string }) => {
+  setRoute({ route: `/playground/${encodeURIComponent(floem)}/preview`, action: 'none' })
   return <RootHandler />
 }
 
@@ -26,11 +26,11 @@ export default PlaygroundPreviewPage
  */
 
 export const PlaygroundPreviewView = () => {
-  const { playgroundData } = getRoute().params
-  const playground = urlDecodePlayground(playgroundData)
+  const { floem } = getRoute().params
+  const decoded = urlDecodeFloem(floem)
   return (
     <MarketingNav>
-      <Guide flows={playground.flows} darts={playground.darts} />
+      <Guide flows={decoded.flows} darts={decoded.darts} />
     </MarketingNav>
   )
 }

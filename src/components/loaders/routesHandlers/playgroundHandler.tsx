@@ -1,5 +1,5 @@
-import { PlaygroundView } from '../../../../pages/playground/[playgroundData]'
-import { PlaygroundPreviewView } from '../../../../pages/playground/[playgroundData]/preview'
+import { PlaygroundView } from '../../../../pages/playground/[floem]'
+import { PlaygroundPreviewView } from '../../../../pages/playground/[floem]/preview'
 import {
   ForkSubrouteConfig,
   ForkType,
@@ -14,10 +14,10 @@ import { BRANCH_FLOW_TYPE } from '../../../model/replicache/spaces/proj/entries/
 import { START_FLOW_TYPE } from '../../../model/replicache/spaces/proj/entries/flow/types/start'
 import { genVersionId } from '../../../model/replicache/spaces/proj/entries/version'
 import { DEFAULT_HANDLE_ID } from '../../../model/tiptap/flowtextExtension'
-import { Playground, urlEncodePlayground } from '../../../model/url/playground'
+import { Floem, urlEncodeFloem } from '../../../model/url/floem'
 import { FourOhFour } from '../../views/shared/FourOhFour'
 
-const genPlayground = (): Playground => {
+const genFloem = (): Floem => {
   const startId = genFlowId()
   const branchId = genFlowId()
   return {
@@ -49,8 +49,8 @@ const genPlayground = (): Playground => {
     schemaVersion: 1,
   }
 }
-const PLAYGROUND_DATA_FORK_ROUTE_CONFIG: ForkSubrouteConfig = {
-  forkName: 'playgroundData',
+const FLOEM_FORK_ROUTE_CONFIG: ForkSubrouteConfig = {
+  forkName: 'floem',
   hasDefaultSubroute: true,
   namedSubroutes: {
     preview: {
@@ -60,51 +60,47 @@ const PLAYGROUND_DATA_FORK_ROUTE_CONFIG: ForkSubrouteConfig = {
   },
 }
 
-const PLAYGROUND_DATA_ROUTE_CONFIG: ParamSubrouteConfig = {
-  paramName: 'playgroundData',
-  subroute: PLAYGROUND_DATA_FORK_ROUTE_CONFIG,
+const FLOEM_PARAM_ROUTE_CONFIG: ParamSubrouteConfig = {
+  paramName: 'floem',
+  subroute: FLOEM_FORK_ROUTE_CONFIG,
 }
 
 export const PLAYGROUND_ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'playground',
   hasDefaultSubroute: true,
-  dynamicSubroute: PLAYGROUND_DATA_ROUTE_CONFIG,
+  dynamicSubroute: FLOEM_PARAM_ROUTE_CONFIG,
 }
 
 export const PlaygroundHandler = () => {
   const playgroundFork = getRoute().forks[PLAYGROUND_ROUTE_CONFIG.forkName]
   switch (playgroundFork.type) {
     case ForkType.Default:
-      setRoute({ route: `/playground/${urlEncodePlayground(genPlayground())}`, action: 'none' })
+      setRoute({ route: `/playground/${urlEncodeFloem(genFloem())}`, action: 'none' })
       return null
     case ForkType.Dynamic:
-      return <PlaygroundDataHandler />
+      return <FloemDataHandler />
   }
   return (
     <FourOhFour errorMessage={`unexpected fork type '${playgroundFork.type}' in playground fork`} />
   )
 }
 
-const PlaygroundDataHandler = () => {
-  const playgroundDataFork = getRoute().forks[PLAYGROUND_DATA_ROUTE_CONFIG.subroute.forkName]
-  switch (playgroundDataFork.type) {
+const FloemDataHandler = () => {
+  const floemFork = getRoute().forks[FLOEM_FORK_ROUTE_CONFIG.forkName]
+  switch (floemFork.type) {
     case ForkType.Default:
       return <PlaygroundView />
     case ForkType.Named:
-      switch (playgroundDataFork.urlSegment) {
+      switch (floemFork.urlSegment) {
         case 'preview':
           return <PlaygroundPreviewView />
         default:
           return (
             <FourOhFour
-              errorMessage={`unexpected urlSegment '${playgroundDataFork.urlSegment}' in playgroundData fork`}
+              errorMessage={`unexpected urlSegment '${floemFork.urlSegment}' in floem fork`}
             />
           )
       }
   }
-  return (
-    <FourOhFour
-      errorMessage={`unexpected fork type '${playgroundDataFork.type}' in playgroundData fork`}
-    />
-  )
+  return <FourOhFour errorMessage={`unexpected fork type '${floemFork.type}' in floem fork`} />
 }
