@@ -203,11 +203,10 @@ export const Flowchart = () => {
         onConnectStart={onConnectStart}
         onConnectEnd={onConnectEnd}
         minZoom={0.2}
-        onSelectionChange={e => console.log(e)}
-        panOnScroll={true}
-        panOnDrag={[2]}
-        selectionOnDrag={true}
-        panActivationKeyCode='Space'
+        // panOnScroll={true}
+        // panOnDrag={[2]}
+        // selectionOnDrag={true}
+        // panActivationKeyCode='Space'
         selectionMode={SelectionMode.Partial}
       >
         <Background />

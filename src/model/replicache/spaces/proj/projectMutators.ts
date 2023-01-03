@@ -80,22 +80,34 @@ export const applyFlowAndDartChanges = async (
         break
 
       case 'createDart':
+        logger.debug(change.dart)
+
         darts = (await tx.getDarts()) as Dart[]
-        // make sure source is unique
-        if (darts.some(dart => dart.from === change.dart.from && dart.case === change.dart.case)) {
-          throw new Error(
-            `createDart: dart with matching source already exists ${JSON.stringify(change.dart)}`,
-          )
-        }
+        logger.debug(change.dart)
+
         // make sure id is unique
         prev = darts.find(dart => dart.id === change.dart.id)
+        logger.debug(change.dart)
+
         while (prev !== undefined) {
           logger.info('createDart: dart already exists', change.dart, prev)
           change.dart = { ...change.dart, id: nextId(change.dart.id) }
           prev = darts.find(dart => dart.id === change.dart.id)
         }
-        darts.push(change.dart)
-        await tx.putDarts(darts)
+
+        // make sure source is unique
+        prev = darts.findIndex(
+          dart => dart.from === change.dart.from && dart.case === change.dart.case,
+        )
+        logger.debug(change.dart)
+
+        if (prev !== -1) {
+          darts.splice(prev, 1, change.dart)
+          await tx.putDarts(darts)
+        } else {
+          darts.push(change.dart)
+          await tx.putDarts(darts)
+        }
         break
 
       case 'deleteDart':
