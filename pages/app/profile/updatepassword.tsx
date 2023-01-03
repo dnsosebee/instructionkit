@@ -83,11 +83,20 @@ export const UpdatePassword = ({ redirectUrl }: { redirectUrl: string | null }) 
                     </label>
                     <div className='mt-1 flex rounded-md shadow-sm'>
                       <input
+                        type='text'
+                        name='username'
+                        value={user?.email}
+                        autoComplete='username'
+                        readOnly
+                        className='hidden'
+                      />
+                      <input
                         type='password'
                         name='password'
                         id='password'
                         className='mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                         placeholder='New password'
+                        autoComplete='new-password'
                       />
                     </div>
                   </div>

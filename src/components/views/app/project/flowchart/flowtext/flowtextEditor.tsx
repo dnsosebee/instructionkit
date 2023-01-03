@@ -1,5 +1,4 @@
 import { EditorContent, useEditor } from '@tiptap/react'
-import { applyDevTools } from 'prosemirror-dev-toolkit'
 import { findParentNodeOfType } from 'prosemirror-utils'
 import React, { useEffect } from 'react'
 import { logger as parentLogger } from '../../../../../../lib/logger'
@@ -111,11 +110,12 @@ export const FlowtextEditor = ({ branch }: { branch: BranchFlow }) => {
   const contentEditor = useEditor({
     extensions: [ExtensionWithShortcuts],
     content: branch.flowtext,
-    onCreate({ editor }) {
-      if (process.env.NODE_ENV !== 'production') {
-        applyDevTools(editor.view)
-      }
-    },
+    // // uncomment if you want ProseMirror debug tools; but know that this injects bad CSS into the application, so LEAVE IT COMMENTED!
+    // onCreate({ editor }) {
+    //   if (process.env.NODE_ENV !== 'production') {
+    //     applyDevTools(editor.view)
+    //   }
+    // },
     onUpdate: ({ editor }) => {
       send({
         action: 'updateFlow',

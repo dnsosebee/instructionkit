@@ -90,7 +90,7 @@ export default () => {
                   priority
                 /> */}
                 <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-white'>
-                  Join the waitlist
+                  Join our waitlist
                 </h2>
               </div>
               <form className='mt-8 space-y-6' onSubmit={handleSubmit1}>
