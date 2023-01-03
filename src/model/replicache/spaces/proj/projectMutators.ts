@@ -6,8 +6,8 @@ import { logger as parentLogger } from '../../../../lib/logger'
 import { nextId, scopedKey } from '../../IdsAndKeys'
 import { PROJECT_ID_LENGTH, PROJECT_KEY_PREFIX } from '../ws/entries/proj'
 import { Dart, DARTS_KEY } from './entries/dart/dart'
-import { Flow, flowKey, flowSchema } from './entries/flow/flow'
-import { StartFlow, startSchema, START_FLOW_TYPE } from './entries/flow/types/start'
+import { Flow, flowKey, flowSchema, listFlows } from './entries/flow/flow'
+import { START_FLOW_TYPE } from './entries/flow/types/start'
 
 const logger = parentLogger.child({ module: 'projectMutators' })
 
@@ -80,17 +80,12 @@ export const applyFlowAndDartChanges = async (
         break
 
       case 'createDart':
-        logger.debug(change.dart)
-
         darts = (await tx.getDarts()) as Dart[]
-        logger.debug(change.dart)
 
         // make sure id is unique
         prev = darts.find(dart => dart.id === change.dart.id)
-        logger.debug(change.dart)
-
         while (prev !== undefined) {
-          logger.info('createDart: dart already exists', change.dart, prev)
+          logger.info('createDart: dart already exists, replacing it.', change.dart, prev)
           change.dart = { ...change.dart, id: nextId(change.dart.id) }
           prev = darts.find(dart => dart.id === change.dart.id)
         }
@@ -99,14 +94,13 @@ export const applyFlowAndDartChanges = async (
         prev = darts.findIndex(
           dart => dart.from === change.dart.from && dart.case === change.dart.case,
         )
-        logger.debug(change.dart)
 
         if (prev !== -1) {
-          darts.splice(prev, 1, change.dart)
+          darts = [...darts] // we need to make a copy so as not to mutate the original, Replicache disallows this
+          darts[prev] = change.dart
           await tx.putDarts(darts)
         } else {
-          darts.push(change.dart)
-          await tx.putDarts(darts)
+          await tx.putDarts([...darts, change.dart])
         }
         break
 
@@ -114,7 +108,7 @@ export const applyFlowAndDartChanges = async (
         darts = (await tx.getDarts()) as Dart[]
         prev = darts.find(dart => dart.id === change.id)
         if (prev !== undefined) {
-          darts.splice(darts.indexOf(prev), 1)
+          darts = darts.filter(dart => dart.id !== change.id)
           await tx.putDarts(darts)
         } else {
           throw new Error(`deleteDart: dart not found ${change.id}`)
@@ -128,12 +122,53 @@ export const applyFlowAndDartChanges = async (
 }
 
 export const projectMutators = {
-  async init(tx: WriteTransaction, start: StartFlow) {
-    logger.info(`Initializing project with start flow: ${start.id}`)
-    if (!tx.isEmpty()) {
-      throw new Error(`Project already initialized, can't create flowstart`)
+  async reset(tx: WriteTransaction, { flows, darts }: { flows: Flow[]; darts: Dart[] }) {
+    // check that there's one start flow
+    const startFlows = flows.filter(flow => flow.type === START_FLOW_TYPE)
+    if (startFlows.length !== 1) {
+      throw new Error(`reset: expected 1 start flow, got ${startFlows.length}`)
     }
-    await tx.put(flowKey(start.id), startSchema.parse(start))
+
+    // check that flowIds are unique
+    const flowIds = new Set(flows.map(flow => flow.id))
+    if (flowIds.size !== flows.length) {
+      throw new Error(`reset: duplicate flow ids`)
+    }
+
+    // check that dartIds are unique
+    const dartIds = new Set(darts.map(dart => dart.id))
+    if (dartIds.size !== darts.length) {
+      throw new Error(`reset: duplicate dart ids`)
+    }
+
+    // check that all darts are to and from existing flows
+    for (const dart of darts) {
+      if (!flowIds.has(dart.from)) {
+        throw new Error(`reset: dart from non-existent flow ${dart.from}`)
+      }
+      if (!flowIds.has(dart.to)) {
+        throw new Error(`reset: dart to non-existent flow ${dart.to}`)
+      }
+    }
+
+    // check that there's one dart per source
+    const sources = new Set<string>()
+    const source = (dart: Dart) => `${dart.from}-${dart.case}`
+    for (const dart of darts) {
+      if (sources.has(source(dart))) {
+        throw new Error(`reset: duplicate dart source ${source(dart)}`)
+      }
+      sources.add(source(dart))
+    }
+
+    const prevFlows = await listFlows(tx)
+    for (const flow of prevFlows) {
+      await tx.del(flowKey(flow.id))
+    }
+    for (const flow of flows) {
+      await tx.put(flowKey(flow.id), flowSchema.parse(flow))
+    }
+    await tx.put(DARTS_KEY, darts)
   },
   // flows
   async applyChanges(tx: WriteTransaction, changes: FloemChangeEvent[]) {

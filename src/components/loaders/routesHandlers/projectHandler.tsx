@@ -1,4 +1,5 @@
 import { ProjectView } from '../../../../pages/app/[workspaceId]/[projectId]'
+import { PreviewView } from '../../../../pages/app/[workspaceId]/[projectId]/preview'
 import { ForkSubrouteConfig, ForkType, getRoute, ParamSubrouteConfig } from '../../../lib/route'
 import { FourOhFour } from '../../views/shared/FourOhFour'
 import { ProjectProvider } from '../providers/projectProvider'
@@ -52,7 +53,7 @@ const ProjectHandler = () => {
     case ForkType.Named:
       switch (projectFork.urlSegment) {
         case 'preview':
-          return <div className='text-white'>INSERT PREVIEW PAGE HERE</div>
+          return <PreviewView />
         default:
           return (
             <FourOhFour

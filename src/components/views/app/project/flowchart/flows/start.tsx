@@ -3,7 +3,7 @@ import { StartFlow } from '../../../../../../model/replicache/spaces/proj/entrie
 import { FlowShell } from './flowShell'
 
 export type StartNodeData = { start: StartFlow }
-export type StartNode = Node<StartNodeData>
+export type StartNode = Node<StartNodeData> & { deletable: false }
 export type StartProps = NodeProps<StartNodeData>
 
 export const StartNode = ({

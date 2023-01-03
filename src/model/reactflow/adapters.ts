@@ -25,6 +25,7 @@ export const toFlowchartNodes = (
             start: flow,
           },
           selected: flowSelections.get(flow.id) ?? false,
+          deletable: false,
         } as StartNode
       case BRANCH_FLOW_TYPE:
         return {

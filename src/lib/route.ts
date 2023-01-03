@@ -115,13 +115,12 @@ export const setRoute = ({
   route: string
   action: 'push' | 'replace' | 'none'
 }) => {
-  logger.debug('setRoute', { relativeUrl: route, action })
   if (action === 'push') {
     window.history.pushState({}, '', route)
   } else if (action === 'replace') {
     window.history.replaceState({}, '', route)
   }
   const newRouteState = urlToRoute(route)
-  logger.info('setRoute', { routeState: newRouteState })
+  logger.info('setRoute', { route, routeState: newRouteState })
   routeState.state = newRouteState
 }

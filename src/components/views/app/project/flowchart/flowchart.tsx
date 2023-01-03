@@ -6,8 +6,8 @@ import ReactFlow, {
   OnConnect,
   OnEdgesChange,
   OnNodesChange,
-  SelectionMode,
   useReactFlow,
+  XYPosition,
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 import { logger as parentLogger } from '../../../../../lib/logger'
@@ -31,7 +31,8 @@ const logger = parentLogger.child({ component: 'Flowchart' })
 export type FlowchartNode = StartNode | BranchNode
 export type FlowchartEdge = GotoEdge
 
-const FLOW_OFFSET = 200
+// corresponds to half the css width of the node: should probably be dynamic at some point
+const FLOW_OFFSET = 336
 
 const nodeTypes = { [START_FLOW_TYPE]: StartNode, [BRANCH_FLOW_TYPE]: BranchNode }
 const edgeTypes = { [GOTO_DART_TYPE]: GotoEdge }
@@ -43,6 +44,7 @@ export const Flowchart = () => {
 
   const nodes = toFlowchartNodes(flows, nodeSelections)
   const edges = toFlowchartEdges(darts, edgeSelections)
+  logger.debug('render', { flows, darts })
 
   // HTML elemenet ref for the reactflow component wrapper
   const reactFlowWrapper = useRef<null | HTMLDivElement>(null)
@@ -91,7 +93,7 @@ export const Flowchart = () => {
       changes.forEach(change => {
         if (change.type === 'add') {
           const {
-            item: { id, source, sourceHandle, target, targetHandle },
+            item: { id, source, sourceHandle, target },
           } = change
           floemEvents.push({
             action: 'createDart',
@@ -143,45 +145,50 @@ export const Flowchart = () => {
     }
   }, [])
 
-  const onConnectEnd = useCallback(event => {
-    logger.debug('onConnectEnd', { event })
-    if (connectingCase.current!.caseId === null) {
-      // This prevents mutations from triggering on drag from a flow's input handle
-      return
-    }
-    const targetIsPane = event.target.classList.contains('react-flow__pane')
-    logger.debug('onConnectEnd', 'targetIsPane', { targetIsPane })
-    if (targetIsPane) {
-      const { top, left } = reactFlowWrapper.current!.getBoundingClientRect()
-      const newDartId = genDartId()
-      const newFlowId = genFlowId()
-      const newFlowPosition = project({
-        x: event.clientX - left - FLOW_OFFSET,
-        y: event.clientY - top,
-      })
-      send([
-        {
-          action: 'createFlow',
-          flow: {
-            id: newFlowId,
-            type: BRANCH_FLOW_TYPE,
-            flowtext: EMPTY_BRANCH_FLOWTEXT,
-            position: newFlowPosition,
+  const onConnectEnd = useCallback(
+    event => {
+      logger.debug('onConnectEnd', { event })
+      if (connectingCase.current!.caseId === null) {
+        // This prevents mutations from triggering on drag from a flow's input handle
+        return
+      }
+      const targetIsPane = event.target.classList.contains('react-flow__pane')
+      logger.debug('onConnectEnd', 'targetIsPane', { targetIsPane })
+      if (targetIsPane) {
+        const { top, left } = reactFlowWrapper.current!.getBoundingClientRect()
+        const newDartId = genDartId()
+        const newFlowId = genFlowId()
+        const offset = (position: XYPosition) => ({ x: position.x - FLOW_OFFSET, y: position.y })
+        send([
+          {
+            action: 'createFlow',
+            flow: {
+              id: newFlowId,
+              type: BRANCH_FLOW_TYPE,
+              flowtext: EMPTY_BRANCH_FLOWTEXT,
+              position: offset(
+                project({
+                  x: event.clientX - left,
+                  y: event.clientY - top,
+                }),
+              ),
+            },
           },
-        },
-        {
-          action: 'createDart',
-          dart: {
-            id: newDartId,
-            type: GOTO_DART_TYPE,
-            from: connectingCase.current!.flowId,
-            case: connectingCase.current!.caseId,
-            to: newFlowId,
+          {
+            action: 'createDart',
+            dart: {
+              id: newDartId,
+              type: GOTO_DART_TYPE,
+              from: connectingCase.current!.flowId,
+              case: connectingCase.current!.caseId,
+              to: newFlowId,
+            },
           },
-        },
-      ])
-    }
-  }, [])
+        ])
+      }
+    },
+    [project],
+  )
 
   const toolbarProps: ToolbarProps = {
     send,
@@ -207,7 +214,7 @@ export const Flowchart = () => {
         // panOnDrag={[2]}
         // selectionOnDrag={true}
         // panActivationKeyCode='Space'
-        selectionMode={SelectionMode.Partial}
+        // selectionMode={SelectionMode.Partial}
       >
         <Background />
         <Controls />

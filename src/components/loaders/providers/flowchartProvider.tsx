@@ -43,7 +43,6 @@ export interface FlowchartProviderProps {
 
 const FlowchartProvider = ({ children, ...value }: FlowchartProviderProps) => {
   const [flocus, setFlocus] = useState<FlowchartContext['flocus']>(null)
-  console.log('have this many flows', value.flows.length)
   return (
     <flowchartContext.Provider value={{ flocus, setFlocus, ...value }}>
       <ReactFlowProvider>{children}</ReactFlowProvider>

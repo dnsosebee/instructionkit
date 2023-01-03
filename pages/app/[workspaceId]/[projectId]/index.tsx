@@ -37,6 +37,7 @@ export const ProjectView = () => {
   const { workspaceId, projectId } = getRoute().params
   const { workspaceRep, projects } = useWorkspaceCtx()
   const { projectRep, flows, darts } = useProjectCtx()
+
   const project = projects.find(p => p.id === projectId)!
   const flowchartProviderProps: Omit<FlowchartProviderProps, 'children'> = {
     title: project.title,
@@ -55,14 +56,14 @@ export const ProjectView = () => {
         }
       }
       if (projectChanges.length > 0) {
-        // projectRep.mutate.send(projectChanges) // TODO
+        projectRep.mutate.applyChanges(projectChanges)
       }
     },
     previewHref: `/app/${workspaceId}/${projectId}/preview`,
   }
   return (
-    <div>
-      <div className='absolute z-50'>
+    <>
+      <div className='absolute z-50 left-0'>
         <Breadcrumbs />
       </div>
       <FlowchartProvider {...flowchartProviderProps}>
@@ -70,7 +71,7 @@ export const ProjectView = () => {
           <Flowchart />
         </ReactFlowProvider>
       </FlowchartProvider>
-    </div>
+    </>
   )
   return <div>Project</div>
 }

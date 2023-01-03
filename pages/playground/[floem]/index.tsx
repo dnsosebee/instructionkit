@@ -74,7 +74,7 @@ export const PlaygroundView = () => {
         }
       },
       getDarts: async () => {
-        return [...update.darts]
+        return update.darts
       },
       putDarts: async darts => {
         update.darts = darts

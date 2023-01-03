@@ -1,4 +1,3 @@
-import { logger } from '@supabase/auth-helpers-nextjs'
 import { ForkSubrouteConfig, ForkType, getRoute, setRoute } from '../../../lib/route'
 import { FourOhFour } from '../../views/shared/FourOhFour'
 import { useAppCtx } from '../providers/appProvider'
@@ -21,7 +20,6 @@ export const APP_ROUTE_CONFIG: ForkSubrouteConfig = {
 export const AppHandler = () => {
   const { defaultWorkspaceId, createWorkspace } = useAppCtx()
   const appFork = getRoute().forks[APP_ROUTE_CONFIG.forkName]
-  logger.debug('appFork', appFork)
   switch (appFork.type) {
     case ForkType.Default:
       setRoute({ route: `/app/${defaultWorkspaceId}`, action: 'replace' })

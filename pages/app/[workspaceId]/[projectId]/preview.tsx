@@ -1,5 +1,7 @@
 import { GetServerSideProps } from 'next'
+import { useProjectCtx } from '../../../../src/components/loaders/providers/projectProvider'
 import { RootHandler } from '../../../../src/components/loaders/routesHandlers/rootHandler'
+import { Guide } from '../../../../src/components/views/app/project/guide/guide'
 import { setRoute } from '../../../../src/lib/route'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
@@ -19,3 +21,12 @@ const PreviewPage = ({ workspaceId, projectId }: { workspaceId: string; projectI
 }
 
 export default PreviewPage
+
+/**
+ *
+ */
+
+export const PreviewView = () => {
+  const { flows, darts } = useProjectCtx()
+  return <Guide flows={flows} darts={darts} />
+}

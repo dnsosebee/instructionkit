@@ -4,7 +4,8 @@ import { evalAssignments, evalCondition } from '../../../../../lib/flogramming/f
 import { logger as parentLogger } from '../../../../../lib/logger'
 import { Dart } from '../../../../../model/replicache/spaces/proj/entries/dart/dart'
 import { Flow } from '../../../../../model/replicache/spaces/proj/entries/flow/flow'
-import { BranchFlow } from '../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
+import { BRANCH_FLOW_TYPE } from '../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
+import { START_FLOW_TYPE } from '../../../../../model/replicache/spaces/proj/entries/flow/types/start'
 import { DEFAULT_HANDLE_ID } from '../../../../../model/tiptap/flowtextExtension'
 import { SwitchType } from '../../../../../model/tiptap/switchNode'
 
@@ -39,11 +40,18 @@ export async function riverStoneAt(
 
 const refill = (flows: Flow[], id: Flow['id']): HTMLElement[] => {
   const flow = flows.find(f => f.id === id)!
-  const body = parse((flow as BranchFlow).flowtext)
-  const childElements = body.childNodes.filter(
-    c => c.nodeType === NodeType.ELEMENT_NODE,
-  ) as HTMLElement[] // redundant probably
-  return Array.from(childElements)
+  switch (flow.type) {
+    case START_FLOW_TYPE:
+      return []
+    case BRANCH_FLOW_TYPE:
+      return Array.from(
+        parse(flow.flowtext).childNodes.filter(
+          v => v.nodeType === NodeType.ELEMENT_NODE,
+        ) as HTMLElement[],
+      )
+    default:
+      throw new Error(`refill: unexpected flow type ${flow.type}`)
+  }
 }
 
 const helper = async (data: {
