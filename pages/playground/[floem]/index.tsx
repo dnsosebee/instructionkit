@@ -59,7 +59,9 @@ export const PlaygroundView = () => {
       if (!Array.isArray(changes)) {
         changes = [changes]
       }
-      const update = { ...ref.current }
+      const update = {
+        ...ref.current,
+      }
       for (const change of changes) {
         let existing: any
         switch (change.action) {
@@ -69,6 +71,7 @@ export const PlaygroundView = () => {
               update.flows.push(change.flow)
             } else {
               logger.warn('createFlow: flow already exists', change.flow)
+              return
             }
             break
           case 'updateFlow':
@@ -77,6 +80,7 @@ export const PlaygroundView = () => {
               Object.assign(existing, change.update)
             } else {
               logger.warn('updateFlow: flow not found', change.update)
+              return
             }
             break
           case 'deleteFlow':
@@ -90,14 +94,25 @@ export const PlaygroundView = () => {
               }
             } else {
               logger.warn('deleteFlow: flow not found', change.id)
+              return
             }
             break
           case 'createDart':
             existing = update.darts.find(dart => dart.id === change.dart.id)
             if (existing === undefined) {
-              update.darts.push(change.dart)
+              if (
+                update.darts.some(
+                  dart => dart.from === change.dart.from && dart.case === change.dart.case,
+                )
+              ) {
+                logger.warn('createDart: dart already exists', change.dart)
+                return
+              } else {
+                update.darts.push(change.dart)
+              }
             } else {
               logger.warn('createDart: dart already exists', change.dart)
+              return
             }
             break
           case 'deleteDart':
@@ -106,6 +121,7 @@ export const PlaygroundView = () => {
               update.darts.splice(update.darts.indexOf(existing), 1)
             } else {
               logger.warn('deleteDart: dart not found', change.id)
+              return
             }
             break
           case 'updateTitle':

@@ -1,15 +1,13 @@
 import { Replicache, WriteTransaction } from 'replicache'
 import { useReplicache } from 'replicache-nextjs/lib/frontend'
 import { z } from 'zod'
+import { FloemChangeEvent } from '../../../../components/loaders/providers/flowchartProvider'
 import { logger as parentLogger } from '../../../../lib/logger'
 import { nextId, scopedKey } from '../../IdsAndKeys'
 import { PROJECT_ID_LENGTH, PROJECT_KEY_PREFIX } from '../ws/entries/proj'
-import { Dart, dartKey, dartSchema } from './entries/dart/dart'
+import { Dart, DARTS_KEY } from './entries/dart/dart'
 import { Flow, flowKey, flowSchema } from './entries/flow/flow'
-import { BranchFlow, branchSchema, BRANCH_FLOW_TYPE } from './entries/flow/types/branch'
-import { RefFlow } from './entries/flow/types/ref'
 import { StartFlow, startSchema, START_FLOW_TYPE } from './entries/flow/types/start'
-import { SubCreate } from './entries/flow/types/sub'
 
 const logger = parentLogger.child({ module: 'projectMutators' })
 
@@ -32,51 +30,92 @@ export const useProjectRep = (workspaceId: string, projectId: string) => {
   })
 }
 
-// const removeFlow = async (
-//   tx: WriteTransaction,
-//   remove: Pick<RepFlow, 'id' | 'type'>,
-// ) => {
-//   const key = flowKey(remove.type, remove.id)
-//   if (remove.type === START_FLOW_TYPE) {
-//     throw new Error(`Can't remove start flow ${remove.id}`)
-//   }
-//   if (remove.type === SUB_FLOW_TYPE) {
-//     const flows = (await listFlows(tx))
-//     recursiveRemoveFlow(tx, remove.id, flows)
-//   }
-//   await tx.del(key)
-// }
+export type FlowAndDartTransaction = {
+  getFlow: (flowId: string) => Promise<Flow | undefined>
+  putFlow: (flow: Flow) => Promise<void>
+  delFlow: (flowId: string) => Promise<void>
+  getDarts: () => Promise<Dart[]>
+  putDarts: (darts: Dart[]) => Promise<void>
+}
 
-// const recursiveRemoveFlow = async (tx: WriteTransaction, subFlowId: string, flows: RepFlow[]) => {
-//   const children = flows.filter(f => f.parent === subFlowId)
-//   for (const child of children) {
-//     if (child.type === SUB_FLOW_TYPE) {
-//     await recursiveRemoveFlow(tx, child.id, flows)
-//     await tx.del(flowKey(child.type, child.id))
-//   }
-// }
+export const applyFlowAndDartChanges = async (
+  tx: FlowAndDartTransaction,
+  changes: FloemChangeEvent[],
+) => {
+  logger.info(`Applying floem changes: ${JSON.stringify(changes)}`)
+  let prev: any
+  let darts: Dart[]
+  for (const change of changes) {
+    switch (change.action) {
+      case 'createFlow':
+        prev = await tx.getFlow(change.flow.id)
+        while (prev !== undefined) {
+          logger.info('createFlow: flow already exists', change.flow, prev)
+          change.flow = { ...change.flow, id: nextId(change.flow.id) }
+          prev = await tx.getFlow(change.flow.id)
+        }
+        await tx.putFlow(flowSchema.parse(change.flow))
+        break
 
-// for the following apply functions, let's assume the flow exists. We can check that in the mutator
-const updateFlowPosition = async (tx: WriteTransaction, update: any) => {
-  logger.info(`Updating flow position: ${update.id} to ${update.position}`)
-  const key = flowKey(update.id)
-  const flow = (await tx.get(key)) as Flow
-  if (!flow) {
-    throw new Error(`Flow ${update.id} does not exist`)
+      case 'updateFlow':
+        prev = await tx.getFlow(change.update.id)
+        if (prev !== undefined) {
+          await tx.putFlow(flowSchema.parse({ ...prev, ...change.update }))
+        } else {
+          throw new Error(`updateFlow: flow not found ${change.update.id}`)
+        }
+        break
+
+      case 'deleteFlow':
+        prev = await tx.getFlow(change.id)
+        if (prev !== undefined) {
+          if (prev.type !== START_FLOW_TYPE) {
+            await tx.delFlow(change.id)
+          } else {
+            throw new Error(`deleteFlow: cannot delete start flow ${change.id}`)
+          }
+        } else {
+          throw new Error(`deleteFlow: flow not found ${change.id}`)
+        }
+        break
+
+      case 'createDart':
+        darts = (await tx.getDarts()) as Dart[]
+        // make sure source is unique
+        if (darts.some(dart => dart.from === change.dart.from && dart.case === change.dart.case)) {
+          throw new Error(
+            `createDart: dart with matching source already exists ${JSON.stringify(change.dart)}`,
+          )
+        }
+        // make sure id is unique
+        prev = darts.find(dart => dart.id === change.dart.id)
+        while (prev !== undefined) {
+          logger.info('createDart: dart already exists', change.dart, prev)
+          change.dart = { ...change.dart, id: nextId(change.dart.id) }
+          prev = darts.find(dart => dart.id === change.dart.id)
+        }
+        darts.push(change.dart)
+        await tx.putDarts(darts)
+        break
+
+      case 'deleteDart':
+        darts = (await tx.getDarts()) as Dart[]
+        prev = darts.find(dart => dart.id === change.id)
+        if (prev !== undefined) {
+          darts.splice(darts.indexOf(prev), 1)
+          await tx.putDarts(darts)
+        } else {
+          throw new Error(`deleteDart: dart not found ${change.id}`)
+        }
+        break
+
+      default:
+        throw new Error(`unexpected action ${change.action}`)
+    }
   }
-  await tx.put(key, flowSchema.parse({ ...flow, position: update.position }))
 }
 
-const removeFlow = async (tx: WriteTransaction, remove: any) => {
-  logger.info(`Removing flow: ${remove.id}`)
-  const key = flowKey(remove.id)
-  tx.del(key)
-}
-
-// TODO THESE ARE BROKEN AF
 export const projectMutators = {
-  // flow/start
-  // init should be called when initializing a project
   async init(tx: WriteTransaction, start: StartFlow) {
     logger.info(`Initializing project with start flow: ${start.id}`)
     if (!tx.isEmpty()) {
@@ -85,75 +124,25 @@ export const projectMutators = {
     await tx.put(flowKey(start.id), startSchema.parse(start))
   },
   // flows
-  async applyFlowChanges(
-    tx: WriteTransaction,
-    changes: { positionUpdates: any[]; removes: any[] },
-  ) {
-    logger.info(`Applying flow changes: ${JSON.stringify(changes)}`)
-    for (const update of changes.positionUpdates) {
-      await updateFlowPosition(tx, update)
+  async applyChanges(tx: WriteTransaction, changes: FloemChangeEvent[]) {
+    const repTx: FlowAndDartTransaction = {
+      getFlow: async (flowId: string) => {
+        return (await tx.get(flowKey(flowId))) as Flow
+      },
+      putFlow: async (flow: Flow) => {
+        await tx.put(flowKey(flow.id), flow)
+      },
+      delFlow: async (flowId: string) => {
+        await tx.del(flowKey(flowId))
+      },
+      getDarts: async () => {
+        return (await tx.get(DARTS_KEY)) as Dart[]
+      },
+      putDarts: async (darts: Dart[]) => {
+        await tx.put(DARTS_KEY, darts)
+      },
     }
-    for (const remove of changes.removes) {
-      await removeFlow(tx, remove)
-    }
-  },
-
-  // flow/branch
-  async createBranch(tx: WriteTransaction, branch: BranchFlow) {
-    logger.info(`Creating branch: ${branch.id}`)
-    let id = branch.id
-    let key = flowKey(id)
-    let prev = (await tx.get(key)) as BranchFlow
-    while (prev) {
-      id = nextId(id)
-      key = flowKey(id)
-      prev = (await tx.get(key)) as BranchFlow
-    }
-    branch = { ...branch, id }
-    await tx.put(key, branchSchema.parse(branch))
-  },
-
-  async deleteBranch(tx: WriteTransaction, id: string) {
-    logger.info(`Deleting branch: ${id}`)
-    const key = flowKey(id)
-    await tx.del(key)
-  },
-
-  async updateFlowtext(
-    tx: WriteTransaction,
-    { type, id, flowtext }: { type: string; id: string; flowtext: string },
-  ) {
-    logger.info(`Updating flowtext for ${type} with id ${id}`)
-    const key = flowKey(id)
-    const flow = (await tx.get(key)) as Flow
-    if (!flow) {
-      throw new Error(`Flow ${id} does not exist`)
-    }
-    if (flow.type !== START_FLOW_TYPE && flow.type !== BRANCH_FLOW_TYPE) {
-      throw new Error(`Can't update flowtext for flow type ${flow.type}`)
-    }
-    await tx.put(key, flowSchema.parse({ ...flow, flowtext }))
-  },
-
-  // flow/sub
-  async createSub(tx: WriteTransaction, { sub, start }: SubCreate) {
-    logger.info(`Creating sub flow: ${sub.id}`)
-    await Promise.all([
-      tx.put(flowKey(sub.id), flowSchema.parse(sub)),
-      tx.put(flowKey(start.id), startSchema.parse(start)),
-    ])
-  },
-
-  //flow/ref
-  async createRef(tx: WriteTransaction, ref: RefFlow) {
-    logger.info(`Creating ref: ${ref.id}`)
-    await tx.put(flowKey(ref.id), flowSchema.parse(ref))
-  },
-
-  // dart
-  async createDart(tx: WriteTransaction, dart: Dart) {
-    logger.info(`Creating dart: ${dart.id}`)
-    await tx.put(dartKey(dart.id), dartSchema.parse(dart))
+    await applyFlowAndDartChanges(repTx, changes)
   },
 }
 
