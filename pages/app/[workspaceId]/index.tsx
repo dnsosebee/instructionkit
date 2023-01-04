@@ -9,7 +9,8 @@ import { RootHandler } from '../../../src/components/loaders/routesHandlers/root
 import { AppLayout } from '../../../src/components/views/app/layout/appLayout'
 import ContextMenu from '../../../src/components/views/shared/contextMenu'
 import { getRoute, setRoute } from '../../../src/lib/route'
-import { listProjects, Project } from '../../../src/model/replicache/spaces/ws/entries/proj'
+import { listProjects } from '../../../src/model/persistence/replicache/spaces/ws/entries/proj'
+import { Project } from '../../../src/model/schema/types/project'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string

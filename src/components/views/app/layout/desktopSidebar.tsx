@@ -1,6 +1,6 @@
 import { FolderPlusIcon } from '@heroicons/react/24/outline'
 import classNames from 'classnames'
-import { getRoute } from '../../../../lib/route'
+import { getRoute, setRoute } from '../../../../lib/route'
 import { Blink } from '../../../loaders/blink'
 import { useAppCtx } from '../../../loaders/providers/appProvider'
 import { Icon } from '../../shared/icons'
@@ -8,6 +8,12 @@ import { Icon } from '../../shared/icons'
 export const DesktopSidebar = () => {
   const { workspaceId } = getRoute().params
   const { userMembershipWorkspaces, userInviteWorkspaces, createWorkspace } = useAppCtx()
+
+  const handleCreateWorkspace = async () => {
+    const id = await createWorkspace()
+    setRoute({ route: `/app/${id}/settings`, action: 'none' })
+  }
+
   return (
     <nav
       aria-label='Sidebar'
@@ -68,7 +74,7 @@ export const DesktopSidebar = () => {
         <div className='grow' />
         <button
           key={'Create Workspace'}
-          onClick={createWorkspace}
+          onClick={handleCreateWorkspace}
           className={classNames(
             'text-gray-500 hover:bg-indigo-800 hover:text-white',
             'group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium',

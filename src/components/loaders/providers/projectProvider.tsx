@@ -1,9 +1,15 @@
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
-import { Dart, listDarts } from '../../../model/replicache/spaces/proj/entries/dart/dart'
-import { Flow, listFlows } from '../../../model/replicache/spaces/proj/entries/flow/flow'
-import { ProjectRep, useProjectRep } from '../../../model/replicache/spaces/proj/projectMutators'
-import { genDefaultFloem } from '../../../model/url/floem'
+import { listDarts } from '../../../model/persistence/replicache/spaces/proj/entries/darts'
+import { listFlows } from '../../../model/persistence/replicache/spaces/proj/entries/flow'
+import {
+  ProjectRep,
+  useProjectRep,
+} from '../../../model/persistence/replicache/spaces/proj/projectRep'
+import { Dart } from '../../../model/schema/types/dart/dart'
+import { genDefaultFloem } from '../../../model/schema/types/floem'
+import { Flow } from '../../../model/schema/types/flow/flow'
+
 import Loading from '../../views/shared/loading'
 
 export type ProjectContext = {

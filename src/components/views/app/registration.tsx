@@ -1,9 +1,9 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
-import Image from 'next/image'
-import { Database } from '../../../lib/database.types'
 import { logger } from '../../../lib/logger'
+import { Database } from '../../../model/persistence/supabase/database.types'
 import { useSessionCtx } from '../../loaders/providers/sessionProvider/sessionProvider'
 import { Profile } from '../../loaders/providers/sessionProvider/sessionState'
+import Logo from '../shared/logo'
 
 export default ({ setProfile }: { setProfile: (profile: Profile) => void }) => {
   const {
@@ -37,7 +37,7 @@ export default ({ setProfile }: { setProfile: (profile: Profile) => void }) => {
 
   return (
     <div className='bg-white p-6'>
-      <Image src='/dark.svg' alt='logo' width={100} height={100} className='mx-auto' />
+      <Logo light={false} className='mx-auto' />
 
       <form className='space-y-8 divide-y divide-gray-200' onSubmit={handleSubmit}>
         <div className='space-y-8 divide-y divide-gray-200 sm:space-y-5'>

@@ -1,22 +1,8 @@
 import { createContext, useContext, useState } from 'react'
 import { ReactFlowProvider } from 'reactflow'
-import { Dart } from '../../../model/replicache/spaces/proj/entries/dart/dart'
-import { Flow, FlowUpdate } from '../../../model/replicache/spaces/proj/entries/flow/flow'
-
-type FlowChangeEvent =
-  | { action: 'createFlow'; flow: Flow }
-  | { action: 'updateFlow'; update: FlowUpdate }
-  | { action: 'deleteFlow'; id: string }
-
-export type DartChangeEvent =
-  | { action: 'createDart'; dart: Dart }
-  | { action: 'deleteDart'; id: string }
-
-export type TitleChangeEvent = { action: 'updateTitle'; title: string }
-
-export type FloemChangeEvent = FlowChangeEvent | DartChangeEvent | TitleChangeEvent
-
-export type SendFloemChange = (changes: FloemChangeEvent | FloemChangeEvent[]) => void
+import { SendFloemChange } from '../../../model/persistence/shared/floemChangeEvent'
+import { Dart } from '../../../model/schema/types/dart/dart'
+import { Flow } from '../../../model/schema/types/flow/flow'
 
 // note: some of this stuff is more context-y, some is more prop-y.
 // I put it all together for clarity.

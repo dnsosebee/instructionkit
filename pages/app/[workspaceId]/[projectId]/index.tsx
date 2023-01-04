@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { ReactFlowProvider } from 'reactflow'
 import FlowchartProvider, {
-  FloemChangeEvent,
   FlowchartProviderProps,
 } from '../../../../src/components/loaders/providers/flowchartProvider'
 import { useProjectCtx } from '../../../../src/components/loaders/providers/projectProvider'
@@ -10,6 +9,7 @@ import { RootHandler } from '../../../../src/components/loaders/routesHandlers/r
 import Breadcrumbs from '../../../../src/components/views/app/project/flowchart/breadcrumbs'
 import { Flowchart } from '../../../../src/components/views/app/project/flowchart/flowchart'
 import { getRoute, setRoute } from '../../../../src/lib/route'
+import { FloemChangeEvent } from '../../../../src/model/persistence/shared/floemChangeEvent'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string

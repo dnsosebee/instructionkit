@@ -1,5 +1,5 @@
 import { Node, NodeProps } from 'reactflow'
-import { StartFlow } from '../../../../../../model/replicache/spaces/proj/entries/flow/types/start'
+import { StartFlow } from '../../../../../../model/schema/types/flow/types/start'
 import { FlowShell } from './flowShell'
 
 export type StartNodeData = { start: StartFlow }

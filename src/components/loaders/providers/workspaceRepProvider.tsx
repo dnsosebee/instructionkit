@@ -1,15 +1,13 @@
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
-import { createProjectRepHelper } from '../../../model/replicache/createRepHelper'
-import {
-  genProjectId,
-  listProjects,
-  Project,
-} from '../../../model/replicache/spaces/ws/entries/proj'
+import { createProjectSpaceHelper } from '../../../model/persistence/replicache/createSpace/createSpaceHelper'
+import { listProjects } from '../../../model/persistence/replicache/spaces/ws/entries/proj'
 import {
   useWorkspaceRep,
   WorkspaceRep,
-} from '../../../model/replicache/spaces/ws/workspaceMutators'
+} from '../../../model/persistence/replicache/spaces/ws/workspaceRep'
+import { genProjectId, Project } from '../../../model/schema/types/project'
+
 import Loading from '../../views/shared/loading'
 
 export type WorkspaceContext = {
@@ -61,7 +59,7 @@ const InnerWorkspaceProvider = ({
   }
   const createProject = async () => {
     const projectId = genProjectId()
-    await createProjectRepHelper({
+    await createProjectSpaceHelper({
       workspaceRep,
       workspaceId,
       projectId,

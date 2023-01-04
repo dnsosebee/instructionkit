@@ -1,7 +1,7 @@
 import { Session, useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useMachine } from '@xstate/react'
 import React, { useEffect } from 'react'
-import { Database } from '../../../../lib/database.types'
+import { Database } from '../../../../model/persistence/supabase/database.types'
 import Registration from '../../../views/app/registration'
 import SignIn from '../../../views/app/signin'
 import Loading from '../../../views/shared/loading'

@@ -38,7 +38,8 @@ const SignIn = () => {
               <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-white'>
                 Sign in to your account
               </h2>
-              <p className='mt-2 text-center text-sm text-gray-600'>
+              {/* TODO: wire this up to marketing site */}
+              {/* <p className='mt-2 text-center text-sm text-gray-600'>
                 Or{' '}
                 <Link
                   href='/waitlist'
@@ -46,7 +47,7 @@ const SignIn = () => {
                 >
                   join the waitlist
                 </Link>
-              </p>
+              </p> */}
             </div>
             <form className='mt-8 space-y-6' onSubmit={handleSignin}>
               <input type='hidden' name='remember' defaultValue='true' />

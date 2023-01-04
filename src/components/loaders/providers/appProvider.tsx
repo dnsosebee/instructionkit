@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useSubscribe } from 'replicache-react'
 import { logger as parentLogger } from '../../../lib/logger'
-import { createWorkspaceRepHelper } from '../../../model/replicache/createRepHelper'
-import { AppRep, useAppRep } from '../../../model/replicache/spaces/app/appMutators'
-import { Invite, listInvites } from '../../../model/replicache/spaces/app/entries/inv'
-import { listMemberships, Membership } from '../../../model/replicache/spaces/app/entries/member'
-import {
-  genWorkspaceId,
-  listWorkspaces,
-  Workspace,
-} from '../../../model/replicache/spaces/app/entries/ws'
+import { createWorkspaceSpaceHelper } from '../../../model/persistence/replicache/createSpace/createSpaceHelper'
+import { AppRep, useAppRep } from '../../../model/persistence/replicache/spaces/app/appRep'
+import { listInvites } from '../../../model/persistence/replicache/spaces/app/entries/inv'
+import { listMemberships } from '../../../model/persistence/replicache/spaces/app/entries/member'
+import { listWorkspaces } from '../../../model/persistence/replicache/spaces/app/entries/ws'
+import { Invite } from '../../../model/schema/types/invite'
+import { Membership } from '../../../model/schema/types/membership'
+import { genWorkspaceId, Workspace } from '../../../model/schema/types/workspace'
+
 import Loading from '../../views/shared/loading'
 import { useSessionCtx } from './sessionProvider/sessionProvider'
 
@@ -110,7 +110,7 @@ const InnerAppProvider2 = ({
     const workspaceId = genWorkspaceId()
     logger.debug('Creating workspace', { workspaceId })
     // we expect the mutation below to trigger the effect below, which will set the fallback
-    createWorkspaceRepHelper({ appRep, workspaceId, userId: session.user.id })
+    await createWorkspaceSpaceHelper({ appRep, workspaceId, userId: session.user.id })
     return workspaceId
     // await appRep.mutate.createWorkspaceWithOwner({
     //   workspace: {

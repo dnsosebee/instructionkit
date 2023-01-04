@@ -2,11 +2,11 @@ import { createServerSupabaseClient } from '@supabase/auth-helpers-nextjs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { createSpace, spaceExists } from 'replicache-nextjs/lib/backend'
 import { ZodError } from 'zod'
-import { createRepBodySchema } from '../../../src/lib/apiHelpers'
-import { Database } from '../../../src/lib/database.types'
 import { logger as parentLogger } from '../../../src/lib/logger'
-import { projectSpaceKey } from '../../../src/model/replicache/spaces/proj/projectMutators'
-import { workspaceSpaceKey } from '../../../src/model/replicache/spaces/ws/workspaceMutators'
+import { createRepBodySchema } from '../../../src/model/persistence/replicache/createSpace/apiHelper'
+import { projectSpaceId } from '../../../src/model/persistence/replicache/spaces/proj/projectRep'
+import { workspaceSpaceId } from '../../../src/model/persistence/replicache/spaces/ws/workspaceRep'
+import { Database } from '../../../src/model/persistence/supabase/database.types'
 
 const logger = parentLogger.child({ module: 'createRep.ts' })
 
@@ -23,10 +23,10 @@ export default async (req: NextApiRequest, res: NextApiResponse<{ message: strin
   let spaceId: string
   switch (req.body.type) {
     case 'workspace':
-      spaceId = workspaceSpaceKey(req.body.workspaceId)
+      spaceId = workspaceSpaceId(req.body.workspaceId)
       break
     case 'project':
-      spaceId = projectSpaceKey(req.body.workspaceId, req.body.projectId)
+      spaceId = projectSpaceId(req.body.workspaceId, req.body.projectId)
       break
     default:
       return res.status(400).json({ message: `invalid type ${req.body.type}` })
@@ -47,7 +47,7 @@ export default async (req: NextApiRequest, res: NextApiResponse<{ message: strin
     return res.status(401).json({ message: 'no session' })
   }
 
-  // commenting this out because security is a hard problem to solve later
+  // WARNING: commenting this out because security is a hard problem to solve later
   // const userId = data.session.user.id
   // const membershipDBKey = membershipKey(workspaceId as string, userId)
 

@@ -1,14 +1,17 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { handleRequest } from 'replicache-nextjs/lib/backend'
-import { appMutators, APP_SPACE_ID } from '../../../src/model/replicache/spaces/app/appMutators'
+import { appMutators } from '../../../src/model/persistence/replicache/spaces/app/appMutators'
+import { APP_SPACE_ID } from '../../../src/model/persistence/replicache/spaces/app/appRep'
+import { projectMutators } from '../../../src/model/persistence/replicache/spaces/proj/projectMutators'
 import {
-  projectMutators,
-  PROJECT_SPACE_PREFIX,
-} from '../../../src/model/replicache/spaces/proj/projectMutators'
+  projectSpaceIdSchema,
+  PROJECT_SPACE_ID_PREFIX,
+} from '../../../src/model/persistence/replicache/spaces/proj/projectRep'
+import { workspaceMutators } from '../../../src/model/persistence/replicache/spaces/ws/workspaceMutators'
 import {
-  workspaceMutators,
-  WORKSPACE_SPACE_PREFIX,
-} from '../../../src/model/replicache/spaces/ws/workspaceMutators'
+  workspaceSpaceIdSchema,
+  WORKSPACE_SPACE_ID_PREFIX,
+} from '../../../src/model/persistence/replicache/spaces/ws/workspaceRep'
 
 // Next.js runs this function server-side when /api/replicache/[anything].ts is
 // requested.
@@ -26,9 +29,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   if (typeof spaceID === 'string') {
     if (spaceID === APP_SPACE_ID) {
       await handleRequest(req, res, appMutators)
-    } else if (spaceID.startsWith(WORKSPACE_SPACE_PREFIX)) {
+    } else if (spaceID.startsWith(WORKSPACE_SPACE_ID_PREFIX)) {
+      workspaceSpaceIdSchema.parse(spaceID)
       await handleRequest(req, res, workspaceMutators)
-    } else if (spaceID.startsWith(PROJECT_SPACE_PREFIX)) {
+    } else if (spaceID.startsWith(PROJECT_SPACE_ID_PREFIX)) {
+      projectSpaceIdSchema.parse(spaceID)
       await handleRequest(req, res, projectMutators)
     } else {
       return res.status(400).json({ error: 'invalid spaceID' })

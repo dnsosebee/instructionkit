@@ -2,15 +2,15 @@ import { EditorContent, useEditor } from '@tiptap/react'
 import { findParentNodeOfType } from 'prosemirror-utils'
 import React, { useEffect } from 'react'
 import { logger as parentLogger } from '../../../../../../lib/logger'
-import { genDartId } from '../../../../../../model/replicache/spaces/proj/entries/dart/dart'
-import { GOTO_DART_TYPE } from '../../../../../../model/replicache/spaces/proj/entries/dart/types/goto'
-import { genFlowId } from '../../../../../../model/replicache/spaces/proj/entries/flow/flow'
+import FlowtextExtension from '../../../../../../model/postProcess/flowtext/nodes/flowtextExtension'
+import { genDartId } from '../../../../../../model/schema/types/dart/baseDart'
+import { GOTO_DART_TYPE } from '../../../../../../model/schema/types/dart/types/goto'
+import { genFlowId } from '../../../../../../model/schema/types/flow/baseFlow'
 import {
   BranchFlow,
   BRANCH_FLOW_TYPE,
   EMPTY_BRANCH_FLOWTEXT,
-} from '../../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
-import FlowtextExtension from '../../../../../../model/tiptap/flowtextExtension'
+} from '../../../../../../model/schema/types/flow/types/branch'
 import { useFlowchartCtx } from '../../../../../loaders/providers/flowchartProvider'
 import FlowtextProvider, { View } from './flowtextProvider'
 

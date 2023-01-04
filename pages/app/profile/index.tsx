@@ -5,8 +5,8 @@ import { RootHandler } from '../../../src/components/loaders/routesHandlers/root
 import { AppLayout } from '../../../src/components/views/app/layout/appLayout'
 import { SettingsFormLayout } from '../../../src/components/views/app/layout/settingsFormLayouts'
 import Loading from '../../../src/components/views/shared/loading'
-import { Database } from '../../../src/lib/database.types'
 import { setRoute } from '../../../src/lib/route'
+import { Database } from '../../../src/model/persistence/supabase/database.types'
 import { UpdatePassword } from './updatepassword'
 
 const ProfilePage = () => {

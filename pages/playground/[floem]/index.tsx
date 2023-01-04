@@ -1,7 +1,6 @@
 import { GetServerSideProps } from 'next'
 import React from 'react'
 import FlowchartProvider, {
-  FloemChangeEvent,
   FlowchartProviderProps,
 } from '../../../src/components/loaders/providers/flowchartProvider'
 import { RootHandler } from '../../../src/components/loaders/routesHandlers/rootHandler'
@@ -11,8 +10,11 @@ import { getRoute, setRoute } from '../../../src/lib/route'
 import {
   applyFlowAndDartChanges,
   FlowAndDartTransaction,
-} from '../../../src/model/replicache/spaces/proj/projectMutators'
-import { Floem, urlDecodeFloem, urlEncodeFloem } from '../../../src/model/url/floem'
+} from '../../../src/model/persistence/shared/applyFlowAndDartChanges'
+import { FloemChangeEvent } from '../../../src/model/persistence/shared/floemChangeEvent'
+
+import { urlDecodeFloem, urlEncodeFloem } from '../../../src/model/persistence/url'
+import { Floem } from '../../../src/model/schema/types/floem'
 
 const logger = parentLogger.child({ component: 'playground' })
 

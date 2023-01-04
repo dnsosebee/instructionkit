@@ -1,9 +1,9 @@
 import { List, Map } from 'immutable'
 import { useEffect, useState } from 'react'
 import { logger as parentLogger } from '../../../../../lib/logger'
-import { Dart } from '../../../../../model/replicache/spaces/proj/entries/dart/dart'
-import { Flow } from '../../../../../model/replicache/spaces/proj/entries/flow/flow'
-import { START_FLOW_TYPE } from '../../../../../model/replicache/spaces/proj/entries/flow/types/start'
+import { Dart } from '../../../../../model/schema/types/dart/dart'
+import { Flow } from '../../../../../model/schema/types/flow/flow'
+import { START_FLOW_TYPE } from '../../../../../model/schema/types/flow/types/start'
 import { riverStoneAt as guideStepAt, riverStoneAt } from './boat'
 import { StoneView as StepView } from './stone'
 

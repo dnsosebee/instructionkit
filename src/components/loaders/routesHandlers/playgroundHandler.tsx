@@ -7,7 +7,8 @@ import {
   ParamSubrouteConfig,
   setRoute,
 } from '../../../lib/route'
-import { genDefaultFloem, urlEncodeFloem } from '../../../model/url/floem'
+import { urlEncodeFloem } from '../../../model/persistence/url'
+import { genDefaultFloem } from '../../../model/schema/types/floem'
 import { FourOhFour } from '../../views/shared/FourOhFour'
 
 const FLOEM_FORK_ROUTE_CONFIG: ForkSubrouteConfig = {

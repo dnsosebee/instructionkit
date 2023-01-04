@@ -1,13 +1,16 @@
 import { get, isArray } from 'lodash'
 import { HTMLElement, NodeType, parse } from 'node-html-parser'
-import { evalAssignments, evalCondition } from '../../../../../lib/flogramming/flogramming'
 import { logger as parentLogger } from '../../../../../lib/logger'
-import { Dart } from '../../../../../model/replicache/spaces/proj/entries/dart/dart'
-import { Flow } from '../../../../../model/replicache/spaces/proj/entries/flow/flow'
-import { BRANCH_FLOW_TYPE } from '../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
-import { START_FLOW_TYPE } from '../../../../../model/replicache/spaces/proj/entries/flow/types/start'
-import { DEFAULT_HANDLE_ID } from '../../../../../model/tiptap/flowtextExtension'
-import { SwitchType } from '../../../../../model/tiptap/switchNode'
+import {
+  evalAssignments,
+  evalCondition,
+} from '../../../../../model/postProcess/flowtext/flogramming/flogramming'
+import { DEFAULT_HANDLE_ID } from '../../../../../model/postProcess/flowtext/nodes/flowtextExtension'
+import { SwitchType } from '../../../../../model/postProcess/flowtext/nodes/switchNode'
+import { Dart } from '../../../../../model/schema/types/dart/dart'
+import { Flow } from '../../../../../model/schema/types/flow/flow'
+import { BRANCH_FLOW_TYPE } from '../../../../../model/schema/types/flow/types/branch'
+import { START_FLOW_TYPE } from '../../../../../model/schema/types/flow/types/start'
 
 import { Booty, Flocation, GuideStep } from './guide'
 

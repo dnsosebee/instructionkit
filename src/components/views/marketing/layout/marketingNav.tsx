@@ -1,9 +1,11 @@
 import { Popover, Transition } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid'
 import { motion } from 'framer-motion'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Fragment } from 'react'
+import Logo from '../../shared/logo'
+
+// WARNING this is probably deprecated now
 
 export default ({ children }: { children: JSX.Element }) => {
   // const navigation = [] as { name: string; href: string }[]
@@ -20,13 +22,7 @@ export default ({ children }: { children: JSX.Element }) => {
               <div className='flex w-full items-center justify-between md:w-auto'>
                 <span className='sr-only'>InstructionKit</span>
                 <Link href='/'>
-                  <Image
-                    className='h-8 w-auto sm:h-10'
-                    src='/light.svg'
-                    alt=''
-                    width={50}
-                    height={50}
-                  />
+                  <Logo light={true} className='h-8 w-auto sm:h-10' />
                 </Link>
                 <div className='-mr-2 flex items-center md:hidden'>
                   <Popover.Button className='focus-ring-inset inline-flex items-center justify-center rounded-md bg-gray-900 p-2 text-gray-400 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-white'>
@@ -77,13 +73,7 @@ export default ({ children }: { children: JSX.Element }) => {
             <div className='overflow-hidden rounded-lg bg-white shadow-md ring-1 ring-black ring-opacity-5'>
               <div className='flex items-center justify-between px-5 pt-4'>
                 <div>
-                  <Image
-                    className='h-8 w-auto sm:h-10'
-                    src='/dark.svg'
-                    alt=''
-                    width={50}
-                    height={50}
-                  />
+                  <Logo light={false} className='h-8 w-auto sm:h-10' />
                 </div>
                 <div className='-mr-2'>
                   <Popover.Button className='inline-flex items-center justify-center rounded-md bg-white p-2 text-gray-400 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-cyan-600'>

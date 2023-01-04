@@ -1,5 +1,5 @@
 import { Node, NodeProps } from 'reactflow'
-import { BranchFlow } from '../../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
+import { BranchFlow } from '../../../../../../model/schema/types/flow/types/branch'
 import { FlowtextEditor } from '../flowtext/flowtextEditor'
 import { FlowShell } from './flowShell'
 

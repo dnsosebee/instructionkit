@@ -1,7 +1,7 @@
 import { ChevronDownIcon } from '@heroicons/react/24/solid'
 import { logger as parentLogger } from '../../../../lib/logger'
 import { getRoute, setRoute } from '../../../../lib/route'
-import { Workspace } from '../../../../model/replicache/spaces/app/entries/ws'
+import { Workspace } from '../../../../model/schema/types/workspace'
 import { useAppCtx } from '../../../loaders/providers/appProvider'
 
 const logger = parentLogger.child({ component: 'Picker' })

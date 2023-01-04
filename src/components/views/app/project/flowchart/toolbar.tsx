@@ -1,11 +1,12 @@
 import { DocumentPlusIcon } from '@heroicons/react/20/solid'
 import { PlayIcon } from '@heroicons/react/24/solid'
-import { genFlowId } from '../../../../../model/replicache/spaces/proj/entries/flow/flow'
+import { SendFloemChange } from '../../../../../model/persistence/shared/floemChangeEvent'
+import { genFlowId } from '../../../../../model/schema/types/flow/baseFlow'
 import {
   BRANCH_FLOW_TYPE,
   EMPTY_BRANCH_FLOWTEXT,
-} from '../../../../../model/replicache/spaces/proj/entries/flow/types/branch'
-import { SendFloemChange, useFlowchartCtx } from '../../../../loaders/providers/flowchartProvider'
+} from '../../../../../model/schema/types/flow/types/branch'
+import { useFlowchartCtx } from '../../../../loaders/providers/flowchartProvider'
 import { IconButton } from './iconButton'
 export interface ToolbarProps {
   send: SendFloemChange

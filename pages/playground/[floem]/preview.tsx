@@ -3,7 +3,7 @@ import { RootHandler } from '../../../src/components/loaders/routesHandlers/root
 import { Guide } from '../../../src/components/views/app/project/guide/guide'
 import MarketingNav from '../../../src/components/views/marketing/layout/marketingNav'
 import { getRoute, setRoute } from '../../../src/lib/route'
-import { urlDecodeFloem } from '../../../src/model/url/floem'
+import { urlDecodeFloem } from '../../../src/model/persistence/url'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const floem = params?.floem as string

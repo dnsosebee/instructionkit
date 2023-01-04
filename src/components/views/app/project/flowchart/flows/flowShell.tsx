@@ -1,7 +1,7 @@
 import React from 'react'
 import { Handle, Position } from 'reactflow'
-import { GOTO_DART_TYPE } from '../../../../../../model/replicache/spaces/proj/entries/dart/types/goto'
-import { DEFAULT_HANDLE_ID } from '../../../../../../model/tiptap/flowtextExtension'
+import { DEFAULT_HANDLE_ID } from '../../../../../../model/postProcess/flowtext/nodes/flowtextExtension'
+import { GOTO_DART_TYPE } from '../../../../../../model/schema/types/dart/types/goto'
 import { useFlowchartCtx } from '../../../../../loaders/providers/flowchartProvider'
 
 export const FlowShell = ({

@@ -1,8 +1,8 @@
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from '@tiptap/react'
 import { useEffect } from 'react'
 import { Handle, Position, useUpdateNodeInternals } from 'reactflow'
-import { SwitchType } from '../../../../../../../model/tiptap/switchNode'
-import { parentAttrs } from '../../../../../../../model/tiptap/utils'
+import { SwitchType } from '../../../../../../../model/postProcess/flowtext/nodes/switchNode'
+import { parentAttrs } from '../../../../../../../model/postProcess/flowtext/nodes/utils'
 import { useFlowtextContext, View } from '../flowtextProvider'
 
 export const Case = (props: NodeViewProps) => {
