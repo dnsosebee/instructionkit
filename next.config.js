@@ -4,12 +4,10 @@ module.exports = {
     // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  // webpack worker-loader
-  // webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-  //   config.module.rules.push({
-  //     test: /\.worker\.ts$/,
-  //     use: { loader: 'worker-loader' },
-  //   })
+  // webpack: (config, { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }) => {
+  //   const newConfig = config.plugins.push(
+  //     new webpack.IgnorePlugin({ resourceRegExp: /^pg-mem|pg$/ }),
+  //   )
   //   return config
   // },
 }

@@ -1,14 +1,12 @@
-import MarketingNav from '../src/components/layout/marketingNav'
-import PageRiver from './space/[spaceId]/river/[floemId]'
+import { useEffect } from 'react'
+import { RootHandler, ROOT_HREF } from '../src/components/loaders/routeHandlers/rootHandler'
+import { setRoute } from '../src/lib/route/route'
 
-export default () => {
-  return (
-    <MarketingNav>
-      <main className='h-full'>
-        <div className='px-5 bg-slate-900 h-full'>
-          <PageRiver spaceId='ws-7q6diWMhLG' floemId='floem-3XAEPqWtYc9rwBRmhMEnR' />
-        </div>
-      </main>
-    </MarketingNav>
-  )
+const AppPage = () => {
+  useEffect(() => {
+    setRoute({ route: ROOT_HREF, action: 'none', reason: 'AppPage' })
+  }, [])
+  return <RootHandler />
 }
+
+export default AppPage

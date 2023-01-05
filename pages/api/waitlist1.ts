@@ -1,7 +1,7 @@
 import Airtable from 'airtable'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { logger } from '../../src/lib/logger'
 import { validateEmail } from '../../src/lib/validation'
-import { logger } from '../../src/logger'
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   return new Promise<void>(resolve => {

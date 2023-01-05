@@ -1,7 +1,7 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
-import MarketingNav from '../src/components/layout/marketingNav'
+import { ROOT_HREF } from '../src/components/loaders/routeHandlers/rootHandler'
+import MarketingNav from '../src/components/views/marketing/layout/marketingNav'
 import { validateEmail } from '../src/lib/validation'
 
 enum State {
@@ -78,20 +78,20 @@ export default () => {
   return (
     <MarketingNav>
       <div className='self-center container'>
-        <div className='flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8'>
+        <div className='flex min-h-full items-center justify-center px-4 sm:px-6 lg:px-8'>
           {state === State.Pending ? (
             <div className='w-full max-w-md space-y-8'>
               <div>
-                <Image
+                {/* <Image
                   className='mx-auto h-12 w-auto'
                   src='/light.svg'
                   alt='logo'
                   width={50}
                   height={50}
                   priority
-                />
+                /> */}
                 <h2 className='mt-6 text-center text-3xl font-bold tracking-tight text-white'>
-                  Join the waitlist
+                  Join our waitlist
                 </h2>
               </div>
               <form className='mt-8 space-y-6' onSubmit={handleSubmit1}>
@@ -115,7 +115,7 @@ export default () => {
                 <div className='flex items-center justify-between'>
                   <div className='text-sm'>
                     <Link
-                      href='/signin'
+                      href={ROOT_HREF}
                       className='font-medium text-indigo-600 hover:text-indigo-500'
                     >
                       Already have an account?
@@ -143,8 +143,8 @@ export default () => {
                         You're on the waitlist!
                       </h3>
                       <p className='mt-1 max-w-2xl text-sm text-gray-300'>
-                        We'll be in touch. If you'd like to get off the waitlist sooner, please
-                        provide some additional information.
+                        {`We'll be in touch. If you'd like to get off the waitlist sooner, please
+                        provide some additional information (all optional).`}
                       </p>
                     </div>
 
@@ -307,7 +307,7 @@ export default () => {
                     htmlFor='how-did-you-hear'
                     className='block text-sm font-medium text-gray-300 sm:mt-px sm:pt-2'
                   >
-                    How did you hear about us?
+                    What kind of guides are you trying to create?
                   </label>
                   <div className='mt-1 sm:col-span-2 sm:mt-0'>
                     <input
@@ -316,7 +316,7 @@ export default () => {
                       id='how-did-you-hear'
                       autoComplete='how-did-you-hear'
                       className='block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm'
-                      placeholder='e.g. Google'
+                      placeholder='e.g. How to create the perfect pizza, etc.'
                     />
                   </div>
                 </div>

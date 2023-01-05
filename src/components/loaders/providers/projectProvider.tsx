@@ -1,0 +1,60 @@
+import React from 'react'
+import { useSubscribe } from 'replicache-react'
+import { setRoute } from '../../../lib/route/route'
+import { listDarts } from '../../../model/persistence/replicache/spaces/proj/entries/darts'
+import { listFlows } from '../../../model/persistence/replicache/spaces/proj/entries/flow'
+import {
+  ProjectRep,
+  useProjectRep,
+} from '../../../model/persistence/replicache/spaces/proj/projectRep'
+import { Dart } from '../../../model/schema/types/dart/dart'
+import { Floem } from '../../../model/schema/types/floem'
+import { Flow } from '../../../model/schema/types/flow/flow'
+
+import Loading from '../../views/shared/loading'
+import { PROJECT_HREF } from '../routeHandlers/projectHandler'
+
+export type ProjectContext = {
+  projectRep: ProjectRep
+  flows: Flow[]
+  darts: Dart[]
+  initProject: (data: Floem & { onlyIfEmpty: boolean }) => Promise<void>
+}
+
+export const projectContext = React.createContext<ProjectContext | null>(null)
+
+export const useProjectCtx = () => {
+  const ctx = React.useContext(projectContext)
+  if (!ctx) {
+    throw new Error('useProjectCtx must be used within a ProjectProvider')
+  }
+  return ctx
+}
+
+export const ProjectProvider = ({
+  children,
+  workspaceId,
+  projectId,
+}: {
+  children: React.ReactNode
+  workspaceId: string
+  projectId: string
+}) => {
+  const projectRep = useProjectRep(workspaceId, projectId)
+  const flows = useSubscribe(projectRep, listFlows, null, [projectRep])
+  const darts = useSubscribe(projectRep, listDarts, null, [projectRep])
+  if (!projectRep || !flows || !darts) {
+    return <Loading />
+  }
+
+  const initProject = async (data: Floem & { onlyIfEmpty: boolean }) => {
+    await projectRep.mutate.reset(data)
+    setRoute({ route: PROJECT_HREF(workspaceId, projectId), action: 'push' })
+  }
+
+  return (
+    <projectContext.Provider value={{ projectRep, flows, darts, initProject }}>
+      {children}
+    </projectContext.Provider>
+  )
+}

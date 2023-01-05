@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
-import { Guide } from '../src/components/floem/guide/guide'
-import { DataFloem, floemSchema } from '../src/model/replicache-spaces/ws-[id]/floem'
+import { Guide } from '../src/components/views/app/project/guide/guide'
+import { Floem, floemSchema } from '../src/model/schema/types/floem'
 
 export const getStaticProps = async () => {
   const floem = floemSchema.parse(
@@ -10,6 +10,6 @@ export const getStaticProps = async () => {
   return { props: { floem } }
 }
 
-export default ({ floem }: { floem: DataFloem }) => {
-  return <Guide floem={floem} />
+export default ({ floem }: { floem: Floem }) => {
+  return <Guide flows={floem.flows} darts={floem.darts} />
 }
