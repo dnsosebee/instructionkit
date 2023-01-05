@@ -75,7 +75,7 @@ export const WorkspaceView = () => {
         </div>
       </header>
       {creatingNew ? (
-        <p className='pt-6 pb-8'>Creating Floem...</p>
+        <p className='pt-6 pb-8 text-white'>Creating Project...</p>
       ) : (
         <div
           {...getRootProps()}
@@ -102,8 +102,8 @@ export const WorkspaceView = () => {
           ) : (
             <div className='text-center'>
               <PlusCircleIcon className='mx-auto h-12 w-12 text-gray-400' aria-hidden='true' />
-              <h3 className='mt-2 text-sm font-medium text-gray-900'>No floems</h3>
-              <p className='mt-1 text-sm text-gray-500'>Get started by creating a new floem.</p>
+              <h3 className='mt-2 text-sm font-medium text-gray-900'>No projects</h3>
+              <p className='mt-1 text-sm text-gray-500'>Get started by creating a new project.</p>
               <div className='mt-6'>
                 <NewProjectButton handleClickNewProject={handleClickNewProject} />
               </div>
@@ -123,7 +123,7 @@ function NewProjectButton({ handleClickNewProject }: { handleClickNewProject: ()
       className='inline-flex items-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
     >
       <PlusIcon className='-ml-1 mr-2 h-5 w-5' aria-hidden='true' />
-      New Floem
+      New Project
     </button>
   )
 }

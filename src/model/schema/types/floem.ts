@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { DEFAULT_HANDLE_ID } from '../../postProcess/flowtext/nodes/flowtextExtension'
+import { DEFAULT_CASE_ID } from '../../postProcess/flowtext/nodes/flowtextExtension'
 import { genDartId } from './dart/baseDart'
 import { GOTO_DART_TYPE } from './dart/types/goto'
 import { genFlowId } from './flow/baseFlow'
@@ -41,7 +41,7 @@ export const genDefaultFloem = (): Floem => {
         id: genDartId(),
         type: GOTO_DART_TYPE,
         from: startId,
-        case: DEFAULT_HANDLE_ID,
+        case: DEFAULT_CASE_ID,
         to: branchId,
       },
     ],

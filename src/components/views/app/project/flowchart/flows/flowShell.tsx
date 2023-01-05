@@ -1,6 +1,6 @@
 import React from 'react'
 import { Handle, Position } from 'reactflow'
-import { DEFAULT_HANDLE_ID } from '../../../../../../model/postProcess/flowtext/nodes/flowtextExtension'
+import { DEFAULT_CASE_ID } from '../../../../../../model/postProcess/flowtext/nodes/flowtextExtension'
 import { GOTO_DART_TYPE } from '../../../../../../model/schema/types/dart/types/goto'
 import { useFlowchartCtx } from '../../../../../loaders/providers/flowchartProvider'
 
@@ -53,7 +53,7 @@ export const FlowShell = ({
               +
             </div>
             <Handle
-              id={DEFAULT_HANDLE_ID}
+              id={DEFAULT_CASE_ID}
               type='source'
               position={Position.Bottom}
               className='z-20 opacity-0'

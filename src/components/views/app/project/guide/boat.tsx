@@ -5,7 +5,7 @@ import {
   evalAssignments,
   evalCondition,
 } from '../../../../../model/postProcess/flowtext/flogramming/flogramming'
-import { DEFAULT_HANDLE_ID } from '../../../../../model/postProcess/flowtext/nodes/flowtextExtension'
+import { DEFAULT_CASE_ID } from '../../../../../model/postProcess/flowtext/nodes/flowtextExtension'
 import { SwitchType } from '../../../../../model/postProcess/flowtext/nodes/switchNode'
 import { Dart } from '../../../../../model/schema/types/dart/dart'
 import { Flow } from '../../../../../model/schema/types/flow/flow'
@@ -27,7 +27,7 @@ export async function riverStoneAt(
   darts: Dart[],
   flowFrom: Flocation,
   vars: Booty,
-  chosenCaseId: string = DEFAULT_HANDLE_ID,
+  chosenCaseId: string = DEFAULT_CASE_ID,
 ): Promise<GuideStep> {
   logger.debug('riverStoneAt: ', flows, darts, flowFrom, vars)
   return helper({
@@ -76,7 +76,7 @@ const helper = async (data: {
     }
     const nextFlocation: Flocation = { flow: dart.to, node: 0 }
     const nextFlowNodes = refill(flows, nextFlocation.flow)
-    const nextChosenCaseId = DEFAULT_HANDLE_ID
+    const nextChosenCaseId = DEFAULT_CASE_ID
     return helper({
       flows,
       darts,
@@ -159,7 +159,7 @@ const helper = async (data: {
       })
     } else {
       const conditions = el.childNodes as HTMLElement[]
-      let caseId = DEFAULT_HANDLE_ID
+      let caseId = DEFAULT_CASE_ID
       for (let i = 0; i < conditions.length; i++) {
         const condition = conditions[i]
         const conditionId = condition.attributes['data-id']
