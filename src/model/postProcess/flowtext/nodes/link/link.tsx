@@ -1,5 +1,8 @@
 import { NodeViewContent, NodeViewProps, NodeViewWrapper } from '@tiptap/react'
-import { useFlowtextContext, View } from '../../../components/floem/flowtextProvider'
+import {
+  useFlowtextContext,
+  View,
+} from '../../../../../components/views/app/project/flowchart/flowtext/flowtextProvider'
 
 export const Link = (props: NodeViewProps) => {
   const context = useFlowtextContext()
