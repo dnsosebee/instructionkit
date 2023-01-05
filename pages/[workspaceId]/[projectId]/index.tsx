@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next'
+import { useEffect } from 'react'
 import { ReactFlowProvider } from 'reactflow'
 import FlowchartProvider, {
   FlowchartProviderProps,
@@ -23,7 +24,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const ProjectPage = ({ workspaceId, projectId }: { workspaceId: string; projectId: string }) => {
-  setRoute({ route: `/${workspaceId}/${projectId}`, action: 'none' })
+  useEffect(() => {
+    setRoute({ route: `/${workspaceId}/${projectId}`, action: 'none' })
+  }, [])
   return <RootHandler />
 }
 

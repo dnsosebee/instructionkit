@@ -17,8 +17,18 @@ const logger = parentLogger.child({ module: 'projectMutators' })
 export type ProjectMutators = typeof projectMutators
 
 export const projectMutators = {
-  async reset(tx: WriteTransaction, { flows, darts }: { flows: Flow[]; darts: Dart[] }) {
+  async reset(
+    tx: WriteTransaction,
+    { flows, darts, onlyIfEmpty }: { flows: Flow[]; darts: Dart[]; onlyIfEmpty: boolean },
+  ) {
     logger.info('reset', { flows, darts })
+
+    if (onlyIfEmpty) {
+      const existingFlows = await listFlows(tx)
+      if (existingFlows.length > 0) {
+        return
+      }
+    }
 
     // check that there's one start flow
     const startFlows = flows.filter(flow => flow.type === START_FLOW_TYPE)

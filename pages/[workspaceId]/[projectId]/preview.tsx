@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next'
+import { useEffect } from 'react'
 import { useProjectCtx } from '../../../src/components/loaders/providers/projectProvider'
 import { RootHandler } from '../../../src/components/loaders/routeHandlers/rootHandler'
 import { Guide } from '../../../src/components/views/app/project/guide/guide'
@@ -16,7 +17,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const PreviewPage = ({ workspaceId, projectId }: { workspaceId: string; projectId: string }) => {
-  setRoute({ route: `/${workspaceId}/${projectId}/preview`, action: 'none' })
+  useEffect(() => {
+    setRoute({ route: `/${workspaceId}/${projectId}/preview`, action: 'none' })
+  }, [])
   return <RootHandler />
 }
 

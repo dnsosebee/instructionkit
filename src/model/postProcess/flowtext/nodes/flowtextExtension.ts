@@ -1,6 +1,5 @@
 import UniqueID from '@tiptap-pro/extension-unique-id'
 import CodeBlockLowlight from '@tiptap/extension-code-block-lowlight'
-import { Gapcursor } from '@tiptap/extension-gapcursor'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import { Extension } from '@tiptap/react'
@@ -21,7 +20,6 @@ const FlowtextExtension = Extension.create({
   addExtensions() {
     return [
       StarterKit.configure({ dropcursor: false, codeBlock: false }),
-      Gapcursor,
       CodeBlockLowlight.configure({ lowlight, defaultLanguage: 'javascript' }),
       UniqueID.configure({ types: ['case'], generateID: genId(CASE_ID_LENGTH) }),
       SwitchNode,

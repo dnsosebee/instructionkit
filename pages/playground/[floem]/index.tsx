@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next'
-import { useReducer } from 'react'
+import { useEffect, useReducer } from 'react'
 import FlowchartProvider, {
   FlowchartProviderProps,
 } from '../../../src/components/loaders/providers/flowchartProvider'
@@ -28,7 +28,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const PlaygroundPage = ({ floem }: { floem: string }) => {
-  setRoute({ route: `/playground/${encodeURIComponent(floem)}`, action: 'none' })
+  useEffect(() => {
+    setRoute({ route: `/playground/${encodeURIComponent(floem)}`, action: 'none' })
+  }, [])
   return <RootHandler />
 }
 

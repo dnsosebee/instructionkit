@@ -41,6 +41,7 @@ export const AppLayout = ({
           <div className='absolute inset-y-0 left-0 md:static md:flex-shrink-0'>
             <Blink
               href=''
+              reason='appLayout logo desktop'
               className='flex h-16 w-16 items-center justify-center bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600 md:w-28'
             >
               <Logo light={true} className='h-8 w-auto' />
@@ -184,7 +185,7 @@ export const AppLayout = ({
                     aria-label='Global'
                   >
                     <div className='flex h-16 items-center justify-between px-4 sm:px-6'>
-                      <Blink href={ROOT_HREF}>
+                      <Blink href={ROOT_HREF} reason='appLayout logo mobile'>
                         <Logo light={false} />
                       </Blink>
                       <button

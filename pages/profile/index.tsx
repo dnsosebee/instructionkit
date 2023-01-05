@@ -11,7 +11,9 @@ import { Database } from '../../src/model/persistence/supabase/database.types'
 import { UpdatePassword } from './updatepassword'
 
 const ProfilePage = () => {
-  setRoute({ route: PROFILE_HREF, action: 'none' })
+  useEffect(() => {
+    setRoute({ route: PROFILE_HREF, action: 'none' })
+  }, [])
   return <RootHandler />
 }
 

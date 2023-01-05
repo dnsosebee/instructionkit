@@ -1,7 +1,7 @@
 import { PlusCircleIcon, PlusIcon } from '@heroicons/react/24/solid'
 import classNames from 'classnames'
 import { GetServerSideProps } from 'next'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { useSubscribe } from 'replicache-react'
 import { Blink } from '../../src/components/loaders/blink'
@@ -14,6 +14,7 @@ import ContextMenu from '../../src/components/views/shared/contextMenu'
 import { getRoute, setRoute } from '../../src/lib/route/route'
 import { handleUploadFloem } from '../../src/model/persistence/filesystem'
 import { listProjects } from '../../src/model/persistence/replicache/spaces/ws/entries/proj'
+import { genDefaultFloem } from '../../src/model/schema/types/floem'
 import { Project } from '../../src/model/schema/types/project'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
@@ -26,7 +27,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const WorkspacePage = ({ workspaceId }: { workspaceId: string }) => {
-  setRoute({ route: `/${workspaceId}`, action: 'none' })
+  useEffect(() => {
+    setRoute({ route: `/${workspaceId}`, action: 'none' })
+  }, [])
   return <RootHandler />
 }
 
@@ -57,7 +60,7 @@ export const WorkspaceView = () => {
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, noClick: true })
   const handleClickNewProject = async () => {
     setCreatingNew(true)
-    await createProject()
+    await createProject(genDefaultFloem())
     setCreatingNew(false)
   }
 

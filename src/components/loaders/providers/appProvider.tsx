@@ -41,9 +41,11 @@ export const useAppCtx = () => {
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const appRep = useAppRep()
+
   if (!appRep) {
     return <Loading />
   }
+
   return <InnerAppProvider appRep={appRep}>{children}</InnerAppProvider>
 }
 
@@ -60,10 +62,23 @@ export type UserMembershipWorkspace = {
 // TODO: should probably have some more accurate list subscriptions functions
 // This approach relies on syncing, which is unreliable
 const InnerAppProvider = ({ appRep, children }: { appRep: AppRep; children: React.ReactNode }) => {
+  const [sync, setSync] = useState({
+    started: false,
+    done: false,
+  })
+  appRep.onSync = v => {
+    if (v && !sync.started) {
+      setSync(sync => ({ ...sync, started: true }))
+    } else if (!v && !sync.done) {
+      setSync(sync => ({ ...sync, done: true }))
+    }
+  }
+  const doneSyncing = sync.started && sync.done
+
   const invites = useSubscribe(appRep, listInvites, null, [appRep])
   const memberships = useSubscribe(appRep, listMemberships, null, [appRep])
   const workspaces = useSubscribe(appRep, listWorkspaces, null, [appRep])
-  if (!invites || !memberships || !workspaces) {
+  if (!invites || !memberships || !workspaces || !doneSyncing) {
     return <Loading />
   }
   return (
@@ -133,7 +148,7 @@ const InnerAppProvider2 = ({
       setDefaultWorkspaceId(null) // loading mode
     }
     await appRep.mutate.deleteInvite(invite)
-    setRoute({ route: ROOT_HREF, action: 'push' })
+    setRoute({ route: ROOT_HREF, action: 'push', reason: 'declinedInvite' })
   }
 
   const deleteMembership = async (membership: Membership) => {
@@ -141,7 +156,7 @@ const InnerAppProvider2 = ({
       setDefaultWorkspaceId(null) // loading mode
     }
     await appRep.mutate.deleteMembership(membership)
-    setRoute({ route: ROOT_HREF, action: 'push' })
+    setRoute({ route: ROOT_HREF, action: 'push', reason: 'deletedMembership' })
   }
 
   const deleteWorkspace = async (workspaceId: string) => {
@@ -149,7 +164,7 @@ const InnerAppProvider2 = ({
       setDefaultWorkspaceId(null) // loading mode
     }
     await appRep.mutate.deleteWorkspace(workspaceId)
-    setRoute({ route: ROOT_HREF, action: 'push' })
+    setRoute({ route: ROOT_HREF, action: 'push', reason: 'deletedWorkspace' })
   }
 
   // create a workspace whenever we don't have one

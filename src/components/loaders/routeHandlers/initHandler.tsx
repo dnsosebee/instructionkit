@@ -17,6 +17,6 @@ export const INTERNAL_INIT_ROUTE_CONFIG: ForkSubrouteConfig = {
 export const InitHandler = () => {
   const { floem } = getRoute().params
   const { initProject } = useProjectCtx()
-  initProject(urlDecodeFloem(floem))
+  initProject({ ...urlDecodeFloem(floem), onlyIfEmpty: false })
   return <Loading />
 }

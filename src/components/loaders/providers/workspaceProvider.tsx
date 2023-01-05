@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
 import { initProject } from '../../../lib/route/actions'
-import { setRoute } from '../../../lib/route/route'
 import { createProjectSpaceHelper } from '../../../model/persistence/replicache/createSpace/createSpaceHelper'
 import { listProjects } from '../../../model/persistence/replicache/spaces/ws/entries/proj'
 import {
@@ -12,12 +11,11 @@ import { Floem } from '../../../model/schema/types/floem'
 import { genProjectId, Project } from '../../../model/schema/types/project'
 
 import Loading from '../../views/shared/loading'
-import { PROJECT_HREF } from '../routeHandlers/projectHandler'
 
 export type WorkspaceContext = {
   workspaceRep: WorkspaceRep
   projects: Project[]
-  createProject: (floem?: Floem) => Promise<void>
+  createProject: (floem: Floem) => Promise<void>
 }
 
 export const workspaceContext = React.createContext<WorkspaceContext | null>(null)
@@ -61,29 +59,19 @@ const InnerWorkspaceProvider = ({
   if (!projects) {
     return <Loading />
   }
-  const createProject = async (floem?: Floem) => {
+  const createProject = async (floem: Floem) => {
     const projectId = genProjectId()
-    const project: Project = floem
-      ? {
-          id: projectId,
-          title: floem.title,
-          createdAt: floem.createdAt,
-        }
-      : {
-          id: projectId,
-          title: 'Untitled',
-          createdAt: Date.now(),
-        }
+    const project: Project = {
+      id: projectId,
+      title: floem.title,
+      createdAt: floem.createdAt,
+    }
     await createProjectSpaceHelper({
       workspaceRep,
       workspaceId,
       project,
     })
-    if (floem) {
-      initProject(workspaceId, projectId, floem)
-    } else {
-      setRoute({ route: PROJECT_HREF(workspaceId, projectId), action: 'push' })
-    }
+    initProject(workspaceId, projectId, floem)
   }
 
   return (

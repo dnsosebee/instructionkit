@@ -1,5 +1,5 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSessionCtx } from '../../src/components/loaders/providers/sessionProvider/sessionProvider'
 import { UPDATE_PASSWORD_HREF } from '../../src/components/loaders/routeHandlers/profileHandler'
 import { RootHandler } from '../../src/components/loaders/routeHandlers/rootHandler'
@@ -9,7 +9,9 @@ import Loading from '../../src/components/views/shared/loading'
 import { setRoute } from '../../src/lib/route/route'
 
 const UpdatePasswordPage = () => {
-  setRoute({ route: UPDATE_PASSWORD_HREF, action: 'none' })
+  useEffect(() => {
+    setRoute({ route: UPDATE_PASSWORD_HREF, action: 'none' })
+  }, [])
   return <RootHandler />
 }
 

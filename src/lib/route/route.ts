@@ -107,9 +107,11 @@ export const getRoute = (): RouteState => useSnapshot(routeState).state
 export const setRoute = ({
   route,
   action,
+  reason,
 }: {
   route: string
   action: 'push' | 'replace' | 'none'
+  reason?: string
 }) => {
   if (action === 'push') {
     window.history.pushState({}, '', route)
@@ -117,6 +119,6 @@ export const setRoute = ({
     window.history.replaceState({}, '', route)
   }
   const newRouteState = urlToRoute(route)
-  logger.info('setRoute', { route, routeState: newRouteState })
+  logger.info('setRoute', { route, routeState: newRouteState, reason })
   routeState.state = newRouteState
 }

@@ -8,7 +8,7 @@ import {
   useProjectRep,
 } from '../../../model/persistence/replicache/spaces/proj/projectRep'
 import { Dart } from '../../../model/schema/types/dart/dart'
-import { Floem, genDefaultFloem } from '../../../model/schema/types/floem'
+import { Floem } from '../../../model/schema/types/floem'
 import { Flow } from '../../../model/schema/types/flow/flow'
 
 import Loading from '../../views/shared/loading'
@@ -18,7 +18,7 @@ export type ProjectContext = {
   projectRep: ProjectRep
   flows: Flow[]
   darts: Dart[]
-  initProject: (floem: Floem) => Promise<void>
+  initProject: (data: Floem & { onlyIfEmpty: boolean }) => Promise<void>
 }
 
 export const projectContext = React.createContext<ProjectContext | null>(null)
@@ -47,14 +47,11 @@ export const ProjectProvider = ({
     return <Loading />
   }
 
-  const initProject = async (floem: Floem) => {
-    await projectRep.mutate.reset(floem)
+  const initProject = async (data: Floem & { onlyIfEmpty: boolean }) => {
+    await projectRep.mutate.reset(data)
     setRoute({ route: PROJECT_HREF(workspaceId, projectId), action: 'push' })
   }
 
-  if (flows.length === 0) {
-    projectRep.mutate.reset(genDefaultFloem())
-  }
   return (
     <projectContext.Provider value={{ projectRep, flows, darts, initProject }}>
       {children}

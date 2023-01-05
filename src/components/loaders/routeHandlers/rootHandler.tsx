@@ -22,7 +22,11 @@ export const ROUTE_CONFIG: ForkSubrouteConfig = {
 export const RootHandler = () => {
   const route = getRoute()
   if (!route) return null
+  return <InnerRootHandler />
+}
 
+const InnerRootHandler = () => {
+  const route = getRoute()
   useEffect(() => {
     window.addEventListener('popstate', () => {
       setRoute({ route: window.location.pathname, action: 'none' })

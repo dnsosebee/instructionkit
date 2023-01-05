@@ -46,7 +46,7 @@ export const genDefaultFloem = (): Floem => {
       },
     ],
     createdAt: Date.now(),
-    title: 'Blank project',
+    title: 'Untitled',
     schemaVersion: 1,
   }
 }

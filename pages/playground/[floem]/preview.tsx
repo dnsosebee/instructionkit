@@ -1,4 +1,5 @@
 import { GetServerSideProps } from 'next'
+import { useEffect } from 'react'
 import { RootHandler } from '../../../src/components/loaders/routeHandlers/rootHandler'
 import { Guide } from '../../../src/components/views/app/project/guide/guide'
 import MarketingNav from '../../../src/components/views/marketing/layout/marketingNav'
@@ -15,7 +16,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const PlaygroundPreviewPage = ({ floem }: { floem: string }) => {
-  setRoute({ route: `/playground/${encodeURIComponent(floem)}/preview`, action: 'none' })
+  useEffect(() => {
+    setRoute({ route: `/playground/${encodeURIComponent(floem)}/preview`, action: 'none' })
+  }, [])
   return <RootHandler />
 }
 

@@ -1,10 +1,14 @@
 import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
 import { GetServerSideProps } from 'next'
+import { useEffect } from 'react'
 import { Blink } from '../../src/components/loaders/blink'
 import { useAppCtx } from '../../src/components/loaders/providers/appProvider'
 import { RootHandler } from '../../src/components/loaders/routeHandlers/rootHandler'
-import { WORKSPACE_HREF } from '../../src/components/loaders/routeHandlers/workspaceHandler'
+import {
+  WORKSPACE_HREF,
+  WORKSPACE_SETTINGS_HREF,
+} from '../../src/components/loaders/routeHandlers/workspaceHandler'
 import { AppLayout } from '../../src/components/views/app/layout/appLayout'
 import { ICONS } from '../../src/components/views/shared/icons'
 import { getRoute, setRoute } from '../../src/lib/route/route'
@@ -19,7 +23,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const SettingsPage = ({ workspaceId }: { workspaceId: string }) => {
-  setRoute({ route: `${WORKSPACE_HREF}/${workspaceId}/settings`, action: 'none' })
+  useEffect(() => {
+    setRoute({ route: WORKSPACE_SETTINGS_HREF(workspaceId), action: 'none' })
+  }, [])
   return <RootHandler />
 }
 
