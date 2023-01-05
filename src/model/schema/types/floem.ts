@@ -5,11 +5,11 @@ import { GOTO_DART_TYPE } from './dart/types/goto'
 import { genFlowId } from './flow/baseFlow'
 import { BRANCH_FLOW_TYPE } from './flow/types/branch'
 import { START_FLOW_TYPE } from './flow/types/start'
-import { genVersionId, versionSchema } from './version'
+import { versionSchema } from './version'
 
 // WARNING: this could probably be combined with "Version" type
 
-export const floemSchema = versionSchema.extend({
+export const floemSchema = versionSchema.omit({ id: true }).extend({
   title: z.string(),
 })
 
@@ -23,7 +23,6 @@ export const genDefaultFloem = (): Floem => {
   const startId = genFlowId()
   const branchId = genFlowId()
   return {
-    id: genVersionId(),
     flows: [
       {
         id: startId,

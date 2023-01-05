@@ -1,9 +1,9 @@
-import MarketingNav from '../src/components/views/marketing/layout/marketingNav'
+import { RootHandler, ROOT_HREF } from '../src/components/loaders/routeHandlers/rootHandler'
+import { setRoute } from '../src/lib/route/route'
 
-export default () => {
-  return (
-    <MarketingNav>
-      <div className='text-white'>INSERT LANDING PAGE HERE</div>
-    </MarketingNav>
-  )
+const AppPage = () => {
+  setRoute({ route: ROOT_HREF, action: 'none' })
+  return <RootHandler />
 }
+
+export default AppPage

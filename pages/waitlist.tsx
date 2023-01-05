@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useState } from 'react'
+import { ROOT_HREF } from '../src/components/loaders/routeHandlers/rootHandler'
 import MarketingNav from '../src/components/views/marketing/layout/marketingNav'
 import { validateEmail } from '../src/lib/validation'
 
@@ -113,7 +114,10 @@ export default () => {
 
                 <div className='flex items-center justify-between'>
                   <div className='text-sm'>
-                    <Link href='/app' className='font-medium text-indigo-600 hover:text-indigo-500'>
+                    <Link
+                      href={ROOT_HREF}
+                      className='font-medium text-indigo-600 hover:text-indigo-500'
+                    >
                       Already have an account?
                     </Link>
                   </div>

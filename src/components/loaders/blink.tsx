@@ -1,4 +1,4 @@
-import { setRoute } from '../../lib/route'
+import { setRoute } from '../../lib/route/route'
 
 /**
  * A Blink is an anchor tag that will change the route without reloading the page. Portmanteau of "button" and "link". :)

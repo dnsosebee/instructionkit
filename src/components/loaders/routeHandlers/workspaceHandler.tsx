@@ -1,11 +1,20 @@
-import { WorkspaceView } from '../../../../pages/app/[workspaceId]'
-import { SettingsView } from '../../../../pages/app/[workspaceId]/settings'
-import { ForkSubrouteConfig, ForkType, getRoute, ParamSubrouteConfig } from '../../../lib/route'
+import { WorkspaceView } from '../../../../pages/[workspaceId]'
+import { SettingsView } from '../../../../pages/[workspaceId]/settings'
+import {
+  ForkSubrouteConfig,
+  ForkType,
+  getRoute,
+  ParamSubrouteConfig,
+} from '../../../lib/route/route'
 import { AcceptInvite } from '../../views/app/acceptInvite'
 import { FourOhFour } from '../../views/shared/FourOhFour'
 import { useAppCtx } from '../providers/appProvider'
-import { WorkspaceProvider } from '../providers/workspaceRepProvider'
+import { WorkspaceProvider } from '../providers/workspaceProvider'
 import { ProjectIdHandler, PROJECT_ID_ROUTE_CONFIG } from './projectHandler'
+
+export const WORKSPACE_HREF = (workspaceId: string) => `/${workspaceId}`
+export const WORKSPACE_SETTINGS_HREF = (workspaceId: string) =>
+  `${WORKSPACE_HREF(workspaceId)}/settings`
 
 const WORKSPACE_ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'workspace',

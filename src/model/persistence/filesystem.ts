@@ -1,20 +1,20 @@
-import { Version, versionSchema } from '../schema/types/version'
+import { Floem, floemSchema } from '../schema/types/floem'
 
-export const handleDownloadVersion = async (version: Version, title: string): Promise<void> => {
+export const handleDownloadFloem = async (floem: Floem): Promise<void> => {
   try {
     const newHandle = await window.showSaveFilePicker({
-      suggestedName: `${title}.floem`,
+      suggestedName: `${floem.title}.floem`,
     })
     const writableStream = await newHandle.createWritable()
-    await writableStream.write(JSON.stringify(version))
+    await writableStream.write(JSON.stringify(floem))
     await writableStream.close()
   } catch (e) {
     console.error(e)
   }
 }
 
-export const handleUploadFloem = async (file: File): Promise<Version> => {
+export const handleUploadFloem = async (file: File): Promise<Floem> => {
   const json = await file.text()
-  const version = JSON.parse(json)
-  return versionSchema.parse(version)
+  const floem = JSON.parse(json)
+  return floemSchema.parse(floem)
 }

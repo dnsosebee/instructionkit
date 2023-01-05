@@ -6,6 +6,8 @@ import Image from 'next/image'
 import { Fragment, useState } from 'react'
 import { Blink } from '../../../loaders/blink'
 import { useSessionCtx } from '../../../loaders/providers/sessionProvider/sessionProvider'
+import { PROFILE_HREF } from '../../../loaders/routeHandlers/profileHandler'
+import { ROOT_HREF } from '../../../loaders/routeHandlers/rootHandler'
 import Logo from '../../shared/logo'
 import { DesktopNav } from './desktopNav'
 import { DesktopSidebar } from './desktopSidebar'
@@ -38,7 +40,7 @@ export const AppLayout = ({
           {/* Logo area */}
           <div className='absolute inset-y-0 left-0 md:static md:flex-shrink-0'>
             <Blink
-              href='/app'
+              href=''
               className='flex h-16 w-16 items-center justify-center bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-600 md:w-28'
             >
               <Logo light={true} className='h-8 w-auto' />
@@ -121,7 +123,7 @@ export const AppLayout = ({
                         <Menu.Item>
                           {({ active }) => (
                             <Blink
-                              href='/app/profile'
+                              href={PROFILE_HREF}
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700 w-full',
@@ -182,7 +184,7 @@ export const AppLayout = ({
                     aria-label='Global'
                   >
                     <div className='flex h-16 items-center justify-between px-4 sm:px-6'>
-                      <Blink href='/app'>
+                      <Blink href={ROOT_HREF}>
                         <Logo light={false} />
                       </Blink>
                       <button
@@ -240,7 +242,7 @@ export const AppLayout = ({
                       </div>
                       <div className='max-w-8xl mx-auto mt-3 space-y-1 px-2 sm:px-4'>
                         <Blink
-                          href={'/app/profile'}
+                          href={PROFILE_HREF}
                           className='block rounded-md py-2 px-3 text-base font-medium text-gray-900 hover:bg-gray-50'
                         >
                           Your Profile

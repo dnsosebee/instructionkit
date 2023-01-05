@@ -1,4 +1,5 @@
 import { logger as parentLogger } from '../../../../lib/logger'
+import { Project } from '../../../schema/types/project'
 import { AppRep } from '../spaces/app/appRep'
 import { WorkspaceRep } from '../spaces/ws/workspaceRep'
 import { createRepApiHelper } from './apiHelper'
@@ -14,9 +15,9 @@ export const createWorkspaceSpaceHelper = async ({
   workspaceId: string
   userId: string
 }) => {
-  logger.debug('createWorkspaceSpaceHelper: creating workspace', { workspaceId, userId })
+  logger.info('createWorkspaceSpaceHelper: creating workspace', { workspaceId, userId })
   if (!appRep.online) {
-    logger.debug('createWorkspaceSpaceHelper: appRep is offline')
+    logger.info('createWorkspaceSpaceHelper: appRep is offline, aborting')
     return false
   }
   await Promise.all([
@@ -32,24 +33,20 @@ export const createWorkspaceSpaceHelper = async ({
 export const createProjectSpaceHelper = async ({
   workspaceRep,
   workspaceId,
-  projectId,
+  project,
 }: {
   workspaceRep: WorkspaceRep
   workspaceId: string
-  projectId: string
+  project: Project
 }) => {
-  logger.debug('createProjectSpaceHelper: creating project', { workspaceId, projectId })
+  logger.info('createProjectSpaceHelper: creating project', { workspaceId, project })
   if (!workspaceRep.online) {
-    logger.debug('createProjectSpaceHelper: workspaceRep is offline')
+    logger.info('createProjectSpaceHelper: workspaceRep is offline, aborting')
     return false
   }
   await Promise.all([
-    workspaceRep.mutate.createProject({
-      id: projectId,
-      title: 'Untitled Project',
-      createdAt: Date.now(),
-    }),
-    createRepApiHelper({ type: 'project', workspaceId, projectId }),
+    workspaceRep.mutate.createProject(project),
+    createRepApiHelper({ type: 'project', workspaceId, projectId: project.id }),
   ])
   return true
 }

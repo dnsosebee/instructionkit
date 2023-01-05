@@ -1,16 +1,17 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useEffect, useState } from 'react'
-import { useSessionCtx } from '../../../src/components/loaders/providers/sessionProvider/sessionProvider'
-import { RootHandler } from '../../../src/components/loaders/routesHandlers/rootHandler'
-import { AppLayout } from '../../../src/components/views/app/layout/appLayout'
-import { SettingsFormLayout } from '../../../src/components/views/app/layout/settingsFormLayouts'
-import Loading from '../../../src/components/views/shared/loading'
-import { setRoute } from '../../../src/lib/route'
-import { Database } from '../../../src/model/persistence/supabase/database.types'
+import { useSessionCtx } from '../../src/components/loaders/providers/sessionProvider/sessionProvider'
+import { PROFILE_HREF } from '../../src/components/loaders/routeHandlers/profileHandler'
+import { RootHandler } from '../../src/components/loaders/routeHandlers/rootHandler'
+import { AppLayout } from '../../src/components/views/app/layout/appLayout'
+import { SettingsFormLayout } from '../../src/components/views/app/layout/settingsFormLayouts'
+import Loading from '../../src/components/views/shared/loading'
+import { setRoute } from '../../src/lib/route/route'
+import { Database } from '../../src/model/persistence/supabase/database.types'
 import { UpdatePassword } from './updatepassword'
 
 const ProfilePage = () => {
-  setRoute({ route: `/app/profile`, action: 'none' })
+  setRoute({ route: PROFILE_HREF, action: 'none' })
   return <RootHandler />
 }
 

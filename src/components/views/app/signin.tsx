@@ -20,13 +20,6 @@ const SignIn = () => {
       logger.error('error signing in', authResponse.error)
       alert(authResponse.error.message)
     }
-
-    // should be handled by supabase auth helpers
-
-    // if (authResponse.data.user) {
-    //   logger.debug('signed in', authResponse.data.user)
-    //   return redirectTo('/app')
-    // }
   }
 
   return (

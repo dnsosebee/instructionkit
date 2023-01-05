@@ -1,6 +1,10 @@
 import classNames from 'classnames'
-import { ForkType, getRoute } from '../../../../lib/route'
+import { ForkType, getRoute } from '../../../../lib/route/route'
 import { Blink } from '../../../loaders/blink'
+import {
+  WORKSPACE_HREF,
+  WORKSPACE_SETTINGS_HREF,
+} from '../../../loaders/routeHandlers/workspaceHandler'
 
 export const DesktopNav = () => {
   const {
@@ -10,7 +14,7 @@ export const DesktopNav = () => {
   return (
     <nav aria-label='Global' className='flex space-x-10'>
       <Blink
-        href={`/app/${workspaceId}`}
+        href={WORKSPACE_HREF(workspaceId)}
         className={classNames(
           workspaceFork.type === ForkType.Default
             ? 'bg-indigo-800 text-white'
@@ -22,7 +26,7 @@ export const DesktopNav = () => {
         Projects
       </Blink>
       <Blink
-        href={`/app/${workspaceId}/settings`}
+        href={WORKSPACE_SETTINGS_HREF(workspaceId)}
         className={classNames(
           workspaceFork.type === ForkType.Named && workspaceFork.urlSegment === 'settings'
             ? 'bg-indigo-800 text-white'

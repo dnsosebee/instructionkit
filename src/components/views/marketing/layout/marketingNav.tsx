@@ -3,6 +3,7 @@ import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Fragment } from 'react'
+import { ROOT_HREF } from '../../../loaders/routeHandlers/rootHandler'
 import Logo from '../../shared/logo'
 
 // WARNING this is probably deprecated now
@@ -21,7 +22,7 @@ export default ({ children }: { children: JSX.Element }) => {
             <div className='flex flex-1 items-center'>
               <div className='flex w-full items-center justify-between md:w-auto'>
                 <span className='sr-only'>InstructionKit</span>
-                <Link href='/'>
+                <Link href={ROOT_HREF}>
                   <Logo light={true} className='h-8 w-auto sm:h-10' />
                 </Link>
                 <div className='-mr-2 flex items-center md:hidden'>
@@ -44,7 +45,10 @@ export default ({ children }: { children: JSX.Element }) => {
               </div> */}
             </div>
             <div className='hidden md:flex md:items-center md:space-x-6'>
-              <Link href='/app' className='text-base font-medium text-white hover:text-gray-300'>
+              <Link
+                href={ROOT_HREF}
+                className='text-base font-medium text-white hover:text-gray-300'
+              >
                 Sign in
               </Link>
               <Link
@@ -105,7 +109,7 @@ export default ({ children }: { children: JSX.Element }) => {
                 <div className='mt-6 px-5'>
                   <p className='text-center text-base font-medium text-gray-500'>
                     Existing customer?{' '}
-                    <Link href='/app' className='text-gray-900 hover:underline'>
+                    <Link href={ROOT_HREF} className='text-gray-900 hover:underline'>
                       Sign in
                     </Link>
                   </p>

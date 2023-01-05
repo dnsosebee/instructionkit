@@ -1,10 +1,22 @@
-import { ProjectView } from '../../../../pages/app/[workspaceId]/[projectId]'
-import { PreviewView } from '../../../../pages/app/[workspaceId]/[projectId]/preview'
-import { ForkSubrouteConfig, ForkType, getRoute, ParamSubrouteConfig } from '../../../lib/route'
+import { ProjectView } from '../../../../pages/[workspaceId]/[projectId]'
+import { PreviewView } from '../../../../pages/[workspaceId]/[projectId]/preview'
+import {
+  ForkSubrouteConfig,
+  ForkType,
+  getRoute,
+  ParamSubrouteConfig,
+} from '../../../lib/route/route'
 import { FourOhFour } from '../../views/shared/FourOhFour'
 import { ProjectProvider } from '../providers/projectProvider'
-import { useWorkspaceCtx } from '../providers/workspaceRepProvider'
+import { useWorkspaceCtx } from '../providers/workspaceProvider'
+import { InitHandler, INTERNAL_INIT_ROUTE_CONFIG } from './initHandler'
 import { WORKSPACE_ID_ROUTE_CONFIG } from './workspaceHandler'
+
+export const PROJECT_HREF = (workspaceId: string, projectId: string) =>
+  `/${workspaceId}/${projectId}`
+
+export const PROJECT_PREVIEW_HREF = (workspaceId: string, projectId: string) =>
+  `${PROJECT_HREF(workspaceId, projectId)}/preview`
 
 const PROJECT_ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'project',
@@ -14,6 +26,7 @@ const PROJECT_ROUTE_CONFIG: ForkSubrouteConfig = {
       forkName: 'preview',
       hasDefaultSubroute: true,
     },
+    init: INTERNAL_INIT_ROUTE_CONFIG,
   },
 }
 
@@ -54,6 +67,8 @@ const ProjectHandler = () => {
       switch (projectFork.urlSegment) {
         case 'preview':
           return <PreviewView />
+        case 'init':
+          return <InitHandler />
         default:
           return (
             <FourOhFour

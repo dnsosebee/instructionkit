@@ -1,8 +1,9 @@
 import { ChevronDownIcon } from '@heroicons/react/24/solid'
 import { logger as parentLogger } from '../../../../lib/logger'
-import { getRoute, setRoute } from '../../../../lib/route'
+import { getRoute, setRoute } from '../../../../lib/route/route'
 import { Workspace } from '../../../../model/schema/types/workspace'
 import { useAppCtx } from '../../../loaders/providers/appProvider'
+import { WORKSPACE_HREF } from '../../../loaders/routeHandlers/workspaceHandler'
 
 const logger = parentLogger.child({ component: 'Picker' })
 
@@ -13,7 +14,7 @@ export const MobilePicker = () => {
   const handlePickerChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value
     logger.debug('handlePickerChange', { id })
-    setRoute({ route: `/app/${id}`, action: 'push' })
+    setRoute({ route: WORKSPACE_HREF(id), action: 'push' })
   }
 
   return (

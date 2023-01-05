@@ -91,7 +91,6 @@ const helper = async (data: {
   const flowFrom: Flocation = { flow: flocation.flow, node: flocation.node + 1 }
   const el = flowNodes[flocation.node]
   let match
-  logger.debug('helper, element', el)
 
   // injections
   if (el.tagName !== 'PRE') {

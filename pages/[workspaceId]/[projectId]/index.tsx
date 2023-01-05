@@ -2,14 +2,14 @@ import { GetServerSideProps } from 'next'
 import { ReactFlowProvider } from 'reactflow'
 import FlowchartProvider, {
   FlowchartProviderProps,
-} from '../../../../src/components/loaders/providers/flowchartProvider'
-import { useProjectCtx } from '../../../../src/components/loaders/providers/projectProvider'
-import { useWorkspaceCtx } from '../../../../src/components/loaders/providers/workspaceRepProvider'
-import { RootHandler } from '../../../../src/components/loaders/routesHandlers/rootHandler'
-import Breadcrumbs from '../../../../src/components/views/app/project/flowchart/breadcrumbs'
-import { Flowchart } from '../../../../src/components/views/app/project/flowchart/flowchart'
-import { getRoute, setRoute } from '../../../../src/lib/route'
-import { FloemChangeEvent } from '../../../../src/model/persistence/shared/floemChangeEvent'
+} from '../../../src/components/loaders/providers/flowchartProvider'
+import { useProjectCtx } from '../../../src/components/loaders/providers/projectProvider'
+import { useWorkspaceCtx } from '../../../src/components/loaders/providers/workspaceProvider'
+import { RootHandler } from '../../../src/components/loaders/routeHandlers/rootHandler'
+import Breadcrumbs from '../../../src/components/views/app/project/flowchart/breadcrumbs'
+import { Flowchart } from '../../../src/components/views/app/project/flowchart/flowchart'
+import { getRoute, setRoute } from '../../../src/lib/route/route'
+import { FloemChangeEvent } from '../../../src/model/persistence/shared/floemChangeEvent'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -23,7 +23,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const ProjectPage = ({ workspaceId, projectId }: { workspaceId: string; projectId: string }) => {
-  setRoute({ route: `/app/${workspaceId}/${projectId}`, action: 'none' })
+  setRoute({ route: `/${workspaceId}/${projectId}`, action: 'none' })
   return <RootHandler />
 }
 
@@ -59,7 +59,7 @@ export const ProjectView = () => {
         projectRep.mutate.applyChanges(projectChanges)
       }
     },
-    previewHref: `/app/${workspaceId}/${projectId}/preview`,
+    previewHref: `/${workspaceId}/${projectId}/preview`,
   }
   return (
     <>

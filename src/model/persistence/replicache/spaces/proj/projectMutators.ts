@@ -18,6 +18,8 @@ export type ProjectMutators = typeof projectMutators
 
 export const projectMutators = {
   async reset(tx: WriteTransaction, { flows, darts }: { flows: Flow[]; darts: Dart[] }) {
+    logger.info('reset', { flows, darts })
+
     // check that there's one start flow
     const startFlows = flows.filter(flow => flow.type === START_FLOW_TYPE)
     if (startFlows.length !== 1) {

@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
-import { getRoute } from '../../../../../lib/route'
+import { getRoute } from '../../../../../lib/route/route'
 import { Blink } from '../../../../loaders/blink'
 import { useAppCtx } from '../../../../loaders/providers/appProvider'
-import { useWorkspaceCtx } from '../../../../loaders/providers/workspaceRepProvider'
+import { useWorkspaceCtx } from '../../../../loaders/providers/workspaceProvider'
+import { WORKSPACE_HREF } from '../../../../loaders/routeHandlers/workspaceHandler'
 import { TitleEditor } from '../shared/titleEditor'
 
 export default function Breadcrumbs() {
@@ -21,7 +22,7 @@ export default function Breadcrumbs() {
       <ol role='list' className='flex items-center space-x-4'>
         <li key={'home'}>
           <div>
-            <Blink href={`/app/${workspaceId}`} className='text-gray-400 hover:text-gray-500'>
+            <Blink href={WORKSPACE_HREF(workspaceId)} className='text-gray-400 hover:text-gray-500'>
               {/* an icon with /favicon.svg */}
               <motion.img
                 src='/dark.svg'
@@ -44,7 +45,7 @@ export default function Breadcrumbs() {
             >
               <path d='M5.555 17.776l8-16 .894.448-8 16-.894-.448z' />
             </svg>
-            <Blink href={`/app/${workspaceId}`} className='ml-3' aria-current={true}>
+            <Blink href={WORKSPACE_HREF(workspaceId)} className='ml-3' aria-current={true}>
               <p className='text-sm font-medium text-gray-500 p-1'>{workspace.name}</p>
             </Blink>
           </div>

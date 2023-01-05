@@ -33,6 +33,7 @@ export const FlowtextEditor = ({ branch }: { branch: BranchFlow }) => {
     addKeyboardShortcuts() {
       return {
         Enter: () => {
+          // TODO: why is this here?
           logger.debug('Enter')
           return false
         },

@@ -1,15 +1,15 @@
 import { GetServerSideProps } from 'next'
-import React from 'react'
+import { useReducer } from 'react'
 import FlowchartProvider, {
   FlowchartProviderProps,
 } from '../../../src/components/loaders/providers/flowchartProvider'
-import { RootHandler } from '../../../src/components/loaders/routesHandlers/rootHandler'
+import { RootHandler } from '../../../src/components/loaders/routeHandlers/rootHandler'
 import { Flowchart } from '../../../src/components/views/app/project/flowchart/flowchart'
 import { logger as parentLogger } from '../../../src/lib/logger'
-import { getRoute, setRoute } from '../../../src/lib/route'
+import { getRoute, setRoute } from '../../../src/lib/route/route'
 import {
-  applyFlowAndDartChanges,
-  FlowAndDartTransaction,
+  syncApplyFlowAndDartChanges,
+  SyncFlowAndDartTransaction,
 } from '../../../src/model/persistence/shared/applyFlowAndDartChanges'
 import { FloemChangeEvent } from '../../../src/model/persistence/shared/floemChangeEvent'
 
@@ -39,29 +39,17 @@ export default PlaygroundPage
  */
 
 export const PlaygroundView = () => {
-  const { floem } = getRoute().params
+  const { floem } = getRoute().params // idk maybe switch to authoritative reducer in the middle
 
-  const newRef = (data: string) => {
-    return urlDecodeFloem(data)
-  }
-  const ref = React.useRef(newRef(floem))
-  React.useEffect(() => {
-    ref.current = newRef(floem)
-    logger.debug('updating ref: ', ref.current)
-  }, [floem])
+  const decoded = urlDecodeFloem(floem)
 
-  const updateFloem = (update: Floem) => {
-    Object.assign(ref.current, update)
-    setRoute({ route: `/playground/${urlEncodeFloem(update)}`, action: 'push' })
-  }
-
-  const applyChanges = async (changes: FloemChangeEvent[]) => {
-    const update = JSON.parse(JSON.stringify(ref.current)) as Floem
-    const urlTx: FlowAndDartTransaction = {
-      getFlow: async flowId => {
+  const [state, dispatch] = useReducer((state: Floem, action: FloemChangeEvent[]) => {
+    const update = JSON.parse(JSON.stringify(state)) as Floem
+    const urlTx: SyncFlowAndDartTransaction = {
+      getFlow: flowId => {
         return update.flows.find(flow => flow.id === flowId)
       },
-      putFlow: async flow => {
+      putFlow: flow => {
         const existing = update.flows.find(f => f.id === flow.id)
         if (existing !== undefined) {
           Object.assign(existing, flow)
@@ -69,38 +57,35 @@ export const PlaygroundView = () => {
           update.flows.push(flow)
         }
       },
-      delFlow: async flowId => {
+      delFlow: flowId => {
         const index = update.flows.findIndex(flow => flow.id === flowId)
         if (index !== -1) {
           update.flows.splice(index, 1)
         }
       },
-      getDarts: async () => {
+      getDarts: () => {
         return update.darts
       },
-      putDarts: async darts => {
+      putDarts: darts => {
         update.darts = darts
       },
     }
-    try {
-      await applyFlowAndDartChanges(urlTx, changes)
-      updateFloem(update)
-    } catch (err) {
-      logger.warn('error applying changes: ', err)
-    }
-  }
+    syncApplyFlowAndDartChanges(urlTx, action)
+    window.history.pushState({}, '', `/playground/${urlEncodeFloem(update)}`)
+    return update
+  }, decoded)
 
   const flowchartProviderProps: Omit<FlowchartProviderProps, 'children'> = {
-    title: ref.current.title,
-    flows: ref.current.flows,
-    darts: ref.current.darts,
-    previewHref: `/playground/${floem}/preview`,
+    title: state.title,
+    flows: state.flows,
+    darts: state.darts,
+    previewHref: `/playground/${urlEncodeFloem(state)}/preview`,
     send: function (changes: FloemChangeEvent | FloemChangeEvent[]): void {
       if (!Array.isArray(changes)) {
         changes = [changes]
       }
       if (changes.length > 0) {
-        applyChanges(changes)
+        dispatch(changes)
       }
       // const update = {
       //   ...ref.current,

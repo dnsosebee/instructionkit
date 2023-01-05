@@ -1,7 +1,10 @@
-import { ProfileView } from '../../../../pages/app/profile'
-import { UpdatePasswordView } from '../../../../pages/app/profile/updatepassword'
-import { ForkSubrouteConfig, ForkType, getRoute } from '../../../lib/route'
+import { ProfileView } from '../../../../pages/profile'
+import { UpdatePasswordView } from '../../../../pages/profile/updatepassword'
+import { ForkSubrouteConfig, ForkType, getRoute } from '../../../lib/route/route'
 import { FourOhFour } from '../../views/shared/FourOhFour'
+
+export const PROFILE_HREF = `/profile`
+export const UPDATE_PASSWORD_HREF = `/profile/updatepassword`
 
 export const PROFILE_ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'profile',

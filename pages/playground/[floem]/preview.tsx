@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next'
-import { RootHandler } from '../../../src/components/loaders/routesHandlers/rootHandler'
+import { RootHandler } from '../../../src/components/loaders/routeHandlers/rootHandler'
 import { Guide } from '../../../src/components/views/app/project/guide/guide'
 import MarketingNav from '../../../src/components/views/marketing/layout/marketingNav'
-import { getRoute, setRoute } from '../../../src/lib/route'
+import { getRoute, setRoute } from '../../../src/lib/route/route'
 import { urlDecodeFloem } from '../../../src/model/persistence/url'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {

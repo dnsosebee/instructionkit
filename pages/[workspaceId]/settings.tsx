@@ -1,12 +1,13 @@
 import { RadioGroup } from '@headlessui/react'
 import classNames from 'classnames'
 import { GetServerSideProps } from 'next'
-import { Blink } from '../../../src/components/loaders/blink'
-import { useAppCtx } from '../../../src/components/loaders/providers/appProvider'
-import { RootHandler } from '../../../src/components/loaders/routesHandlers/rootHandler'
-import { AppLayout } from '../../../src/components/views/app/layout/appLayout'
-import { ICONS } from '../../../src/components/views/shared/icons'
-import { getRoute, setRoute } from '../../../src/lib/route'
+import { Blink } from '../../src/components/loaders/blink'
+import { useAppCtx } from '../../src/components/loaders/providers/appProvider'
+import { RootHandler } from '../../src/components/loaders/routeHandlers/rootHandler'
+import { WORKSPACE_HREF } from '../../src/components/loaders/routeHandlers/workspaceHandler'
+import { AppLayout } from '../../src/components/views/app/layout/appLayout'
+import { ICONS } from '../../src/components/views/shared/icons'
+import { getRoute, setRoute } from '../../src/lib/route/route'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -18,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const SettingsPage = ({ workspaceId }: { workspaceId: string }) => {
-  setRoute({ route: `/app/${workspaceId}/settings`, action: 'none' })
+  setRoute({ route: `${WORKSPACE_HREF}/${workspaceId}/settings`, action: 'none' })
   return <RootHandler />
 }
 
@@ -29,7 +30,7 @@ export default SettingsPage
  */
 
 export const SettingsView = () => {
-  const { appRep, userMembershipWorkspaces } = useAppCtx()
+  const { appRep, userMembershipWorkspaces, deleteMembership, deleteWorkspace } = useAppCtx()
   const { workspaceId } = getRoute().params
   const { workspace, membership } = userMembershipWorkspaces.find(
     ({ workspace }) => workspace.id === workspaceId,
@@ -61,17 +62,15 @@ export const SettingsView = () => {
     alert('Invite sent!')
   }
 
-  const handleLeave = () => {
+  const handleLeave = async () => {
     if (confirm(`Are you sure you want to leave ${workspace.name}?`)) {
-      appRep.mutate.deleteMembership(membership)
-      setRoute({ route: '/app', action: 'push' })
+      deleteMembership(membership)
     }
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (confirm(`Are you sure you want to delete ${workspace.name}?`)) {
-      appRep.mutate.deleteWorkspace(workspace.id)
-      setRoute({ route: '/app', action: 'push' })
+      deleteWorkspace(workspace.id)
     }
   }
 
@@ -202,7 +201,7 @@ export const SettingsView = () => {
             {/* done button */}
             <Blink
               className='inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
-              href={`/app/${workspace.id}`}
+              href={WORKSPACE_HREF(workspace.id)}
             >
               Done
             </Blink>

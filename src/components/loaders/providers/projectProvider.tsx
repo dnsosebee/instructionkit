@@ -1,5 +1,6 @@
 import React from 'react'
 import { useSubscribe } from 'replicache-react'
+import { setRoute } from '../../../lib/route/route'
 import { listDarts } from '../../../model/persistence/replicache/spaces/proj/entries/darts'
 import { listFlows } from '../../../model/persistence/replicache/spaces/proj/entries/flow'
 import {
@@ -7,15 +8,17 @@ import {
   useProjectRep,
 } from '../../../model/persistence/replicache/spaces/proj/projectRep'
 import { Dart } from '../../../model/schema/types/dart/dart'
-import { genDefaultFloem } from '../../../model/schema/types/floem'
+import { Floem, genDefaultFloem } from '../../../model/schema/types/floem'
 import { Flow } from '../../../model/schema/types/flow/flow'
 
 import Loading from '../../views/shared/loading'
+import { PROJECT_HREF } from '../routeHandlers/projectHandler'
 
 export type ProjectContext = {
   projectRep: ProjectRep
   flows: Flow[]
   darts: Dart[]
+  initProject: (floem: Floem) => Promise<void>
 }
 
 export const projectContext = React.createContext<ProjectContext | null>(null)
@@ -43,11 +46,17 @@ export const ProjectProvider = ({
   if (!projectRep || !flows || !darts) {
     return <Loading />
   }
+
+  const initProject = async (floem: Floem) => {
+    await projectRep.mutate.reset(floem)
+    setRoute({ route: PROJECT_HREF(workspaceId, projectId), action: 'push' })
+  }
+
   if (flows.length === 0) {
     projectRep.mutate.reset(genDefaultFloem())
   }
   return (
-    <projectContext.Provider value={{ projectRep, flows, darts }}>
+    <projectContext.Provider value={{ projectRep, flows, darts, initProject }}>
       {children}
     </projectContext.Provider>
   )

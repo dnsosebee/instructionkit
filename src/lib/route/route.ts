@@ -1,6 +1,6 @@
 import { proxy, useSnapshot } from 'valtio'
-import { ROUTE_CONFIG } from '../components/loaders/routesHandlers/rootHandler'
-import { logger as parentLogger } from './logger'
+import { ROUTE_CONFIG } from '../../components/loaders/routeHandlers/rootHandler'
+import { logger as parentLogger } from '../logger'
 
 const logger = parentLogger.child({ module: 'route.ts' })
 
@@ -44,9 +44,6 @@ const forkUrlToRoute = (
   forkSubrouteConfig: ForkSubrouteConfig,
   routeState: RouteState,
 ): RouteState => {
-  // logger.debug(
-  //   `forkUrlToRoute, urlSegments: ${urlSegments}, forkSubrouteConfig: ${forkSubrouteConfig}, routeState: ${routeState}`,
-  // )
   const [urlSegment, ...restUrlSegments] = urlSegments
   const forkName = forkSubrouteConfig.forkName
 
@@ -82,7 +79,6 @@ const paramUrlToRoute = (
   paramSubrouteConfig: ParamSubrouteConfig,
   routeState: RouteState,
 ): RouteState => {
-  // logger.debug('paramUrlToRoute', { urlSegments, paramSubrouteConfig, routeState })
   const [urlSegment, ...restUrlSegments] = urlSegments
   const paramName = paramSubrouteConfig.paramName
 

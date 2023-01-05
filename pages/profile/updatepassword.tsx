@@ -1,14 +1,15 @@
 import { useSupabaseClient } from '@supabase/auth-helpers-react'
 import { useState } from 'react'
-import { useSessionCtx } from '../../../src/components/loaders/providers/sessionProvider/sessionProvider'
-import { RootHandler } from '../../../src/components/loaders/routesHandlers/rootHandler'
-import { AppLayout } from '../../../src/components/views/app/layout/appLayout'
-import { SettingsFormLayout } from '../../../src/components/views/app/layout/settingsFormLayouts'
-import Loading from '../../../src/components/views/shared/loading'
-import { setRoute } from '../../../src/lib/route'
+import { useSessionCtx } from '../../src/components/loaders/providers/sessionProvider/sessionProvider'
+import { UPDATE_PASSWORD_HREF } from '../../src/components/loaders/routeHandlers/profileHandler'
+import { RootHandler } from '../../src/components/loaders/routeHandlers/rootHandler'
+import { AppLayout } from '../../src/components/views/app/layout/appLayout'
+import { SettingsFormLayout } from '../../src/components/views/app/layout/settingsFormLayouts'
+import Loading from '../../src/components/views/shared/loading'
+import { setRoute } from '../../src/lib/route/route'
 
 const UpdatePasswordPage = () => {
-  setRoute({ route: `/app/profile/updatepassword`, action: 'none' })
+  setRoute({ route: UPDATE_PASSWORD_HREF, action: 'none' })
   return <RootHandler />
 }
 

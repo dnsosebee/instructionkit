@@ -1,16 +1,20 @@
 import { PlusCircleIcon, PlusIcon } from '@heroicons/react/24/solid'
+import classNames from 'classnames'
 import { GetServerSideProps } from 'next'
-import React from 'react'
+import React, { useCallback } from 'react'
+import { useDropzone } from 'react-dropzone'
 import { useSubscribe } from 'replicache-react'
-import { Blink } from '../../../src/components/loaders/blink'
-import { useAppCtx } from '../../../src/components/loaders/providers/appProvider'
-import { useWorkspaceCtx } from '../../../src/components/loaders/providers/workspaceRepProvider'
-import { RootHandler } from '../../../src/components/loaders/routesHandlers/rootHandler'
-import { AppLayout } from '../../../src/components/views/app/layout/appLayout'
-import ContextMenu from '../../../src/components/views/shared/contextMenu'
-import { getRoute, setRoute } from '../../../src/lib/route'
-import { listProjects } from '../../../src/model/persistence/replicache/spaces/ws/entries/proj'
-import { Project } from '../../../src/model/schema/types/project'
+import { Blink } from '../../src/components/loaders/blink'
+import { useAppCtx } from '../../src/components/loaders/providers/appProvider'
+import { useWorkspaceCtx } from '../../src/components/loaders/providers/workspaceProvider'
+import { PROJECT_HREF } from '../../src/components/loaders/routeHandlers/projectHandler'
+import { RootHandler } from '../../src/components/loaders/routeHandlers/rootHandler'
+import { AppLayout } from '../../src/components/views/app/layout/appLayout'
+import ContextMenu from '../../src/components/views/shared/contextMenu'
+import { getRoute, setRoute } from '../../src/lib/route/route'
+import { handleUploadFloem } from '../../src/model/persistence/filesystem'
+import { listProjects } from '../../src/model/persistence/replicache/spaces/ws/entries/proj'
+import { Project } from '../../src/model/schema/types/project'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -22,7 +26,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const WorkspacePage = ({ workspaceId }: { workspaceId: string }) => {
-  setRoute({ route: `/app/${workspaceId}`, action: 'none' })
+  setRoute({ route: `/${workspaceId}`, action: 'none' })
   return <RootHandler />
 }
 
@@ -41,22 +45,20 @@ export const WorkspaceView = () => {
   const { workspace } = userMembershipWorkspaces.find(
     ({ workspace }) => workspace.id === workspaceId,
   )!
-  // const onDrop = useCallback((acceptedFiles: File[]) => {
-  //   if (acceptedFiles.length === 0) {
-  //     return
-  //   }
-  //   acceptedFiles.forEach(async file => {
-  //     const projectId = genProjectId()
-  //     const floem = await handleUploadFloem(file)
-  //     mutate.createFloem({ ...floem, id: floemId })
-  //   })
-  // }, [])
-  // const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, noClick: true })
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length !== 1) {
+      return
+    }
+    acceptedFiles.forEach(async file => {
+      const floem = await handleUploadFloem(file)
+      createProject(floem)
+    })
+  }, [])
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, noClick: true })
   const handleClickNewProject = async () => {
     setCreatingNew(true)
-    const projectId = await createProject()
+    await createProject()
     setCreatingNew(false)
-    setRoute({ route: `/app/${workspaceId}/${projectId}`, action: 'push' })
   }
 
   const handleClickDelete = (projectId: string) => () => {
@@ -75,15 +77,14 @@ export const WorkspaceView = () => {
       {creatingNew ? (
         <p className='pt-6 pb-8'>Creating Floem...</p>
       ) : (
-        // <div
-        //   {...getRootProps()}
-        //   className={classNames(
-        //     isDragActive ? 'rounded-lg border-2 border-dashed border-gray-300' : '',
-        //     'pt-6 pb-8',
-        //   )}
-        // >
-        <>
-          {/* <input {...getInputProps()} /> */}
+        <div
+          {...getRootProps()}
+          className={classNames(
+            isDragActive ? 'rounded-lg border-2 border-dashed border-gray-300' : '',
+            'pt-6 pb-8',
+          )}
+        >
+          <input {...getInputProps()} />
           {projects.length > 0 ? (
             <div className='mx-auto max-w-7xl sm:px-6 lg:px-8'>
               <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
@@ -108,8 +109,7 @@ export const WorkspaceView = () => {
               </div>
             </div>
           )}
-          {/* </div> */}
-        </>
+        </div>
       )}
     </AppLayout>
   )
@@ -147,7 +147,7 @@ function ProjectCard({
             <img className="h-10 w-10 rounded-full" src={floem.imageUrl} alt="" />
           </div> */}
       <div className='min-w-0 flex-1'>
-        <Blink href={`/app/${workspaceId}/${project.id}`} className='focus:outline-none'>
+        <Blink href={PROJECT_HREF(workspaceId, project.id)} className='focus:outline-none'>
           <span className='absolute inset-0' aria-hidden='true' />
           <p className='text-sm font-medium text-gray-900'>{project.title}</p>
           <p className='truncate text-sm text-gray-500'>

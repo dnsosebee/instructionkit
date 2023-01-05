@@ -45,7 +45,7 @@ export const Flowchart = () => {
 
   const nodes = toFlowchartNodes(flows, nodeSelections)
   const edges = toFlowchartEdges(darts, edgeSelections)
-  logger.debug('render', { flows, darts })
+  logger.debug('render flowchart with', { flows, darts })
 
   // HTML elemenet ref for the reactflow component wrapper
   const reactFlowWrapper = useRef<null | HTMLDivElement>(null)
@@ -154,7 +154,6 @@ export const Flowchart = () => {
         return
       }
       const targetIsPane = event.target.classList.contains('react-flow__pane')
-      logger.debug('onConnectEnd', 'targetIsPane', { targetIsPane })
       if (targetIsPane) {
         const { top, left } = reactFlowWrapper.current!.getBoundingClientRect()
         const newDartId = genDartId()

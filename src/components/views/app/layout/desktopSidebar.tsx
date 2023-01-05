@@ -1,18 +1,14 @@
 import { FolderPlusIcon } from '@heroicons/react/24/outline'
 import classNames from 'classnames'
-import { getRoute, setRoute } from '../../../../lib/route'
+import { getRoute } from '../../../../lib/route/route'
 import { Blink } from '../../../loaders/blink'
 import { useAppCtx } from '../../../loaders/providers/appProvider'
+import { WORKSPACE_HREF } from '../../../loaders/routeHandlers/workspaceHandler'
 import { Icon } from '../../shared/icons'
 
 export const DesktopSidebar = () => {
   const { workspaceId } = getRoute().params
   const { userMembershipWorkspaces, userInviteWorkspaces, createWorkspace } = useAppCtx()
-
-  const handleCreateWorkspace = async () => {
-    const id = await createWorkspace()
-    setRoute({ route: `/app/${id}/settings`, action: 'none' })
-  }
 
   return (
     <nav
@@ -23,7 +19,7 @@ export const DesktopSidebar = () => {
         {userMembershipWorkspaces.map(({ workspace }) => (
           <Blink
             key={workspace.id}
-            href={`/app/${workspace.id}`}
+            href={WORKSPACE_HREF(workspace.id)}
             className={classNames(
               workspace.id === workspaceId
                 ? 'bg-indigo-800 text-white'
@@ -49,7 +45,7 @@ export const DesktopSidebar = () => {
         {userInviteWorkspaces.map(({ workspace }) => (
           <Blink
             key={workspace.id}
-            href={`/app/${workspace.id}`}
+            href={WORKSPACE_HREF(workspace.id)}
             className={classNames(
               workspace.id === workspaceId
                 ? 'bg-indigo-800 text-white'
@@ -68,13 +64,13 @@ export const DesktopSidebar = () => {
               )}
               aria-hidden='true'
             />
-            <span className='mt-2'>{workspace.name}</span>
+            <span className='mt-2 text-center'>{workspace.name}</span>
           </Blink>
         ))}
         <div className='grow' />
         <button
           key={'Create Workspace'}
-          onClick={handleCreateWorkspace}
+          onClick={createWorkspace}
           className={classNames(
             'text-gray-500 hover:bg-indigo-800 hover:text-white',
             'group w-full p-3 rounded-md flex flex-col items-center text-xs font-medium',

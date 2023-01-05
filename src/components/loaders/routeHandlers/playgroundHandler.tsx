@@ -6,10 +6,14 @@ import {
   getRoute,
   ParamSubrouteConfig,
   setRoute,
-} from '../../../lib/route'
+} from '../../../lib/route/route'
 import { urlEncodeFloem } from '../../../model/persistence/url'
 import { genDefaultFloem } from '../../../model/schema/types/floem'
 import { FourOhFour } from '../../views/shared/FourOhFour'
+
+export const PLAYGROUND_HREF = `/playground`
+export const PLAYGROUND_FLOEM_HREF = (floem: string) => `/playground/${floem}`
+export const PLAYGROUND_PREVIEW_HREF = (floem: string) => `/playground/${floem}/preview`
 
 const FLOEM_FORK_ROUTE_CONFIG: ForkSubrouteConfig = {
   forkName: 'floem',
@@ -37,7 +41,7 @@ export const PlaygroundHandler = () => {
   const playgroundFork = getRoute().forks[PLAYGROUND_ROUTE_CONFIG.forkName]
   switch (playgroundFork.type) {
     case ForkType.Default:
-      setRoute({ route: `/playground/${urlEncodeFloem(genDefaultFloem())}`, action: 'none' })
+      setRoute({ route: PLAYGROUND_FLOEM_HREF(urlEncodeFloem(genDefaultFloem())), action: 'none' })
       return null
     case ForkType.Dynamic:
       return <FloemDataHandler />

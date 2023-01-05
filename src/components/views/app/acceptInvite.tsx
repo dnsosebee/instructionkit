@@ -1,6 +1,6 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { Fragment, useRef, useState } from 'react'
-import { getRoute, setRoute } from '../../../lib/route'
+import { getRoute } from '../../../lib/route/route'
 import { useAppCtx } from '../../loaders/providers/appProvider'
 import { useSessionCtx } from '../../loaders/providers/sessionProvider/sessionProvider'
 import { Icon } from '../shared/icons'
@@ -8,28 +8,27 @@ import { AppLayout } from './layout/appLayout'
 
 export const AcceptInvite = () => {
   const { workspaceId } = getRoute().params
-  const { userInviteWorkspaces, appRep } = useAppCtx()
-  const { workspace, invite } = userInviteWorkspaces.find(
-    ({ workspace }) => workspace.id === workspaceId,
-  )!
+  const { userInviteWorkspaces, appRep, declineInvite } = useAppCtx()
   const {
     session: { user },
   } = useSessionCtx()
   const [open, setOpen] = useState(true)
   const cancelButtonRef = useRef(null)
+  const { invite, workspace } = userInviteWorkspaces.find(
+    ({ workspace }) => workspace.id === workspaceId,
+  )!
 
-  const handleAccept = () => {
-    appRep.mutate.acceptInvite({
+  const handleAccept = async () => {
+    setOpen(false)
+    await appRep.mutate.acceptInvite({
       invite,
       userId: user.id,
     })
-    setOpen(false)
   }
 
   const handleDecline = () => {
-    appRep.mutate.deleteInvite(invite)
     setOpen(false)
-    setRoute({ route: '/app', action: 'push' })
+    declineInvite(invite)
   }
 
   return (

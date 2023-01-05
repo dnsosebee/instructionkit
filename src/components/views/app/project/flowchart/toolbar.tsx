@@ -1,5 +1,6 @@
-import { DocumentPlusIcon } from '@heroicons/react/20/solid'
+import { DocumentArrowDownIcon, DocumentPlusIcon } from '@heroicons/react/20/solid'
 import { PlayIcon } from '@heroicons/react/24/solid'
+import { handleDownloadFloem } from '../../../../../model/persistence/filesystem'
 import { SendFloemChange } from '../../../../../model/persistence/shared/floemChangeEvent'
 import { genFlowId } from '../../../../../model/schema/types/flow/baseFlow'
 import {
@@ -16,7 +17,7 @@ export const Toolbar = ({ send }: ToolbarProps) => {
   // const disableDelete =
   //   (nodeSelections.every(v => !v) && edgeSelections.every(v => !v)) ||
   //   nodeSelections[floem.flows.findIndex(flow => flow.id === FLOW_START_ID)]
-  const { previewHref } = useFlowchartCtx()
+  const { previewHref, flows, darts, title } = useFlowchartCtx()
 
   return (
     <div className='static'>
@@ -49,11 +50,19 @@ export const Toolbar = ({ send }: ToolbarProps) => {
           disabled={disableDelete}
         /> */}
         {/* save button */}
-        {/* <IconButton
+        <IconButton
           Icon={DocumentArrowDownIcon}
-          onClick={() => handleDownloadFloem(floem)}
+          onClick={() =>
+            handleDownloadFloem({
+              schemaVersion: 1,
+              title,
+              flows,
+              darts,
+              createdAt: Date.now(),
+            })
+          }
           title='Download'
-        /> */}
+        />
         <a href={previewHref} target='_blank' rel='noopener noreferrer'>
           <IconButton Icon={PlayIcon} onClick={() => null} title='Preview' />
         </a>

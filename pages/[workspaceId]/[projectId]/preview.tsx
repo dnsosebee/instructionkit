@@ -1,8 +1,8 @@
 import { GetServerSideProps } from 'next'
-import { useProjectCtx } from '../../../../src/components/loaders/providers/projectProvider'
-import { RootHandler } from '../../../../src/components/loaders/routesHandlers/rootHandler'
-import { Guide } from '../../../../src/components/views/app/project/guide/guide'
-import { setRoute } from '../../../../src/lib/route'
+import { useProjectCtx } from '../../../src/components/loaders/providers/projectProvider'
+import { RootHandler } from '../../../src/components/loaders/routeHandlers/rootHandler'
+import { Guide } from '../../../src/components/views/app/project/guide/guide'
+import { setRoute } from '../../../src/lib/route/route'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -16,7 +16,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 }
 
 const PreviewPage = ({ workspaceId, projectId }: { workspaceId: string; projectId: string }) => {
-  setRoute({ route: `/app/${workspaceId}/${projectId}/preview`, action: 'none' })
+  setRoute({ route: `/${workspaceId}/${projectId}/preview`, action: 'none' })
   return <RootHandler />
 }
 
