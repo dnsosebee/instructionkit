@@ -1,4 +1,5 @@
 import { List, Map } from 'immutable'
+import Script from 'next/script'
 import { useEffect, useState } from 'react'
 import { logger as parentLogger } from '../../../../../lib/logger'
 import { Dart } from '../../../../../model/schema/types/dart/dart'
@@ -126,6 +127,7 @@ export const Guide = ({ flows, darts }: GuideProps) => {
       id='guide'
       className=' bg-slate-900 grow flex flex-col items-center p-2 min-h-full min-w-full'
     >
+      <Script src='/iframeSizer.contentWindow.min.js' />
       <div className='flex flex-col'>
         {pages.map((page, i) => (
           <div
