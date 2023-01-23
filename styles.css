@@ -1,10 +1,11 @@
+/* stylelint-disable selector-id-pattern */
+/* stylelint-disable selector-class-pattern */
 /* stylelint-disable block-no-empty */
 /* stylelint-disable selector-type-no-unknown */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* stylelint-disable selector-id-pattern */
 #__next {
   display: flex;
   flex-grow: 1;
@@ -20,13 +21,13 @@ html {
 body,
 #__next {
   display: flex;
-  min-height: 100%;
-  min-width: 100%;
   margin: 0;
   padding: 0;
+}
+
+body > #__next {
   @apply bg-slate-900;
 }
-/* stylelint-enable selector-id-pattern */
 
 .todoapp {
   display: flex;
@@ -38,7 +39,6 @@ body,
   flex-grow: 1;
 }
 
-/* stylelint-disable selector-class-pattern */
 .react-flow__node {
   @apply p-0 m-0;
 }
@@ -46,8 +46,6 @@ body,
 hr.ProseMirror-selectednode {
   @apply border-2 border-blue-600;
 }
-
-/* stylelint-enable selector-class-pattern */
 
 .tool-button {
   @apply rounded bg-orange-500 hover:bg-white text-slate-900 hover:text-slate-800 flex justify-center px-2 py-1 transition-colors;
@@ -109,7 +107,6 @@ hr.ProseMirror-selectednode {
   mask: var(--mask);
 }
 
-/* stylelint-disable-next-line selector-class-pattern */
 .react-flow__attribution {
   display: none;
 }
@@ -133,7 +130,6 @@ hr.ProseMirror-selectednode {
   @apply bg-slate-900 border-slate-900 text-green-300;
 }
 
-/* stylelint-disable-next-line selector-class-pattern */
 .react-flow__edges {
   z-index: 100 !important;
 }
