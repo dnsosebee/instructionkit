@@ -34,11 +34,11 @@ export const StoneView = ({
   }
 
   const ref = useRef<HTMLInputElement>(null)
-  useEffect(() =>
-    ref.current?.scrollIntoView({
-      behavior: 'smooth',
-    }),
-  )
+  // useEffect(() =>
+  //   ref.current?.scrollIntoView({
+  //     behavior: 'smooth',
+  //   }),
+  // )
 
   return (
     <motion.div className='stone opacity-0' animate={{ opacity: 1 }} ref={ref}>
