@@ -1,4 +1,8 @@
-import { DocumentArrowDownIcon, DocumentPlusIcon } from '@heroicons/react/20/solid'
+import {
+  DocumentArrowDownIcon,
+  DocumentPlusIcon,
+  RocketLaunchIcon,
+} from '@heroicons/react/20/solid'
 import { PlayIcon } from '@heroicons/react/24/solid'
 import { handleDownloadFloem } from '../../../../../model/persistence/filesystem'
 import { SendFloemChange } from '../../../../../model/persistence/shared/floemChangeEvent'
@@ -17,7 +21,7 @@ export const Toolbar = ({ send }: ToolbarProps) => {
   // const disableDelete =
   //   (nodeSelections.every(v => !v) && edgeSelections.every(v => !v)) ||
   //   nodeSelections[floem.flows.findIndex(flow => flow.id === FLOW_START_ID)]
-  const { previewHref, flows, darts, title } = useFlowchartCtx()
+  const { previewHref, flows, darts, title, handlePublish } = useFlowchartCtx()
 
   return (
     <div className='static'>
@@ -62,6 +66,19 @@ export const Toolbar = ({ send }: ToolbarProps) => {
             })
           }
           title='Download'
+        />
+        <IconButton
+          Icon={RocketLaunchIcon}
+          onClick={() =>
+            handlePublish({
+              schemaVersion: 1,
+              title,
+              flows,
+              darts,
+              createdAt: Date.now(),
+            })
+          }
+          title='Publish'
         />
         <a href={previewHref} target='_blank' rel='noopener noreferrer'>
           <IconButton Icon={PlayIcon} onClick={() => null} title='Preview' />

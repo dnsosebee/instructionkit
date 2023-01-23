@@ -11,6 +11,7 @@ import Breadcrumbs from '../../../src/components/views/app/project/flowchart/bre
 import { Flowchart } from '../../../src/components/views/app/project/flowchart/flowchart'
 import { getRoute, setRoute } from '../../../src/lib/route/route'
 import { FloemChangeEvent } from '../../../src/model/persistence/shared/floemChangeEvent'
+import { Floem } from '../../../src/model/schema/types/floem'
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const workspaceId = params?.workspaceId as string
@@ -63,6 +64,13 @@ export const ProjectView = () => {
       }
     },
     previewHref: `/${workspaceId}/${projectId}/preview`,
+    handlePublish: async (floem: Floem) => {
+      await projectRep.mutate.publish(floem)
+      await navigator.clipboard.writeText(
+        `https://app.instructionkit.com/guide/${workspaceId}/${projectId}`,
+      )
+      alert("Published! Your guide's link copied to clipboard.")
+    },
   }
   return (
     <>

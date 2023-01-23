@@ -1,6 +1,8 @@
 import { WriteTransaction } from 'replicache'
 import { logger as parentLogger } from '../../../../../lib/logger'
 import { Dart } from '../../../../schema/types/dart/dart'
+import { Deployment, deploymentSchema } from '../../../../schema/types/deployment'
+import { Floem } from '../../../../schema/types/floem'
 import { Flow, flowSchema } from '../../../../schema/types/flow/flow'
 import { START_FLOW_TYPE } from '../../../../schema/types/flow/types/start'
 import {
@@ -10,6 +12,7 @@ import {
 import { FloemChangeEvent } from '../../../shared/floemChangeEvent'
 
 import { DARTS_KEY } from './entries/darts'
+import { DEPLOYMENT_KEY } from './entries/deploy'
 import { flowKey, listFlows } from './entries/flow'
 
 const logger = parentLogger.child({ module: 'projectMutators' })
@@ -97,6 +100,23 @@ export const projectMutators = {
       },
     }
     await applyFlowAndDartChanges(repTx, changes)
+  },
+
+  // deploy
+  async publish(tx: WriteTransaction, floem: Floem) {
+    const prev = (await tx.get(DEPLOYMENT_KEY)) as Deployment | undefined
+    const next: Deployment = {
+      schemaVersion: floem.schemaVersion,
+      createdAt: prev ? prev.createdAt : floem.createdAt,
+      versionId: 'TODO!',
+      updatedAt: floem.createdAt,
+      live: true,
+      compiled: {
+        flows: floem.flows,
+        darts: floem.darts,
+      },
+    }
+    await tx.put(DEPLOYMENT_KEY, deploymentSchema.parse(next))
   },
 }
 

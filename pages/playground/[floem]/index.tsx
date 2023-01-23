@@ -77,11 +77,18 @@ export const PlaygroundView = () => {
     return update
   }, decoded)
 
+  const previewHref = `/playground/${urlEncodeFloem(state)}/preview`
+
   const flowchartProviderProps: Omit<FlowchartProviderProps, 'children'> = {
     title: state.title,
     flows: state.flows,
     darts: state.darts,
-    previewHref: `/playground/${urlEncodeFloem(state)}/preview`,
+    previewHref,
+    handlePublish: async (floem: Floem) => {
+      logger.info('handlePublish', floem)
+      await navigator.clipboard.writeText(`https://app.instructionkit.com${previewHref}`)
+      alert('Link copied to your clipboard.')
+    },
     send: function (changes: FloemChangeEvent | FloemChangeEvent[]): void {
       if (!Array.isArray(changes)) {
         changes = [changes]

@@ -2,6 +2,7 @@ import { createContext, useContext, useState } from 'react'
 import { ReactFlowProvider } from 'reactflow'
 import { SendFloemChange } from '../../../model/persistence/shared/floemChangeEvent'
 import { Dart } from '../../../model/schema/types/dart/dart'
+import { Floem } from '../../../model/schema/types/floem'
 import { Flow } from '../../../model/schema/types/flow/flow'
 
 // note: some of this stuff is more context-y, some is more prop-y.
@@ -14,17 +15,13 @@ export type FlowchartContext = {
   title: string
   send: SendFloemChange
   previewHref: string
+  handlePublish: (floem: Floem) => Promise<void>
 }
 
 const flowchartContext = createContext<FlowchartContext | null>(null)
 
-export interface FlowchartProviderProps {
+export type FlowchartProviderProps = Omit<FlowchartContext, 'flocus' | 'setFlocus'> & {
   children: React.ReactNode
-  flows: Flow[]
-  darts: Dart[]
-  title: string
-  send: SendFloemChange
-  previewHref: string
 }
 
 const FlowchartProvider = ({ children, ...value }: FlowchartProviderProps) => {
