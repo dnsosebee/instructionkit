@@ -14,7 +14,7 @@ module.exports = {
     return [
       {
         // matching all guide routes
-        source: '/guide/:path*',
+        // source: '/guide/:path*',
         headers: [
           { key: 'Access-Control-Allow-Credentials', value: 'true' },
           { key: 'Access-Control-Allow-Origin', value: '*' },
