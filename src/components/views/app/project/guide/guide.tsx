@@ -89,21 +89,18 @@ const rewindAndApply = async (
   return {
     pages: updatedPages,
     activePage: updatedPages.size - 1,
-    loading: false,
   }
 }
 
 type GuideState = {
   pages: List<GuidePage>
   activePage: number
-  loading: boolean
 }
 
 export const Guide = ({ flows, darts }: GuideProps) => {
   const [state, setState] = useState({
     pages: List<GuidePage>([List<GuideStep>([])]),
     activePage: 0,
-    loading: true,
   })
   useEffect(() => {
     const getFirst = async () => {
@@ -119,7 +116,6 @@ export const Guide = ({ flows, darts }: GuideProps) => {
             ),
           ]),
         ]),
-        loading: false,
       })
     }
     getFirst()
@@ -140,7 +136,6 @@ export const Guide = ({ flows, darts }: GuideProps) => {
               const { ui, value } = step.step
               const active = i === activePage && j === page.size - 1
               const onHop = async (value: any, chosenCaseId?: string) => {
-                setState({ ...state, loading: true })
                 setState(await rewindAndApply(state, flows, darts, i, j, value, chosenCaseId))
               }
               return (
@@ -153,12 +148,6 @@ export const Guide = ({ flows, darts }: GuideProps) => {
             })}
           </div>
         ))}
-        {state.loading && (
-          // simple spinner using tailwind css
-          <div className='flex justify-center items-center pb-10'>
-            <div className='animate-spin rounded-full h-32 w-32 border-b-2 border-white'></div>
-          </div>
-        )}
       </div>
     </div>
   )
