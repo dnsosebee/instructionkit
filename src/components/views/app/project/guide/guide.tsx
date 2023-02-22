@@ -127,14 +127,17 @@ export const Guide = ({ flows, darts }: GuideProps) => {
   const { pages, activePage } = state
 
   return (
-    <div id='guide' className='grow flex flex-col items-center min-h-full min-w-full'>
+    <div
+      id='guide'
+      className=' bg-slate-900 grow flex flex-col items-center p-2 min-h-full min-w-full'
+    >
       <Script src='/iframeSizer.contentWindow.min.js' />
       <div className='flex flex-col'>
         {pages.map((page, i) => (
           <div
             id={'page ' + i}
             key={i}
-            className='guide-page overflow-hidden rounded-lg shadow flex flex-col prose-2xl text-white prose-headings:font-bold prose-h1:text-9xl prose-h2:text-7xl prose-h3:text-5xl prose-h4:text-3xl'
+            className='guide-page overflow-hidden rounded-lg shadow my-5 p-5 flex flex-col prose-2xl text-white prose-headings:font-bold prose-h1:text-9xl prose-h2:text-7xl prose-h3:text-5xl prose-h4:text-3xl'
           >
             {page.map((step, j) => {
               const { ui, value } = step.step
