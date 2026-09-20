@@ -34,11 +34,16 @@ export const StoneView = ({
   }
 
   const ref = useRef<HTMLInputElement>(null)
-  useEffect(() =>
+  // NOTE: the braces matter. Current Chrome returns a Promise from scrollIntoView (it
+  // resolves when the scroll finishes); older versions returned undefined. A concise
+  // arrow body would hand that Promise back to React as the effect's cleanup function,
+  // and React would call it on the next run — `TypeError: t is not a function`. Keep the
+  // block body so this effect returns undefined.
+  useEffect(() => {
     ref.current?.scrollIntoView({
       behavior: 'smooth',
-    }),
-  )
+    })
+  })
 
   return (
     <motion.div className='stone opacity-0' animate={{ opacity: 1 }} ref={ref}>
