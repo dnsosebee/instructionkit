@@ -7,7 +7,7 @@ InstructionKit was designed originally for instructions and guides for complex p
 > **Status:** archived. This was a startup project built in 2022–2023 and is no longer
 > actively developed. It's public as a code sample.
 
-<!-- TODO: drop a screenshot or GIF of the editor here — it does more than any paragraph below. -->
+<img src="public/ik-authoring-demo.gif" alt="InstructionKit authoring demo" />
 
 ## Design
 
